@@ -6,7 +6,7 @@ categories:
 date: "2020-03-06T21:29:01+08:00"
 description: Discover what the Hugo - LoveIt theme is all about and the core-concepts
   behind it.
-draft: false
+draft: true
 lastmod: "2020-03-06T21:29:01+08:00"
 lightgallery: true
 resources:

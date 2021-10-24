@@ -5,7 +5,7 @@ categories:
 - Markdown
 date: "2019-10-01T17:55:28+08:00"
 description: Guide to emoji usage in Hugo and LoveIt.
-draft: false
+draft: true
 lastmod: "2019-10-01T17:55:28+08:00"
 lightgallery: true
 resources:
