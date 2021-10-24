@@ -6,8 +6,8 @@ categories:
 date: "2020-03-03T16:29:41+08:00"
 description: LoveIt theme provides multiple shortcodes on top of built-in ones in
   Hugo.
-draft: false
-lastmod: "2020-03-03T16:29:41+08:00"
+draft: true
+lastmod: "2000-03-03T16:29:41+08:00"
 lightgallery: true
 resources:
 - name: featured-image
