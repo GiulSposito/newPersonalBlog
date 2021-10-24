@@ -79,7 +79,7 @@ languages:
           disclaimer: ''
           enable: yes
           gravatarEmail: ''
-          social: yes
+          social: no
           subtitle: A personal blog about rstats, agility and lean digital
           title: Yet Another Iteration
           typeit: yes
@@ -536,9 +536,9 @@ markup:
     endLevel: 6
     startLevel: 2
 author:
-  email: ''
-  link: ''
-  name: xxxx
+  email: 'gsposito@gmail.com'
+  link: 'http://yetanotheriteration.netlify.app'
+  name: 'Giuliano Sposito'
 sitemap:
   changefreq: weekly
   filename: sitemap.xml
