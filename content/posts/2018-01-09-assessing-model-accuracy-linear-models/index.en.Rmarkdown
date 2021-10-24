@@ -15,12 +15,12 @@ authorLink: ''
 description: ''
 hiddenFromHomePage: no
 hiddenFromSearch: no
-featuredImage: ''
-featuredImagePreview: 'images/green_flames_digital_art_lines.png'
+featuredImage: 'images/green_flames_digital_art_lines.jpg'
+featuredImagePreview: 'images/green_flames_digital_art_lines.jpg'
 toc:
   enable: yes
 math:
-  enable: no
+  enable: yes
 lightgallery: no
 license: ''
 disqusIdentifier: rstatmodelaccuracy
@@ -30,7 +30,7 @@ This post talks about the use of **Mean Squared Error (MSE)** against the flexib
 
 <!--more-->
 
-## Measure the quality of fit (regression problems)
+## Measure the quality of fit (regression)
 
 In order to evaluate the performance of a statistical learning method on a given data set, we need some way to measure how well its predictions actually match the observed data. That is, we need to quantify the extent to which the predicted response value for a given observation is close to the true response value for that observation. 
 
@@ -38,15 +38,15 @@ In the **regression setting**, the most commonly-used measure is the mean square
 
 $$ MSE = \frac{1}{N}\sum_{i=1}^{n}(y_i-\hat{f}(x_i))^2 $$ 
 
-Where $\hat{f}(x_i)$ is the predicted (or fitted) function at x~i~ and y~i~ is the real value.
+Where $ \hat{f}(x_i) $ is the predicted (or fitted) function at $ x_i $ and $ y_i $ is the real value.
 
-So, the MSE is computed using the training data that was used to fit the model, and so should more accurately be referred to as the training MSE, but we want to evaluate the performance of the  $\hat{f}()$ against the unknown data points, so we also compute MSE in an _test set_ with data points different from used to fit the $\hat{f}()$, now we have a MSE~tr~ for training points and a MSE~ts for test set.
+So, the MSE is computed using the training data that was used to fit the model, and so should more accurately be referred to as the training MSE, but we want to evaluate the performance of the  $ \hat{f}() $ against the unknown data points, so we also compute MSE in an _test set_ with data points different from used to fit the $ \hat{f}() $, now we have a $ MSE_{tr} $ for training points and a $ MSE_{ts} $ for test set.
 
-We want to choose the method that gives the lowest test MSE, as opposed to the lowest training MSE (MSE~ts~).
+We want to choose the method that gives the lowest test MSE, as opposed to the lowest training MSE ($ MSE_{ts} $).
 
-## Comparing MSE~tr~ and MSE~ts~
+## Comparing $ MSE_{tr} $ and $ MSE_{ts} $
 
-Let's simulate some situations to see how MSE~tr~ and MSE~ts against different fitting techniques, we'll use polynomials fit to simplify the scenarios.
+Let's simulate some situations to see how $ MSE_{tr} $ and $ MSE_{ts} $ against different fitting techniques, we'll use polynomials fit to simplify the scenarios.
 
 ### Curve 1
 
@@ -242,7 +242,7 @@ ggplot(perf,aes(x=degree)) +
   theme_bw()
 ```
 
-# Curve 3
+### Curve 3
 
 ```{r caseThree, cache=TRUE}
 DOMAIN <- runif(100, 1, 100)
@@ -310,7 +310,7 @@ ggplot(perf,aes(x=degree)) +
   theme_bw()
 ```
 
-# Conclusion
+## Conclusion
 
 As we see, plotting the **cost function** (MSE in these cases) of fitted models against Training and Test data is helpful to check the sanity of your model to avoid the over fitting effect.
 

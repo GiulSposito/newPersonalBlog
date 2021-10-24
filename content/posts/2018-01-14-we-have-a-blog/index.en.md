@@ -11,7 +11,6 @@ toc: false
 resources:
 - name: featuredImagePreview
   src: featured-image.png
-weight: 4
 ---
 
 A place to put my ideas and thoughts on the topics that I like and I get involved in everyday life, especially about software development, agility, lean production and data science.

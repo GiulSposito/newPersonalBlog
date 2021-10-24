@@ -3,7 +3,7 @@ author: Dillon
 authorLink: https://dillonzq.com
 categories:
 - Markdown
-date: "2019-10-01T17:55:28+08:00"
+date: "2015-10-01T17:55:28+08:00"
 description: Guide to emoji usage in Hugo and LoveIt.
 draft: true
 lastmod: "2019-10-01T17:55:28+08:00"
@@ -14,7 +14,6 @@ resources:
 tags:
 - emoji
 title: Emoji Support
-weight: 5
 ---
 
 Emoji can be enabled in a Hugo project in a number of ways.

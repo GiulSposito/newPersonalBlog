@@ -3,7 +3,7 @@ author: Dillon
 authorLink: https://dillonzq.com
 categories:
 - documentation
-date: "2020-03-04T16:29:41+08:00"
+date: "2015-03-04T16:29:41+08:00"
 description: Hugo provides multiple built-in shortcodes for author convenience and
   to keep your markdown content clean.
 draft: true
@@ -15,7 +15,6 @@ resources:
 tags:
 - shortcodes
 title: Theme Documentation - Built-in Shortcodes
-weight: 3
 ---
 
 **Hugo** provides multiple built-in shortcodes for author convenience and to keep your markdown content clean.

@@ -11,7 +11,6 @@ toc: false
 resources:
 - name: featuredImagePreview
   src: featured-image.png
-weight: 4
 ---
 
 Um lugar para colocar minhas ideias e pensamentos sobre os temas que gosto e me envolvo no dia a dia, principalmente sobre desenvolvimento de software, agilidade, produção enxuta e ciência de dados.

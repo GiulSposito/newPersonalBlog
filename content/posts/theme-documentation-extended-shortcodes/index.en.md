@@ -3,7 +3,7 @@ author: Dillon
 authorLink: https://dillonzq.com
 categories:
 - documentation
-date: "2020-03-03T16:29:41+08:00"
+date: "2015-03-03T16:29:41+08:00"
 description: LoveIt theme provides multiple shortcodes on top of built-in ones in
   Hugo.
 draft: true
@@ -17,7 +17,6 @@ resources:
 tags:
 - shortcodes
 title: Theme Documentation - Extended Shortcodes
-weight: 4
 ---
 
 **LoveIt** theme provides multiple shortcodes on top of built-in ones in Hugo.
