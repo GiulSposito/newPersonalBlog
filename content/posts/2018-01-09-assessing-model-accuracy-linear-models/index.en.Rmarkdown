@@ -30,7 +30,7 @@ This post talks about the use of **Mean Squared Error (MSE)** against the flexib
 
 <!--more-->
 
-## Measure the quality of fit (regression)
+### Measure the quality of fit (regression)
 
 In order to evaluate the performance of a statistical learning method on a given data set, we need some way to measure how well its predictions actually match the observed data. That is, we need to quantify the extent to which the predicted response value for a given observation is close to the true response value for that observation. 
 
@@ -44,11 +44,11 @@ So, the MSE is computed using the training data that was used to fit the model, 
 
 We want to choose the method that gives the lowest test MSE, as opposed to the lowest training MSE ($ MSE_{ts} $).
 
-## Comparing $ MSE_{tr} $ and $ MSE_{ts} $
+### Comparing $ MSE_{tr} $ and $ MSE_{ts} $
 
 Let's simulate some situations to see how $ MSE_{tr} $ and $ MSE_{ts} $ against different fitting techniques, we'll use polynomials fit to simplify the scenarios.
 
-### Curve 1
+#### Curve 1
 
 ```{r setup, message=FALSE, warning=FALSE, cache=TRUE}
 # setup
@@ -69,7 +69,7 @@ f <- function(x) 0.0005*x^2 + 0.05*x + 0.5
 noise <- function(x) 0.5 * rnorm(x)
 
 # build the datasete
-data.frame(
+tibble(
   x = DOMAIN, 
   f = f(x) # the 'real value'
 ) %>%
@@ -140,7 +140,7 @@ calcMSE <- function(lm.model, newdata){
 }
 
 # performances
-perf <- data.frame(
+perf <- tibble(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -163,7 +163,7 @@ We can see the behavior of MSE data, in the training data (Red) the increasing o
 
 
 
-### Curve 2
+#### Curve 2
 
 Another example.
 
@@ -176,7 +176,7 @@ f <- function(x) (-sin( (2*pi/length(DOMAIN)) * (x+10) )) * 2*x/100 + 0.001 * x
 noise <- function(x) 0.3*rnorm(x)
 
 # the dataset
-data.frame(
+tibble(
   x = DOMAIN,
   f = f(x) # "real value"
 ) %>%
@@ -224,7 +224,7 @@ ggplot(dt_tr_long) +
 
 ```{r perfCaseTwo, cache=TRUE}
 # performances
-perf <- data.frame(
+perf <- tibble(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -242,7 +242,7 @@ ggplot(perf,aes(x=degree)) +
   theme_bw()
 ```
 
-### Curve 3
+#### Curve 3
 
 ```{r caseThree, cache=TRUE}
 DOMAIN <- runif(100, 1, 100)
@@ -251,7 +251,7 @@ DOMAIN <- runif(100, 1, 100)
 f <- function(x) -30*sin( x*(2*pi/length(DOMAIN)) ) - .01*x^2 + 15   #  (sin( (2*pi/length(DOMAIN)) * (x+10) )) * 2*x/100 + 0.001 * x
 noise <- function(x) 5*rnorm(x)
 
-data.frame(
+tibble(
   x = DOMAIN,
   f = f(x)
 ) %>%
@@ -294,7 +294,7 @@ ggplot(dt_tr_long) +
 
 ```{r perfCaseThree, cache=TRUE}
 # performances
-perf <- data.frame(
+perf <- tibble(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -310,7 +310,7 @@ ggplot(perf,aes(x=degree)) +
   theme_bw()
 ```
 
-## Conclusion
+### Conclusion
 
 As we see, plotting the **cost function** (MSE in these cases) of fitted models against Training and Test data is helpful to check the sanity of your model to avoid the over fitting effect.
 

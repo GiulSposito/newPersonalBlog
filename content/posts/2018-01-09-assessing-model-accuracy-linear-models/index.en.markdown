@@ -30,7 +30,7 @@ This post talks about the use of **Mean Squared Error (MSE)** against the flexib
 
 <!--more-->
 
-## Measure the quality of fit (regression)
+### Measure the quality of fit (regression)
 
 In order to evaluate the performance of a statistical learning method on a given data set, we need some way to measure how well its predictions actually match the observed data. That is, we need to quantify the extent to which the predicted response value for a given observation is close to the true response value for that observation. 
 
@@ -44,11 +44,11 @@ So, the MSE is computed using the training data that was used to fit the model, 
 
 We want to choose the method that gives the lowest test MSE, as opposed to the lowest training MSE ($ MSE_{ts} $).
 
-## Comparing $ MSE_{tr} $ and $ MSE_{ts} $
+### Comparing $ MSE_{tr} $ and $ MSE_{ts} $
 
 Let's simulate some situations to see how $ MSE_{tr} $ and $ MSE_{ts} $ against different fitting techniques, we'll use polynomials fit to simplify the scenarios.
 
-### Curve 1
+#### Curve 1
 
 
 ```r
@@ -71,7 +71,7 @@ f <- function(x) 0.0005*x^2 + 0.05*x + 0.5
 noise <- function(x) 0.5 * rnorm(x)
 
 # build the datasete
-data_frame(
+tibble(
   x = DOMAIN, 
   f = f(x) # the 'real value'
 ) %>%
@@ -79,14 +79,7 @@ data_frame(
   mutate(
     y = f + noise(DOMAIN) # adding some noise
   ) -> dt
-```
 
-```
-## Warning: `data_frame()` was deprecated in tibble 1.1.0.
-## Please use `tibble()` instead.
-```
-
-```r
 # separing in training and testing
 idx.tr <- sample(DOMAIN,round(length(DOMAIN)/2))
 dt_tr <- dt[idx.tr,]
@@ -160,7 +153,7 @@ calcMSE <- function(lm.model, newdata){
 }
 
 # performances
-perf <- data_frame(
+perf <- tibble(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -184,7 +177,7 @@ We can see the behavior of MSE data, in the training data (Red) the increasing o
 
 
 
-### Curve 2
+#### Curve 2
 
 Another example.
 
@@ -198,7 +191,7 @@ f <- function(x) (-sin( (2*pi/length(DOMAIN)) * (x+10) )) * 2*x/100 + 0.001 * x
 noise <- function(x) 0.3*rnorm(x)
 
 # the dataset
-data_frame(
+tibble(
   x = DOMAIN,
   f = f(x) # "real value"
 ) %>%
@@ -252,7 +245,7 @@ ggplot(dt_tr_long) +
 
 ```r
 # performances
-perf <- data_frame(
+perf <- tibble(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -272,7 +265,7 @@ ggplot(perf,aes(x=degree)) +
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/perfCaseTwo-1.png" width="672" />
 
-### Curve 3
+#### Curve 3
 
 
 ```r
@@ -282,7 +275,7 @@ DOMAIN <- runif(100, 1, 100)
 f <- function(x) -30*sin( x*(2*pi/length(DOMAIN)) ) - .01*x^2 + 15   #  (sin( (2*pi/length(DOMAIN)) * (x+10) )) * 2*x/100 + 0.001 * x
 noise <- function(x) 5*rnorm(x)
 
-data_frame(
+tibble(
   x = DOMAIN,
   f = f(x)
 ) %>%
@@ -290,14 +283,7 @@ data_frame(
   mutate(
     y = f + noise(DOMAIN)
   ) -> dt
-```
 
-```
-## Warning: `data_frame()` was deprecated in tibble 1.1.0.
-## Please use `tibble()` instead.
-```
-
-```r
 # separing in training and testing
 idx.tr <- sample(1:length(DOMAIN),round(length(DOMAIN)/2))
 dt_tr <- dt[idx.tr,]
@@ -346,7 +332,7 @@ ggplot(dt_tr_long) +
 
 ```r
 # performances
-perf <- data_frame(
+perf <- tibble(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -364,7 +350,7 @@ ggplot(perf,aes(x=degree)) +
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/perfCaseThree-1.png" width="672" />
 
-## Conclusion
+### Conclusion
 
 As we see, plotting the **cost function** (MSE in these cases) of fitted models against Training and Test data is helpful to check the sanity of your model to avoid the over fitting effect.
 

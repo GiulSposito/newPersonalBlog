@@ -135,7 +135,7 @@ The first is a regression of `balance` on `age` and `limit`, here both `age` and
 
 In the second, the collinearity between `limit` and `rating` has caused the standard error for the limit coefficient estimate to increase by a factor of 12 and the *p-value* to increase to 0.701. In other words, **the importance of the limit variable has been masked due to the presence of collinearity**.
 
-*Collinearity reduces the accuracy of the estimates of the regression coefficients*, it causes the standard error for `\(\hat{\beta}_j\)` to grow. Recall that the `t-statistic` for each predictor is calculated by dividing `\(\hat{\beta}_j\)` by its standard error. Consequently, collinearity results in a decline in the `t-statistic`. As a result, in the presence of collinearity, we may fail to reject `\(H0 : \beta_j = 0\)`. This means that the power of the hypothesis test-the probability of correctly power detecting a non-zero coefficient-is reduced by collinearity.
+*Collinearity reduces the accuracy of the estimates of the regression coefficients*, it causes the standard error for \$ *{j} \$ to grow. Recall that the `t-statistic` for each predictor is calculated by dividing \$ *{j} \$ by its standard error. Consequently, collinearity results in a decline in the `t-statistic`. As a result, in the presence of collinearity, we may fail to reject \$ H0 : \_{j} = 0 \$. This means that the power of the hypothesis test-the probability of correctly power detecting a non-zero coefficient-is reduced by collinearity.
 
 ### Cost Surface
 
