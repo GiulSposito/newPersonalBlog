@@ -44,7 +44,6 @@ library(tidyverse)
 library(ggplot2)
 library(grid)
 library(gridExtra)
-library(plotly)
 
 # ploting Limit by Age
 ggplot(Credit, aes(x=Limit, y=Age)) +
@@ -85,9 +84,7 @@ summary(fit_rxl)
 
 In the second, the collinearity between `limit` and `rating` has caused the standard error for the limit coefficient estimate to increase by a factor of 12 and the _p-value_ to increase to 0.701. In other words, **the importance of the limit variable has been masked due to the presence of collinearity**.
 
-
-*Collinearity reduces the accuracy of the estimates of the regression coefficients*, it causes the standard error for $ \hat{\beta}_{j} $ to grow. Recall that the `t-statistic` for each predictor is calculated by dividing $ \hat{\beta}_{j} $ by its standard error. Consequently, collinearity results in a decline in the `t-statistic`. As a result, in the presence of collinearity, we may fail to reject $ H0 : \beta_{j} = 0 $. This means that the power of the hypothesis test-the probability of correctly power detecting a non-zero coefficient-is reduced by collinearity.
-
+Collinearity reduces the accuracy of the estimates of the regression coefficients, it causes the standard error for  $ \hat{ \beta } _{j} $  to grow. Recall that the `t-statistic` for each predictor is calculated by dividing  $ \hat{ \beta } _{j} $  by its standard error. Consequently, collinearity results in a decline in the `t-statistic`. As a result, in the presence of collinearity, we may fail to reject  $ H0 : \beta _{j} = 0 $ . This means that the power of the hypothesis test-the probability of correctly power detecting a non-zero coefficient-is reduced by collinearity.
 
 ### Cost Surface
 
@@ -137,18 +134,14 @@ axl_var$rss <- apply(
   }
 )
 
-# plot them in a 'level chart'
-plot_ly(data=axl_var,
-        x = ~b1, 
-        y = ~b2, 
-        z = ~rss, 
-        type = "contour" 
-) %>% layout(
-  xaxis = list( title = "Limit" ),
-  yaxis = list( title = "Age" )
-)
-```
+axl_var %>% 
+  ggplot(aes(x=b1, y=b2, z=rss, fill=rss)) +
+  geom_raster() +
+  geom_contour(color="grey") +
+  scale_fill_viridis_c() +
+  theme_minimal()
 
+```
 
 #### Rating x Limit
 
@@ -168,16 +161,13 @@ rxl_var$rss <- apply(
   }
 )
 
-# plot them in a 'level chart'
-plot_ly(data=rxl_var,
-        x = ~b1, 
-        y = ~b2, 
-        z = ~rss, 
-        type = "contour" 
-) %>% layout(
-  xaxis = list( title = "Limit" ),
-  yaxis = list( title = "Rating" )
-)
+rxl_var %>% 
+  ggplot(aes(x=b1, y=b2, z=rss, fill=rss)) +
+  geom_raster() +
+  geom_contour(color="grey") +
+  scale_fill_viridis_c() +
+  theme_minimal()
+
 ```
 
 
