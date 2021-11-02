@@ -69,7 +69,7 @@ f <- function(x) 0.0005*x^2 + 0.05*x + 0.5
 noise <- function(x) 0.5 * rnorm(x)
 
 # build the datasete
-data_frame(
+data.frame(
   x = DOMAIN, 
   f = f(x) # the 'real value'
 ) %>%
@@ -140,7 +140,7 @@ calcMSE <- function(lm.model, newdata){
 }
 
 # performances
-perf <- data_frame(
+perf <- data.frame(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -176,7 +176,7 @@ f <- function(x) (-sin( (2*pi/length(DOMAIN)) * (x+10) )) * 2*x/100 + 0.001 * x
 noise <- function(x) 0.3*rnorm(x)
 
 # the dataset
-data_frame(
+data.frame(
   x = DOMAIN,
   f = f(x) # "real value"
 ) %>%
@@ -224,7 +224,7 @@ ggplot(dt_tr_long) +
 
 ```{r perfCaseTwo, cache=TRUE}
 # performances
-perf <- data_frame(
+perf <- data.frame(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
@@ -251,7 +251,7 @@ DOMAIN <- runif(100, 1, 100)
 f <- function(x) -30*sin( x*(2*pi/length(DOMAIN)) ) - .01*x^2 + 15   #  (sin( (2*pi/length(DOMAIN)) * (x+10) )) * 2*x/100 + 0.001 * x
 noise <- function(x) 5*rnorm(x)
 
-data_frame(
+data.frame(
   x = DOMAIN,
   f = f(x)
 ) %>%
@@ -294,7 +294,7 @@ ggplot(dt_tr_long) +
 
 ```{r perfCaseThree, cache=TRUE}
 # performances
-perf <- data_frame(
+perf <- data.frame(
   degree = degrees,
   MSE.tr = unlist(map(models, getMSE)),
   MSE.ts = unlist(map(models, calcMSE, dt_ts))
