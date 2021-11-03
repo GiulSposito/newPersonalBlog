@@ -17,8 +17,8 @@ authorLink: ''
 description: ''
 hiddenFromHomePage: no
 hiddenFromSearch: no
-featuredImage: ''
-featuredImagePreview: ''
+featuredImage: 'images/cover.jpg'
+featuredImagePreview: 'images/cover.jpg'
 toc:
   enable: yes
 math:
