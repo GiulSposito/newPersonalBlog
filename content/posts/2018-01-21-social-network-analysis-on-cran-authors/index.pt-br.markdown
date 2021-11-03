@@ -231,7 +231,7 @@ ggraph(g_layout) +
 
 ##### Eigenvector Centrality (Autovetor)
 
-A centralidade do _autovetores_ de um nó é proporcional à soma das centralidades de _autovetores de todos os nós diretamente conectados a ele. A métrica é obtida através da fatoração e calculo de autovetores da _matriz de adjacência_[^3] que representa a rede.
+A centralidade do _autovetores_ de um nó é proporcional à soma das centralidades de _autovetores_ de todos os nós diretamente conectados a ele. A métrica é obtida através da fatoração e calculo de autovetores da _matriz de adjacência_[^3] que representa a rede.
 
 Está associado a reputação e um vértice com respeito às suas ligações.
 
@@ -367,15 +367,9 @@ As várias medidas de centralidade são mostradas acima e são representadas:
 
 ```r
 h %>% activate("nodes") %>%
-  as.tibble() %>%
+  as_tibble() %>%
   select(-clst) %>%
   knitr::kable(caption="Métricas de Centralidade dos Nós")
-```
-
-```
-## Warning: `as.tibble()` was deprecated in tibble 2.0.0.
-## Please use `as_tibble()` instead.
-## The signature and semantics have changed, see `?as_tibble`.
 ```
 
 
@@ -537,14 +531,14 @@ authors_network <- edge_list %>%
   left_join(aut_list, by="name") # nomeia os nós com os nomes dos autores
 
 # dados de autores e arestas
-total_authors <- authors_network %>% activate("nodes") %>% as.tibble() %>% nrow()
-total_edges <- authors_network %>% activate("edges") %>% as.tibble() %>% nrow()
+total_authors <- authors_network %>% activate("nodes") %>% as_tibble() %>% nrow()
+total_edges <- authors_network %>% activate("edges") %>% as_tibble() %>% nrow()
 ```
 
 
 #### Selecionando Components
 
-A rede construída é composta de 24504 autores que se relacionam através 136795 arestas. Dado a natureza do objeto estudado espera-se que essa rede não seja conecta integralmente, formando então **componentes** de colaboração entre grupos de autores distintos, vamos analisar esse aspecto.
+A rede construída é composta de 24522 autores que se relacionam através 136840 arestas. Dado a natureza do objeto estudado espera-se que essa rede não seja conecta integralmente, formando então **componentes** de colaboração entre grupos de autores distintos, vamos analisar esse aspecto.
 
 
 ```r
@@ -557,7 +551,7 @@ g <- authors_network %>%
 # tabela components por número de autores
 authors.by.components <- g %>% 
   activate("nodes") %>%
-  as.tibble() %>%
+  as_tibble() %>%
   group_by(component) %>%
   summarise( authors=n() ) %>%
   arrange( desc(authors) )
@@ -572,7 +566,7 @@ Table: Table 2: Maiores componentes (top 10)
 
 |component | authors|
 |:---------|-------:|
-|1         |   14831|
+|1         |   14837|
 |2         |      62|
 |3         |      37|
 |4         |      28|
@@ -621,7 +615,7 @@ net_metrics <- rbindlist(lapply( sel_components, function(comp){
   # calcula metricas de rede
   res <- data.frame(
     component = comp,
-    nodes     = h %>% activate("nodes") %>% as.tibble() %>% nrow(),
+    nodes     = h %>% activate("nodes") %>% as_tibble() %>% nrow(),
     density   = round(graph.density(h, loops = F),4),
     diameter  = diameter(h, directed = F, unconnected = F, weights = NULL),
     eccentricity = max(eccentricity(h, mode="all"))/min(eccentricity(h, mode="all"))
@@ -714,7 +708,7 @@ Numa rede totalmente conectada (densidade = 1), todos os nós e arestas tem as m
 ```r
 netMetrics[2][[1]] %>%
   activate("nodes") %>%
-  as.tibble() %>%
+  as_tibble() %>%
   arrange( desc(btwn), desc(degree), desc(eign), desc(clsn) ) %>%
   select(-component, -clst) %>%
   head(10) %>%
@@ -758,7 +752,7 @@ ggraph(netMetrics[2][[1]], layout="kk") +
 ```r
 netMetrics[2][[1]] %>%
   activate("nodes") %>%
-  as.tibble() %>%
+  as_tibble() %>%
   arrange( desc(eign), desc(degree), desc(btwn), desc(clsn) ) %>%
   select(-packages, -component, -clst) %>%
   head(10) %>%
@@ -785,7 +779,7 @@ Table: Table 4: Autores por Eigenvector (10 mais)
 
 ##### Componente 265
 
-O componente 265 tem uma estrutura mais acoplada, com uma densidade de 0.4725, 0.3297, 1, intermediária entre a 35 e 38, é possível observar grupos que trabalham juntos e grande autor central conectando os subgrupos.
+O componente 265 tem uma estrutura mais acoplada, com uma densidade de 1, intermediária entre a 35 e 38, é possível observar grupos que trabalham juntos e grande autor central conectando os subgrupos.
 
 
 ```r
@@ -803,7 +797,7 @@ O componente 265 tem uma estrutura mais acoplada, com uma densidade de 0.4725, 0
 ```r
 netMetrics[3][[1]] %>%
   activate("nodes") %>%
-  as.tibble() %>%
+  as_tibble() %>%
   arrange( desc(btwn), desc(degree), desc(eign), desc(clsn) ) %>%
   select(-component, -clst) %>%
   head(10) %>%
@@ -841,7 +835,7 @@ ggraph(netMetrics[3][[1]], layout="kk") +
 ```r
 netMetrics[3][[1]] %>%
   activate("nodes") %>%
-  as.tibble() %>%
+  as_tibble() %>%
   arrange( desc(eign), desc(degree), desc(btwn), desc(clsn) ) %>%
   select(-packages, -component, -clst) %>%
   head(10) %>%
@@ -892,8 +886,8 @@ h <- authors_network %>%
   filter( component == names(table(component))[which.max(table(component))] ) 
 
 # dados de autores e arestas
-total_authors <- h  %>% activate("nodes") %>% as.tibble() %>% nrow()
-total_edges <- h  %>% activate("edges") %>% as.tibble() %>% nrow()
+total_authors <- h  %>% activate("nodes") %>% as_tibble() %>% nrow()
+total_edges <- h  %>% activate("edges") %>% as_tibble() %>% nrow()
 
 ggraph(h, layout="lgl") +
   geom_edge_fan(alpha=0.1)+
