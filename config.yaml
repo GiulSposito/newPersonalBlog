@@ -73,7 +73,7 @@ languages:
           enable: yes
           gravatarEmail: ''
           social: no
-          subtitle: A personal blog about rstats, agility and lean digital
+          subtitle: Rstats, Agility and Lean Digital
           title: Yet Another Iteration
           typeit: yes
         rss: 10
@@ -232,7 +232,7 @@ languages:
           enable: yes
           gravatarEmail: ''
           social: no
-          subtitle: Blog pessoal sobre rstats, agilidade e lean digital
+          subtitle: Rstats, Agilidade e Lean Digital
           title: Yet Another Iteration
           typeit: yes
         rss: 10
