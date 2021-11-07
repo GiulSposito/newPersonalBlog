@@ -27,6 +27,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'data-science-das-cervejas'
 ---
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />

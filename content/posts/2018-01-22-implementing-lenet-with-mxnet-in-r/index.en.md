@@ -24,6 +24,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'implementing-lenet-with-mxnet-in-r'
 ---
 
 

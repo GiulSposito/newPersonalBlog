@@ -25,6 +25,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'putting-your-workout-to-move'
 ---
 <script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />

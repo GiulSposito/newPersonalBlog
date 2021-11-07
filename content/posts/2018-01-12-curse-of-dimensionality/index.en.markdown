@@ -2,7 +2,7 @@
 title: Curse of Dimensionality
 author: Giuliano Sposito
 date: '2018-01-12'
-slug: curse-of-dimensionality
+slug: 'curse-of-dimensionality'
 categories:
   - data science
 tags:
@@ -22,7 +22,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
-disqusShortname: "rstatcursedimensionality"
+disqusShortname: 'rstatcursedimensionality'
 ---
 
 

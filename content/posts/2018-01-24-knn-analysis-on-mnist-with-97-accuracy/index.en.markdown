@@ -24,6 +24,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'knn-analysis-on-mnist-with-97-accuracy'
 ---
 
 <script src="{{< blogdown/postref >}}index.en_files/htmlwidgets/htmlwidgets.js"></script>

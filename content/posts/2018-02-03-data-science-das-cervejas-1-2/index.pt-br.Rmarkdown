@@ -27,6 +27,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'data-science-das-cervejas'
 ---
 
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}

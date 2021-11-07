@@ -26,6 +26,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'social-network-analysis-on-cran-authors'
 ---
 
 Este artigo ([RNotebook](http://rmarkdown.rstudio.com/r_notebooks.html)) explora técnicas de *Análise de Redes Sociais* ([SNA](https://en.wikipedia.org/wiki/Social_network_analysis)) para analisar o comportamento e organização em redes colaboração de autores e desenvolvedores de pacotes de software para R[^1] publicados no repositório CRAN[^2].
@@ -779,7 +780,7 @@ Table: Table 4: Autores por Eigenvector (10 mais)
 
 ##### Componente 265
 
-O componente 265 tem uma estrutura mais acoplada, com uma densidade de 1, intermediária entre a 35 e 38, é possível observar grupos que trabalham juntos e grande autor central conectando os subgrupos.
+O componente 265 tem uma estrutura mais acoplada, com uma densidade de 0.4725, 0.3297, 1, intermediária entre a 35 e 38, é possível observar grupos que trabalham juntos e grande autor central conectando os subgrupos.
 
 
 ```r

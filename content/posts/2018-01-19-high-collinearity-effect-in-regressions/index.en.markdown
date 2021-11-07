@@ -24,6 +24,7 @@ math:
   enable: yes
 lightgallery: no
 license: ''
+disqusIdentifier: 'high-collinearity-effect-in-regressions'
 ---
 <script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />

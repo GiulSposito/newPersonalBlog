@@ -28,6 +28,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'forecasting-my-weight-using-facebook-s-prophet'
 ---
 <script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />

@@ -24,6 +24,7 @@ math:
   enable: yes
 lightgallery: no
 license: ''
+disqusIdentifier: 'high-collinearity-effect-in-regressions'
 ---
 
 Collinearity refers to the situation in which two or more predictor variables collinearity are closely related to one another. The presence of collinearity can pose problems in the regression context, since it can be difficult to separate out the individual effects of collinear variables on the response.

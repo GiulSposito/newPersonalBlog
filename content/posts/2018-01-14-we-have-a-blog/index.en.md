@@ -4,7 +4,7 @@ description: A new jorney with a blog.
 author: Giuliano Sposito
 date: '2018-01-02'
 slug: we-have-a-blog
-disqusShortname: "yet-another-iteration"
+disqusIdentifier: blogwelcome
 draft: false
 lightgallery: true
 toc: false

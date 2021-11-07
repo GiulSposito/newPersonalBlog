@@ -24,6 +24,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+disqusIdentifier: 'knn-analysis-on-mnist-with-97-accuracy'
 ---
 
 Usually Yann LeCun's [MNIST database](http://yann.lecun.com/exdb/mnist/index.html) is used to explore [Artificial Neural Network](https://en.wikipedia.org/wiki/Artificial_neural_network) architectures for image recognition problem. 

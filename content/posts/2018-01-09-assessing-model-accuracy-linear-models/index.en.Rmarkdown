@@ -2,7 +2,7 @@
 title: Assessing Model Accuracy (Linear Models)
 author: Giuliano Sposito
 date: '2018-01-09'
-slug: []
+slug: 'rstatmodelaccuracy'
 categories:
   - data science
 tags:

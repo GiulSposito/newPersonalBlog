@@ -4,13 +4,13 @@ description: Uma nova jornada com um blog.
 author: Giuliano Sposito
 date: '2018-01-02'
 slug: we-have-a-blog
-disqusIdentifier: blogwelcome
 draft: false
 lightgallery: true
 toc: false
 resources:
 - name: featuredImagePreview
   src: featured-image.png
+disqusIdentifier: blogwelcome
 ---
 
 Um lugar para colocar minhas ideias e pensamentos sobre os temas que gosto e me envolvo no dia a dia, principalmente sobre desenvolvimento de software, agilidade, produção enxuta e ciência de dados.
