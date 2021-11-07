@@ -400,9 +400,9 @@ O primeiro passo é testar se cada uma das séries é não-estacionária, aplica
 
 Para aplicar o teste DF, precisamos primeiro calcular os valores defasados (`lags`) de cada série e o `delta` (diferença entre o preço do dia e o preço do dia anterior) e após isto fazer regressão do `delta` em função do `lag`:
 
-`$$\Delta P_{t} = \alpha + \beta P_{t-1} + \epsilon$$`
+$$ \Delta P_{t} = \alpha + \beta P_{t-1} + \epsilon $$
 
-Após fazer a regressão, o valor chave a ser usado para determinar se a série é não estacionária é o [`t-statistic`](https://dss.princeton.edu/online_help/analysis/interpreting_regression.htm) do coeficiente `\(\beta\)` obtido, que é o valor do coeficiente dividido pelo desvio padrão. Pode ser pensado como uma medida da precisão com que o coeficiente de regressão é medido. Se um coeficiente é grande comparado ao seu erro padrão, provavelmente é diferente de 0. Esse valor então é confrontado contra uma tabela de referência, que determinará se a série é estacionária ou não. 
+Após fazer a regressão, o valor chave a ser usado para determinar se a série é não estacionária é o [`t-statistic`](https://dss.princeton.edu/online_help/analysis/interpreting_regression.htm) do coeficiente $ \beta $ obtido, que é o valor do coeficiente dividido pelo desvio padrão. Pode ser pensado como uma medida da precisão com que o coeficiente de regressão é medido. Se um coeficiente é grande comparado ao seu erro padrão, provavelmente é diferente de 0. Esse valor então é confrontado contra uma tabela de referência, que determinará se a série é estacionária ou não. 
 
 ![Dickey-Fuller Table](images/dickey-fuller-table.png)
 
@@ -1455,7 +1455,7 @@ results %>%
 
 Vale ressaltar que as `entradas` mostrados na tabela corresponde a diferença ao balanço líquido de capital, já que nem sempre é possível "casar" exatamente o mesmo valor dado o valor unitário das ações. Já as `saídas` corresponde saldo obtido para zerar as operações de long+short, o que em tese, corresponde o ganho obtido.
 
-Já o `rendimento` é calculado com base no valor obtido sobre o capital total investido, na nossa simulação R$2000,00, ou seja, R$1000,00 para cada operação e o resultado total:
+Já o `rendimento` é calculado com base no valor obtido sobre o capital total investido, na nossa simulação `R$2000,00`, ou seja, `R$1000,00` para cada operação e o resultado total:
 
 
 ```r
@@ -1481,7 +1481,7 @@ results %>%
 </tbody>
 </table>
 
-Como simulamos as operações usando a estratégia [_cash-neutral_](https://www.investopedia.com/terms/c/cash-neutral.asp), em teoria poderíamos manter o capital total investido em Tesouro Direto, LCAs ou LCI e usá-lo como garantia, permitindo assim que as operações pudessem sere feitas com muito pouco dinheiro investido. No cenário simulado foi possível obter cerca de R$700,00 dos R$2000,00 reais em uma janela de dois anos (35% de rendimento bruto), o que parece bem promissor.
+Como simulamos as operações usando a estratégia [_cash-neutral_](https://www.investopedia.com/terms/c/cash-neutral.asp), em teoria poderíamos manter o capital total investido em Tesouro Direto, LCAs ou LCI e usá-lo como garantia, permitindo assim que as operações pudessem sere feitas com muito pouco dinheiro investido. No cenário simulado foi possível obter cerca de `R$700,00` dos `R$2000,00` reais em uma janela de dois anos (`35% de rendimento bruto`), o que parece bem promissor.
 
 Cabe lembrar que não acrescentamos os custos de operação, do aluguel de ações ou de tributos, o que poderiam alterar significativamente o resultado final. Tema esse que ficará para um próximo post.
 
