@@ -412,7 +412,7 @@ params:
         appKey: WBmoGyJtbqUswvfLh6L8iEBr
         avatar: mp
         emoji: ''
-        enable: yes
+        enable: no
         enableQQ: no
         highlight: yes
         lang: ''
