@@ -1,0 +1,258 @@
+---
+title: Tensorflow and Keras with R
+author: Giuliano Sposito
+date: '2021-11-08'
+slug: 'tensorflow-and-keras-with-r'
+categories:
+  - data science
+tags:
+  - rstats
+  - TensorFlow
+  - neural network
+  - model
+  - machine learning
+subtitle: ''
+lastmod: '2021-11-08T08:27:55-03:00'
+authorLink: ''
+description: ''
+hiddenFromHomePage: no
+hiddenFromSearch: no
+featuredImage: 'images/lenet_keras_cover.jpg'
+featuredImagePreview: 'images/tensorflow_logo.png'
+toc:
+  enable: yes
+math:
+  enable: no
+lightgallery: no
+license: ''
+---
+
+
+I'll start series of posts about [Keras](https://keras.io/), a high-level [neural networks](https://en.wikipedia.org/wiki/Artificial_neural_network) API developed with a focus on enabling fast experimentation, running on top of [TensorFlow](https://www.tensorflow.org), but using its [R interface](https://keras.rstudio.com/). To start, we'll review our [LeNet implemantation with MXNET](https://yetanotheriteration.netlify.com/2018/01/implementing-lenet-with-mxnet-in-r/) for [MNIST problem](http://yann.lecun.com/exdb/mnist/), a traditional "[Hello World](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program)" in the Neural Network world.
+
+
+<!--more-->
+
+
+### About Keras in R
+
+[Keras](https://keras.io/) is an API for building neural networks written in [Python](https://www.python.org/) capable of running on top of [Tensorflow](https://www.tensorflow.org), [CNTK](https://github.com/Microsoft/cntk), or [Theano](https://github.com/Theano/Theano). It was developed with a focus on enabling fast experimentation. Being able to go from idea to result with the least possible delay is key to doing good research.
+
+We'll use a [R implementation](https://keras.rstudio.com/) of Keras, that communicates with the Python environment using the [Reticulate Package](https://rstudio.github.io/reticulate/) to build and run neural networks on Tensorflow back end.
+
+
+### Instruction for Setup
+
+It's necessary to install  Python and Tensorflow environments in your machine, also, to do the Tensorflow run over a [GPU](https://en.wikipedia.org/wiki/Graphics_processing_unit) you will need install NVIDIA's [CUDA Toolkit](https://developer.nvidia.com/cuda-zone) and [cuDNN libraries](https://developer.nvidia.com/cudnn). In my experience, this is very easy and cheap using an Ubuntu [preemptible](https://cloud.google.com/compute/docs/instances/preemptible) [Google Compute Engine](https://cloud.google.com/) instance. You can follow one of the setup instructions here:
+
+
+- https://medium.com/google-cloud/using-a-gpu-tensorflow-on-google-cloud-platform-1a2458f42b0
+- https://tensorflow.rstudio.com/tools/local_gpu.html
+
+```{r setup, echo=FALSE}
+# Rmarkdown chunk behavior
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+### Dataset and Tensors
+
+The Keras package already provides some datasets and pre-trained networks to serve as a learning base, the MNIST dataset is one of them, let's use it.
+
+
+```{r loadData, cache=TRUE}
+
+# loading keras lib
+library(keras)
+
+# loading and preparing dataset
+mnist <- dataset_mnist() 
+
+# separate the datasets
+x.train <- mnist$train$x
+lbl.train <- mnist$train$y
+x.test <-  mnist$test$x
+lbl.test <-  mnist$test$y
+
+# let's see what we have
+str(x.train)
+str(lbl.train)
+summary(x.train)
+
+```
+
+
+The first time you invoke `dataset_mnist()` the data will be downloaded. We can see that we get in reply a three-dimensional array, in the first dimension we have the index of the case, and for each one of them, we have a matrix of 28x28 that corresponds to a image of a number.
+
+To use with "tensorflow/keras" it is necessary to convert the matrix into a **[Tensor](https://hackernoon.com/learning-ai-if-you-suck-at-math-p4-tensors-illustrated-with-cats-27f0002c9b32)** (generalization of a vector), in this case we have to convert to 4D-Tensor, with dimensions of "n x 28 x 28 x 1", where:
+
+
+- "n" is the "case number"
+- "28 x 28" are the width and height of the image, and
+- "1" is the "[channel](https://www.tensorflow.org/api_guides/python/image)"  (or "value"), for each pixel of the image
+ 
+The channel in the image stands for the "color encoding". In color images, usually the channel will be a 3-dimensional vector, for RGB values. In the MNIST database, the images are im grey scale, in integers from 0 to 255. To work with neural networks is advisable to normalize it into to a float value, from 0.0 to 1.0. to do that we simple divide the values by 255.
+
+```{r reshapeDataset, cache=TRUE}
+
+# Redefine dimension of train/test inputs to 2D "tensors" (28x28x1)
+x.train <- array_reshape(x.train, c(nrow(x.train), 28,28,1))
+x.test  <- array_reshape(x.test,  c(nrow(x.test),  28,28,1))
+
+# normalize values to be between 0.0 - 1.0
+x.train <- x.train/255
+x.test  <- x.test/255
+
+str(x.train)
+summary(x.train)
+
+```
+
+
+In addition, it is necessary to convert the classification labels using [one-hot encoding](https://machinelearningmastery.com/why-one-hot-encode-data-in-machine-learning/), since we neural network classifies the image into one of the ten possibilities (from 0 to 9).
+
+
+```{r oneHotEncoding, cache=TRUE}
+
+# one hot encoding
+y.train <- to_categorical(lbl.train,10)
+y.test  <- to_categorical(lbl.test,10)
+
+str(y.train)
+
+```
+
+Let's visualize some numbers in the dataset.
+
+```{r viewCases, cache=TRUE}
+
+# plot one case
+show_digit <- function(tensor, col=gray(12:1/12), ...) {
+  tensor %>% 
+    apply(., 2, rev) %>%      # reorient to make a 90 cw rotation
+    t() %>%                   # reorient to make a 90 cw rotation
+    image(col=col, axes=F, asp=1, ...)       # plot matrix as image
+}
+
+# check some data
+par(mfrow=c(1,5), mar=c(0.1,0.1,0.1,0.1))
+for(i in 1:5) show_digit(x.train[i,,,])
+print(lbl.train[1:5])
+
+```
+
+
+### LeNet Architecture
+
+I'll use one of the LeNet architecture for the neural network, based in two sets of Convolutional filters and pooling for the convolutional layers and then two fully connected layers as classification group, as show bellow:
+
+![LetNet](https://www.pyimagesearch.com/wp-content/uploads/2016/06/lenet_architecture.png)
+
+In Keras, we'll build a sequential model, adding layer by layer in the network.
+
+```{r buildModel, cache=TRUE}
+# build lenet
+keras_model_sequential() %>% 
+  layer_conv_2d(input_shape=c(28,28,1), filters=20, kernel_size = c(5,5), activation = "tanh") %>% 
+  layer_max_pooling_2d(pool_size = c(2,2), strides = c(2,2)) %>% 
+  layer_conv_2d(filters = 50, kernel_size = c(5,5), activation="tanh" ) %>% 
+  layer_max_pooling_2d(pool_size = c(2,2), strides = c(2,2) ) %>% 
+  layer_dropout(rate=0.3) %>% 
+  layer_flatten() %>% 
+  layer_dense(units = 500, activation = "tanh" ) %>% 
+  layer_dropout(rate=0.3) %>% 
+  layer_dense(units=10, activation = "softmax") -> model
+
+# lets look the summary
+summary(model)
+```
+
+Also, we have to define some "learning parameters" for our network using `compile()` function, they are:
+
+
+- [Loss function](https://blog.algorithmia.com/introduction-to-loss-functions/): a method of evaluating how well your algorithm models your dataset.
+- [Optimizer/Learning Rate](https://blog.algorithmia.com/introduction-to-optimizers/): together the loss function and model parameters by updating the model in response to the output of the loss function
+- [Evaluation Metrics](https://towardsdatascience.com/metrics-to-evaluate-your-machine-learning-algorithm-f10ba6e38234): influences how the performance of machine learning algorithms is measured and compared
+
+```{r compileModel, cache=TRUE, eval=FALSE}
+# keras compile
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_rmsprop(),
+  metrics = c('accuracy')
+)
+
+```
+
+### Train and Evaluate
+
+Finally, your network is ready to train, let's to it with `fit()` function.
+
+```{r trainNetwork, eval=FALSE}
+
+# train the model and store the evolution history
+history <- model %>% fit(
+  x.train, y.train, epochs=30, batch_size=128,
+  validation_split=0.3
+)
+
+# plot the network evolution
+plot(history)
+```
+
+```{r loadNetwork, echo=FALSE, warning=FALSE, message=FALSE}
+model <- load_model_hdf5("data/mnist_lenet.hdf5")
+history <- readRDS("data/mnist_lenet_history.rds")
+plot(history)
+```
+
+Let's see how good the fitted model are applying the model in the test set
+
+```{r evalModel, cache=TRUE}
+
+# evaluating the model
+evaluate(model, x.test, y.test)
+
+```
+
+As you see, it's an impressive 99% of accuracy.
+
+### Visualizing the Activation Layers
+
+As we did in the [mxnet post](https://yetanotheriteration.netlify.com/2018/01/implementing-lenet-with-mxnet-in-r/), let's see how the internal layers react to a input data, visualizing the neuron's activations pattern in the conv layers:
+
+```{r activations, cache=TRUE}
+# Extracts the outputs of the top 8 layers:
+layer_outputs <- lapply(model$layers[1:8], function(layer) layer$output)
+
+# Creates a model that will return these outputs, given the model input:
+activation_model <- keras_model(inputs = model$input, outputs = layer_outputs)
+
+# choose a case
+a_digit <- array_reshape(x.train[45,,,], c(1,28,28,1))
+
+# Returns a list of five arrays: one array per layer activation
+activations <- activation_model %>% predict(a_digit)
+
+# plot a tensor channel
+plot_channel <- function(channel) {
+  rotate <- function(x) t(apply(x, 2, rev))
+  image(rotate(channel), axes = FALSE, asp = 1)
+}
+
+# plot the channels of a layout ouput (activation)
+plotActivations <- function(.activations, .index){
+  layer_inpected <- .activations[[.index]]
+  par(mfrow=c(dim(layer_inpected)[4]/5,5), mar=c(0.1,0.1,0.1,0.1))
+  for(i in 1:dim(layer_inpected)[4]) plot_channel(layer_inpected[1,,,i])
+}
+
+# look the 2D layers activations
+plotActivations(activations, 1) # conv2D - tanh
+plotActivations(activations, 2) # max pooling
+plotActivations(activations, 3) # conv2D - tanh
+plotActivations(activations, 4) # max pooling
+
+```
+
