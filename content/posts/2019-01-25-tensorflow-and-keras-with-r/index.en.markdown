@@ -1,7 +1,7 @@
 ---
 title: Tensorflow and Keras with R
 author: Giuliano Sposito
-date: '2021-11-08'
+date: '2019-01-25'
 slug: 'tensorflow-and-keras-with-r'
 categories:
   - data science
@@ -49,20 +49,15 @@ It's necessary to install  Python and Tensorflow environments in your machine, a
 - https://medium.com/google-cloud/using-a-gpu-tensorflow-on-google-cloud-platform-1a2458f42b0
 - https://tensorflow.rstudio.com/tools/local_gpu.html
 
-```{r setup, echo=FALSE}
-# Rmarkdown chunk behavior
-knitr::opts_chunk$set(warning = FALSE)
-knitr::opts_chunk$set(message = FALSE)
-knitr::opts_chunk$set(cache = TRUE)
-```
+
 
 ### Dataset and Tensors
 
 The Keras package already provides some datasets and pre-trained networks to serve as a learning base, the MNIST dataset is one of them, let's use it.
 
 
-```{r loadData, cache=TRUE}
 
+```r
 # loading keras lib
 library(keras)
 
@@ -77,9 +72,27 @@ lbl.test <-  mnist$test$y
 
 # let's see what we have
 str(x.train)
-str(lbl.train)
-summary(x.train)
+```
 
+```
+##  int [1:60000, 1:28, 1:28] 0 0 0 0 0 0 0 0 0 0 ...
+```
+
+```r
+str(lbl.train)
+```
+
+```
+##  int [1:60000(1d)] 5 0 4 1 9 2 1 3 1 4 ...
+```
+
+```r
+summary(x.train)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    0.00    0.00   33.32    0.00  255.00
 ```
 
 
@@ -94,8 +107,8 @@ To use with "tensorflow/keras" it is necessary to convert the matrix into a **[T
  
 The channel in the image stands for the "color encoding". In color images, usually the channel will be a 3-dimensional vector, for RGB values. In the MNIST database, the images are im grey scale, in integers from 0 to 255. To work with neural networks is advisable to normalize it into to a float value, from 0.0 to 1.0. to do that we simple divide the values by 255.
 
-```{r reshapeDataset, cache=TRUE}
 
+```r
 # Redefine dimension of train/test inputs to 2D "tensors" (28x28x1)
 x.train <- array_reshape(x.train, c(nrow(x.train), 28,28,1))
 x.test  <- array_reshape(x.test,  c(nrow(x.test),  28,28,1))
@@ -105,28 +118,42 @@ x.train <- x.train/255
 x.test  <- x.test/255
 
 str(x.train)
-summary(x.train)
+```
 
+```
+##  num [1:60000, 1:28, 1:28, 1] 0 0 0 0 0 0 0 0 0 0 ...
+```
+
+```r
+summary(x.train)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0000  0.0000  0.0000  0.1307  0.0000  1.0000
 ```
 
 
 In addition, it is necessary to convert the classification labels using [one-hot encoding](https://machinelearningmastery.com/why-one-hot-encode-data-in-machine-learning/), since we neural network classifies the image into one of the ten possibilities (from 0 to 9).
 
 
-```{r oneHotEncoding, cache=TRUE}
 
+```r
 # one hot encoding
 y.train <- to_categorical(lbl.train,10)
 y.test  <- to_categorical(lbl.test,10)
 
 str(y.train)
+```
 
+```
+##  num [1:60000, 1:10] 0 1 0 0 0 0 0 0 0 0 ...
 ```
 
 Let's visualize some numbers in the dataset.
 
-```{r viewCases, cache=TRUE}
 
+```r
 # plot one case
 show_digit <- function(tensor, col=gray(12:1/12), ...) {
   tensor %>% 
@@ -138,8 +165,16 @@ show_digit <- function(tensor, col=gray(12:1/12), ...) {
 # check some data
 par(mfrow=c(1,5), mar=c(0.1,0.1,0.1,0.1))
 for(i in 1:5) show_digit(x.train[i,,,])
-print(lbl.train[1:5])
+```
 
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/viewCases-1.png" width="672" />
+
+```r
+print(lbl.train[1:5])
+```
+
+```
+## [1] 5 0 4 1 9
 ```
 
 
@@ -151,7 +186,8 @@ I'll use one of the LeNet architecture for the neural network, based in two sets
 
 In Keras, we'll build a sequential model, adding layer by layer in the network.
 
-```{r buildModel, cache=TRUE}
+
+```r
 # build lenet
 keras_model_sequential() %>% 
   layer_conv_2d(input_shape=c(28,28,1), filters=20, kernel_size = c(5,5), activation = "tanh") %>% 
@@ -168,6 +204,36 @@ keras_model_sequential() %>%
 summary(model)
 ```
 
+```
+## Model: "sequential"
+## ________________________________________________________________________________
+##  Layer (type)                       Output Shape                    Param #     
+## ================================================================================
+##  conv2d_1 (Conv2D)                  (None, 24, 24, 20)              520         
+##                                                                                 
+##  max_pooling2d_1 (MaxPooling2D)     (None, 12, 12, 20)              0           
+##                                                                                 
+##  conv2d (Conv2D)                    (None, 8, 8, 50)                25050       
+##                                                                                 
+##  max_pooling2d (MaxPooling2D)       (None, 4, 4, 50)                0           
+##                                                                                 
+##  dropout_1 (Dropout)                (None, 4, 4, 50)                0           
+##                                                                                 
+##  flatten (Flatten)                  (None, 800)                     0           
+##                                                                                 
+##  dense_1 (Dense)                    (None, 500)                     400500      
+##                                                                                 
+##  dropout (Dropout)                  (None, 500)                     0           
+##                                                                                 
+##  dense (Dense)                      (None, 10)                      5010        
+##                                                                                 
+## ================================================================================
+## Total params: 431,080
+## Trainable params: 431,080
+## Non-trainable params: 0
+## ________________________________________________________________________________
+```
+
 Also, we have to define some "learning parameters" for our network using `compile()` function, they are:
 
 
@@ -175,22 +241,22 @@ Also, we have to define some "learning parameters" for our network using `compil
 - [Optimizer/Learning Rate](https://blog.algorithmia.com/introduction-to-optimizers/): together the loss function and model parameters by updating the model in response to the output of the loss function
 - [Evaluation Metrics](https://towardsdatascience.com/metrics-to-evaluate-your-machine-learning-algorithm-f10ba6e38234): influences how the performance of machine learning algorithms is measured and compared
 
-```{r compileModel, cache=TRUE, eval=FALSE}
+
+```r
 # keras compile
 model %>% compile(
   loss = "categorical_crossentropy",
   optimizer = optimizer_rmsprop(),
   metrics = c('accuracy')
 )
-
 ```
 
 ### Train and Evaluate
 
 Finally, your network is ready to train, let's to it with `fit()` function.
 
-```{r trainNetwork, eval=FALSE}
 
+```r
 # train the model and store the evolution history
 history <- model %>% fit(
   x.train, y.train, epochs=30, batch_size=128,
@@ -201,19 +267,19 @@ history <- model %>% fit(
 plot(history)
 ```
 
-```{r loadNetwork, echo=FALSE, warning=FALSE, message=FALSE}
-model <- load_model_hdf5("data/mnist_lenet.hdf5")
-history <- readRDS("data/mnist_lenet_history.rds")
-plot(history)
-```
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/loadNetwork-1.png" width="672" />
 
 Let's see how good the fitted model are applying the model in the test set
 
-```{r evalModel, cache=TRUE}
 
+```r
 # evaluating the model
 evaluate(model, x.test, y.test)
+```
 
+```
+##       loss   accuracy 
+## 0.04707442 0.99000001
 ```
 
 As you see, it's an impressive 99% of accuracy.
@@ -222,7 +288,8 @@ As you see, it's an impressive 99% of accuracy.
 
 As we did in the [mxnet post](https://yetanotheriteration.netlify.com/2018/01/implementing-lenet-with-mxnet-in-r/), let's see how the internal layers react to a input data, visualizing the neuron's activations pattern in the conv layers:
 
-```{r activations, cache=TRUE}
+
+```r
 # Extracts the outputs of the top 8 layers:
 layer_outputs <- lapply(model$layers[1:8], function(layer) layer$output)
 
@@ -250,9 +317,25 @@ plotActivations <- function(.activations, .index){
 
 # look the 2D layers activations
 plotActivations(activations, 1) # conv2D - tanh
-plotActivations(activations, 2) # max pooling
-plotActivations(activations, 3) # conv2D - tanh
-plotActivations(activations, 4) # max pooling
-
 ```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/activations-1.png" width="672" />
+
+```r
+plotActivations(activations, 2) # max pooling
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/activations-2.png" width="672" />
+
+```r
+plotActivations(activations, 3) # conv2D - tanh
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/activations-3.png" width="672" />
+
+```r
+plotActivations(activations, 4) # max pooling
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/activations-4.png" width="672" />
 
