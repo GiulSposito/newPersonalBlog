@@ -29,13 +29,13 @@ license: ''
 
 Durante a transformação ágil da [CI&T](http://www.ciandt.com), aprendemos como a existência de um [Product Owner](https://www.scrum.org/resources/what-is-a-product-owner) completo, capaz de desempenhar tudo que o papel exige, é crítica não só para a qualidade do produto como também para a performance do próprio time de desenvolvimento. Hoje, frequentemente, encontramos os mesmos problemas decorrentes da atuação incompleta do PO em clientes que estão começando a sua jornada ágil. Neste post compartilho a minha apresentação realizada no [Agile Trends 2019](http://agiletrendsbr.com/programacao-agiletrends-2019/) que fala a respeito da importancia deste papel na agilidade e como resolver alguns gaps de atuação.
 
-## Agile Trends 2019
+### Agile Trends 2019
 
 {{< tweet 1104050231979712512 >}}
 
 O [Agile Trends 2019](http://agiletrendsbr.com/) é um dos maiores eventos sobre agilidade do Brasil, que em 2019 ocorreu entre os dias [12 e 18 de Abril](http://agiletrendsbr.com/programacao-agiletrends-2019/). Tive oportunidade de abrir a tilha de fundamentos de agilidade, no primeiro dia de evento, logo após o Key Note.
 
-## Ready-Ready, PO Team & Heijunka
+### Ready-Ready, PO Team & Heijunka
 
 {{< figure src="images/at_photos.jpg" title="minha palestra" >}}
 
