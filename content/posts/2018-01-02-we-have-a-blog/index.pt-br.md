@@ -8,8 +8,8 @@ draft: false
 lightgallery: true
 toc: false
 resources:
-- name: featuredImagePreview
-  src: featured-image.png
+featuredImage: 'images/featured-image.jpg'
+featuredImagePreview: 'images/featured-image.jpg'
 disqusIdentifier: blogwelcome
 ---
 

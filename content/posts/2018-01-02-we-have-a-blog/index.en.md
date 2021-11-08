@@ -8,9 +8,8 @@ disqusIdentifier: blogwelcome
 draft: false
 lightgallery: true
 toc: false
-resources:
-- name: featuredImagePreview
-  src: featured-image.png
+featuredImage: 'images/featured-image.jpg'
+featuredImagePreview: 'images/featured-image.jpg'
 ---
 
 A place to put my ideas and thoughts on the topics that I like and I get involved in everyday life, especially about software development, agility, lean production and data science.
