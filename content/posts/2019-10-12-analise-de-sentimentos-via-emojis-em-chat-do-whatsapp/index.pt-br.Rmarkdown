@@ -40,9 +40,11 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache=TRUE)
 
 ```
 
+<!--
 {{< admonition type=warning title="Emoji Enconding" open=true >}}
 Estou tendo problemas de encoding dos [caracteres unicode dos emojis](https://unicode.org/emoji/charts/full-emoji-list.html) com esse [novo template](https://hugoloveit.com/) que trata eles de maneira diferente, então eles não estão aparecendo (caracter branco) ou estão parecendo "escapados" (tipo: <U+0000>). O [post original](https://yetanotheriteration.netlify.app/2019/10/an%C3%A1lise-de-sentimentos-via-emojis-em-chat-do-whatsapp/) (no template antigo) está funcionando, sendo melhor acompanhar por lá enquanto eu não resolvo aqui.
 {{< /admonition >}}
+--> 
 
 ### Introdução
 
@@ -76,8 +78,8 @@ chat <- rwa_read("./data/nfl_dudes.zip")
 # checking the datatable format
 chat %>% 
   head(8) %>%
-  kable() %>% 
-  kable_styling(font_size = 11)
+  kable(escape = F) %>% 
+  kable_styling(font_size = 11) 
 ```
 
 ```{r loadData, echo=FALSE, message=FALSE, error=FALSE, warning=FALSE}
@@ -107,7 +109,7 @@ chat <- rwa_read("./data/nfl_dudes.zip") %>%
 # checking the datatable
 chat %>% 
   head(8) %>%
-  kable()  %>% 
+  kable(escape=T)  %>% 
   kable_styling(font_size = 11)
 
 ```
@@ -273,7 +275,7 @@ chat %>%
   select(time, author, emoji, emoji_name) %>% 
   unnest(emoji, emoji_name) %>% 
   slice(1:10) %>% 
-  kable()
+  kable(escape=T)
 ```
 
 #### EMOJI mais usado
@@ -454,7 +456,7 @@ emoji.table <- doc %>%
 # lets look the result
 emoji.table %>% 
   head(10) %>% 
-  kable() %>% 
+  kable(escape=T) %>% 
   kable_styling(font_size = 9)
 
 ```
@@ -480,7 +482,7 @@ emoji.chat <- chat %>%
 emoji.chat %>% 
   select(-source, -day, -phase) %>% 
   slice(1207:1219) %>% 
-  kable() %>% 
+  kable(escape=T) %>% 
   kable_styling(font_size = 10)
 
 ```
@@ -540,12 +542,12 @@ lex.negpos  <- get_sentiments("afinn") # value intense
 # lets look the lexicon format
 lex.negpos %>% 
   head(10) %>% 
-  kable() %>%
+  kable(escape=T) %>%
   kable_styling(full_width = F, font_size = 11)
 
 # what are the possible values?
 table(lex.negpos$value) %>% 
-  kable() %>%
+  kable(escape=T) %>%
   kable_styling(full_width = F, font_size = 11) 
 ```
 
@@ -569,7 +571,7 @@ bind_cols(
   slice(emoji.sent.score, 11:20),
   slice(emoji.sent.score, 21:30)
 ) %>% 
-  kable() %>% 
+  kable(escape=T) %>% 
   kable_styling(full_width = F, font_size = 11) 
 
 ```
@@ -644,7 +646,7 @@ lex.sent <- get_sentiments("nrc") # sentiment name
 # let's see
 lex.sent %>% 
   head(10) %>% 
-  kable() %>%
+  kable(escape=T) %>%
   kable_styling(full_width = F, font_size = 11) 
 ```
 
@@ -673,7 +675,7 @@ bind_cols(
     slice(emoji.emotion, 01:16),
     slice(emoji.emotion, 17:32)
   ) %>% 
-  kable() %>% 
+  kable(escape=T) %>% 
   kable_styling(full_width = F, font_size = 11) 
   
 ```
