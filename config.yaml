@@ -191,13 +191,6 @@ languages:
           title: ''
           url: /categories/
           weight: 3
-        - identifier: documentation
-          name: Docs
-          post: ''
-          pre: ''
-          title: ''
-          url: /categories/documentation/
-          weight: 4
         - identifier: about
           name: Sobre
           post: ''

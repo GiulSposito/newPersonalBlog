@@ -46,11 +46,6 @@ In this post we reproduce two data analysis from [David Robinson's](https://twit
 
 Under the halloween influence, we just reproduce the analysis of the [IMDB´s](https://www.imdb.com/) [Horror Movie Dataset](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-22) made by [David Robinson's](https://twitter.com/drob) in one of famous screen cast. The dataset is available in the [#TidyTuesday GitHub Repo](https://github.com/rfordatascience/tidytuesday).
 
-<!-- tweet --> 
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">In this <a href="https://twitter.com/hashtag/tidytuesday?src=hash&amp;ref_src=twsrc%5Etfw">#tidytuesday</a> screencast, I analyze a dataset of horror movie ratings, and use lasso regression to predict ratings based on genre, cast, and plot.<br><br>What&#39;s 😱👍: Indian, animated, and drama films<br><br>What&#39;s 🙄👎: Sharks and Eric Roberts<a href="https://t.co/3qj7NoA4Pf">https://t.co/3qj7NoA4Pf</a> <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> 🧛
-♂️👻 <a href="https://t.co/OBI6x1O2zX">pic.twitter.com/OBI6x1O2zX</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/1186659010956713984?ref_src=twsrc%5Etfw">October 22, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<!-- tweet --> 
-
 {{< tweet "1186659010956713984" >}}
 
 #### Data loading and cleaning
@@ -519,7 +514,7 @@ log(lasso_model$lambda.min)
 ```
 
 ```
-## [1] -3.051995
+## [1] -2.958961
 ```
 
 ```r
@@ -556,7 +551,7 @@ tidy(lasso_model$glmnet.fit) %>%
 
 #### Lasso for words and other features
 
-Throwing everthing into a linear model: director, cast, genre, rating, plot and words. David did a "generic" feature generator where he puts in the word sparse matrix other features as "words", see the code.
+Throwing everything into a linear model: director, cast, genre, rating, plot and words. David did a "generic" feature generator where he puts in the word sparse matrix other features as "words", see the code.
 
 
 ```r
@@ -569,7 +564,7 @@ features <- horror_movies %>%
   mutate( director = str_remove(director, "Directed by ")) %>% 
   # transform the info into a key value pair for each movie title
   # the type is the feature "column"
-  gather(type, value, -title) %>% 
+  pivot_longer(-title, names_to="type", values_to="value") %>% 
   filter(!is.na(value)) %>% 
   # if value field has more than one value (like genres) slip in multiple lines
   separate_rows(value, sep="\\| ?") %>% 
@@ -578,18 +573,16 @@ features <- horror_movies %>%
   mutate(n=1)
 
 movie_feature_matrix <- horror_movies_unnested %>% 
-  filter(!is.na(review_rating)) %>% 
-  count(title, feature=paste0("word: ", word)) %>%
+  filter(!is.na(review_rating)) %>%
+  count(title, feature=paste0("word: ", word), sort=T) %>%
   bind_rows(features) %>% 
-  add_count(feature) %>% 
-  filter( n>=5 ) %>% 
   cast_sparse(title, feature)
     
 dim(movie_feature_matrix)
 ```
 
 ```
-## [1] 4 4
+## [1]  3051 46969
 ```
 
 With the steps to transform the feature columns in a *"key-value pair* an then colapse them into a *"feature-word"*, allow you add and remove features simply changing the `select` statement in the code above. David uses the convenient [`tidyr::unite()`](https://tidyr.tidyverse.org/reference/unite.html) function to do the concatenation between two columns.
@@ -710,10 +703,6 @@ horror_movies %>%
 ### Pizza Ratings
 
 In the last [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) analysis in this post, we'll analyze a dataset of pizza ratings, just for fun and because everybody likes pizza. :)
-
-<!-- tweet --> 
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">In this <a href="https://twitter.com/hashtag/tidytuesday?src=hash&amp;ref_src=twsrc%5Etfw">#tidytuesday</a> screencast, I analyze a dataset of pizza ratings and discover the best and worse 🍕 in NYC and other cities 📊 <a href="https://t.co/ldUUzsV6MU">https://t.co/ldUUzsV6MU</a> <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/nPth3hqdnS">pic.twitter.com/nPth3hqdnS</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/1179080465162145792?ref_src=twsrc%5Etfw">October 1, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<!-- tweet --> 
 
 {{< tweet 1179080465162145792 >}}
 
