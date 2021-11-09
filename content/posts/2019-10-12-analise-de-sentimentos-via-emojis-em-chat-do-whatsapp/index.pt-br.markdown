@@ -1,25 +1,25 @@
 ---
-title: Análise de Sentimentos via Emojis em chat do WhatsApp
-author: Giuliano Sposito
+title: "Análise de Sentimentos via Emojis em chat do WhatsApp"
+author: "Giuliano Sposito"
 date: '2019-10-12'
-slug: 'analise-de-sentimentos-via-emojis-em-chat-do-whatsapp'
+slug: analise-de-sentimentos-via-emojis-em-chat-do-whatsapp
 categories:
-  - data science
+- data science
 tags:
-  - rstats
-  - data analysis
-  - whatsapp
-  - tidytext
-  - rvest
-  - emoji
+- rstats
+- data analysis
+- whatsapp
+- tidytext
+- rvest
+- emoji
 subtitle: ''
 lastmod: '2021-11-08T18:13:23-03:00'
 authorLink: ''
 description: ''
 hiddenFromHomePage: no
 hiddenFromSearch: no
-featuredImage: 'images/emoji_whatsapp_header.jpg'
-featuredImagePreview: 'images/emoji_whatsapp_header.jpg'
+featuredImage: images/emoji_whatsapp_header.jpg
+featuredImagePreview: images/emoji_whatsapp_header.jpg
 toc:
   enable: yes
 math:
@@ -49,6 +49,10 @@ O pacote rwhatsapp, desenvolvido e disponibilizado por Johannes Grubber, permite
 
 
 
+{{< admonition type=warning title="Emoji Enconding" open=true >}}
+Estou tendo problemas de encoding dos [caracteres unicode dos emojis](https://unicode.org/emoji/charts/full-emoji-list.html) com esse [novo template](https://hugoloveit.com/) que trata eles de maneira diferente, então eles não estão aparecendo (caracter branco) ou estão parecendo "escapados" (tipo: <U+0000>). O [post original](https://yetanotheriteration.netlify.app/2019/10/an%C3%A1lise-de-sentimentos-via-emojis-em-chat-do-whatsapp/) (no template antigo) está funcionando, sendo melhor acompanhar por lá enquanto eu não resolvo aqui.
+{{< /admonition >}}
+
 ### Introdução
 
 O pacote [`rwhatsapp`](https://cran.r-project.org/web/packages/rwhatsapp/index.html), desenvolvido e disponibilizado por [Johannes Grubber](https://github.com/JBGruber), permite manipular diretamente os arquivos `TXT` (e `ZIP`) de uma conversão exportada pelo aplicativo [`WhatsApp`](https://www.whatsapp.com/), importando os dados para um `data.frame` e disponibilizando-os para análise de maneira simples e direta. Ao esbarrar com esse pacote no [`Twitter`](https://twitter.com/JohannesBGruber/status/1176415368820264960) decidi explorar uma conversão de um dos meus grupos de [`WhatsApp`](https://www.whatsapp.com/) e fazer uma análise de sentimentos através dos [Emoji's](https://home.unicode.org/emoji/) enviados pelos remetentes. 
@@ -56,10 +60,7 @@ O pacote [`rwhatsapp`](https://cran.r-project.org/web/packages/rwhatsapp/index.h
 
 {{< tweet 1176415368820264960 >}}
 
-♠   ♥  ♦  ♣
-\U2660
-\\U2660
-  
+
 ### Obtendo os dados
 
 A principal (e única) função no pacote, é a `rwa_read()`, que permite importar os arquivos `TXT` (e `ZIP`) diretamente, o que significa que você pode simplesmente fornecer o caminho para um arquivo para carregar as mensagens direto num `data.frame`. Exportar uma conversa de `WhatsApp` também é bem direto, basta [seguir as instruções](https://tecnoblog.net/194147/whatsapp-salvar-historico-conversa/) disponíveis. Para este post, vou utilizar a conversão de um grupo meu de uma liga de [Fantasy](http://fantasy.nfl.com), assim poderemos fazer uma comparação do volume de mensagens enviadas com respeito aos horários e eventos relacionados aos jogos da [NFL](https://www.nfl.com).
@@ -85,10 +86,10 @@ chat <- rwa_read("./data/nfl_dudes.zip")
 chat %>% 
   head(8) %>%
   kable() %>% 
-  kable_styling(font_size = 9)
+  kable_styling(font_size = 11)
 ```
 
-<table class="table" style="font-size: 9px; margin-left: auto; margin-right: auto;">
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;"> time </th>
@@ -104,8 +105,7 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-20 22:04:40 </td>
    <td style="text-align:left;"> NFL </td>
-   <td style="text-align:left;"> It's Football, dudes: <u>As mensagens deste grupo estão protegidas com a criptografia de ponta a ponta. </u>
-</td>
+   <td style="text-align:left;"> It's Football, dudes: &lt;U+200E&gt;As mensagens deste grupo estão protegidas com a criptografia de ponta a ponta. </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:left;"> NULL </td>
@@ -114,8 +114,7 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:39:07 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> <u>imagem ocultada </u>
-</td>
+   <td style="text-align:left;"> &lt;U+200E&gt;imagem ocultada </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:left;"> NULL </td>
@@ -142,23 +141,19 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:41 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> <u><u><u><u><u><u><u><u><u><u><u><u> </u></u></u></u></u></u></u></u></u></u></u></u>
-</td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;&lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;&lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:left;"> <u><u><u><u>, <u><u><u><u>, <u><u><u><u> </u></u></u></u></u></u></u></u></u></u></u></u>
-</td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;, &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;, &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> man facepalming: light skin tone, man facepalming: light skin tone, man facepalming: light skin tone </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:47 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> <u> </u>
-</td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:left;"> <u> </u>
-</td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
   </tr>
   <tr>
@@ -173,8 +168,7 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 17:56:38 </td>
    <td style="text-align:left;"> Hilton </td>
-   <td style="text-align:left;"> <u>imagem ocultada </u>
-</td>
+   <td style="text-align:left;"> &lt;U+200E&gt;imagem ocultada </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 8 </td>
    <td style="text-align:left;"> NULL </td>
@@ -184,6 +178,9 @@ chat %>%
 </table>
 
 Como você pode ver a importação é bem rápida e direta, e devolve as mensagens como linhas num `data.frame`, contendo informações de *timestamp*, quem é o contato remetente, a mensagem enviada e a "*fonte de dados*" (arquivo importado). Além disso, de forma destacada da mensagem e aninhado ([*nested*](https://blog.rstudio.com/2016/02/02/tidyr-0-4-0/)) à linha, temos informações sobre os [Emoji's](https://home.unicode.org/emoji/) que estão presentes em cada mensagem enviada, tanto o caracter [Unicode](https://home.unicode.org/) como o nome do `Emoji`.
+
+
+
 
 
 ### Avaliando Frequência das Mensagens
