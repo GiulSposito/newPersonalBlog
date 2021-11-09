@@ -1,0 +1,664 @@
+---
+title: 'TidyTuesday: Pizzas and Monsters'
+author: Giuliano Sposito
+date: '2019-10-31'
+slug: 'tidytuesday-pizzas-and-monsters'
+categories:
+  - data science
+tags:
+  - rstats
+  - data analysis
+  - tidytuesday
+  - tidytext
+  - lasso
+subtitle: ''
+lastmod: '2021-11-09T02:06:01-03:00'
+authorLink: ''
+description: ''
+hiddenFromHomePage: no
+hiddenFromSearch: no
+featuredImage: 'images/horror_pizza.jpg'
+featuredImagePreview: 'images/horror_pizza.jpg'
+toc:
+  enable: yes
+math:
+  enable: no
+lightgallery: no
+license: ''
+---
+
+
+We learn from the masters, doing the *math* by ourselves, so, in this post we reproduce two data analysis from David Robinson's *#TidyTuesday* screencasts, the first one about the horro movie ratings dataset where he uses a lasso regression to predict the ratings of a movie based on genre, cast and plot. The second is about a dataset of pizza ratings in NYC and other cities. There are goods data handling tricks using tidyverse in these analysis.
+
+<!--more-->
+
+In this post we reproduce two data analysis from [David Robinson's](https://twitter.com/drob) [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) screencasts, the first one about the horror movie ratings dataset where he uses a lasso regression to predict the ratings of a movie based on genre, cast and plot. The second is about a dataset of pizza ratings in NYC and other cities.
+
+```{r setup, echo=FALSE}
+
+# put rnotebook in the same workdir of this project
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache=TRUE)
+
+```
+
+#### Horror Movies
+
+Under the halloween influence, we just reproduce the analysis of the [IMDB´s](https://www.imdb.com/) [Horror Movie Dataset](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-22) made by [David Robinson's](https://twitter.com/drob) in one of famous screen cast. The dataset is available in the [#TidyTuesday GitHub Repo](https://github.com/rfordatascience/tidytuesday).
+
+<!-- tweet --> 
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">In this <a href="https://twitter.com/hashtag/tidytuesday?src=hash&amp;ref_src=twsrc%5Etfw">#tidytuesday</a> screencast, I analyze a dataset of horror movie ratings, and use lasso regression to predict ratings based on genre, cast, and plot.<br><br>What&#39;s 😱👍: Indian, animated, and drama films<br><br>What&#39;s 🙄👎: Sharks and Eric Roberts<a href="https://t.co/3qj7NoA4Pf">https://t.co/3qj7NoA4Pf</a> <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> 🧛
+♂️👻 <a href="https://t.co/OBI6x1O2zX">pic.twitter.com/OBI6x1O2zX</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/1186659010956713984?ref_src=twsrc%5Etfw">October 22, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<!-- tweet --> 
+
+{{< tweet "1186659010956713984" >}}
+
+#### Data loading and cleaning
+
+```{r loadData}
+# basic setup
+library(tidyverse)
+library(knitr) # for kable
+library(kableExtra) # to change tables font size
+library(glue)
+theme_set(theme_minimal()) # changing ggplot2 default theme
+
+# data load
+horror_movies_raw <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-22/horror_movies.csv")
+
+glimpse(horror_movies_raw)
+```
+
+We see here, besides a `release_date` attribute, there is also a *year* information inside the `title` field, let's extract this data into a new `year` column. Also, we have to correctly parsing the `budget` column. Note that the `plot` column also has a strange content.
+
+```{r plotField}
+horror_movies_raw[1,]$plot
+```
+
+It starts with the director of the movie, the cast and only after that the movie plot, we need to split these infos in diferent columns.
+
+```{r dataCleaning}
+# some data cleaning
+horror_movies <- horror_movies_raw %>% 
+  arrange(desc(review_rating)) %>% 
+  # remove the "year" from title and put into a "year" column
+  extract(title, "year", "\\((\\d\\d\\d\\d)\\)$", remove = F, convert = T) %>% 
+  # using "parse_number" to correctly the buget column
+  mutate(budget=parse_number(budget)) %>% 
+  # Splitting the "plot" info. We split each sentence in diferent columns.
+  # First one to the director, one for the actors and the remaings to the "plot"
+  separate(plot, c("director","cast_sentence","plot"), sep="\\. ", extra="merge", fill="right") %>% 
+  distinct(title, .keep_all = T)
+```
+
+Some *tidy functions* were pretty handy in this manipulation, worth to check the documentation and know how to use [`tidyr::extract()`](https://tidyr.tidyverse.org/reference/extract.html),  [`tidyr::separate()`](https://tidyr.tidyverse.org/reference/separate.html) and [`readr::parse_number()`](https://www.rdocumentation.org/packages/readr/versions/1.3.1/topics/parse_number).
+
+#### Exploring the data
+
+Let's see some aspects of the dataset
+
+```{r basicEDA}
+# how much movies by genres?
+horror_movies %>% 
+  count(genres, sort=T) %>% 
+  head(10) %>% 
+  kable()
+
+# by language
+horror_movies %>% 
+  count(language, sort=T) %>% 
+  head(10) %>% 
+  kable()
+
+# how is the bugdet distribution
+horror_movies %>% 
+  ggplot(aes(budget)) +
+  geom_histogram() +
+  scale_x_log10(labels=scales::dollar)
+```
+
+One of the things I didn't know was how to format the datatype in the chart axis, in the screencast David uses the function [`scales::dollar()`](https://www.rdocumentation.org/packages/scales/versions/0.4.1/topics/dollar_format) to transform the X axis in *money*. The package [`Scales`](https://www.rdocumentation.org/packages/scales/versions/0.2.0) map data to aesthetics, and provide methods for automatically determining breaks and labels for axs and legends, pretty handy.
+
+Do higher budget movies end up higher rated?
+
+```{r budget_x_rating}
+# plot budget x rating
+horror_movies %>% 
+  ggplot(aes(budget, review_rating)) +
+  geom_point() +
+  scale_x_log10(labels=scales::dollar) +
+  geom_smooth(method="lm")
+```
+
+No relationshiop between budget and rating. How about `movie rating` (classification of film's suitability for certain audiences based on its content) and the `movie review` (people's movie evaluation)?
+
+```{r ratinge_x_review}
+# let's look movie_rating x review_rating
+horror_movies %>% 
+  mutate( movie_rating = fct_lump(movie_rating, 5),
+          movie_rating = fct_reorder(movie_rating, review_rating, na.rm=T)
+  ) %>% 
+  ggplot(aes(movie_rating, review_rating)) +
+  geom_boxplot() +
+  coord_flip()
+```
+
+Two [`forcats`](https://forcats.tidyverse.org/) functions were util here, the [`fct_lump()`](https://forcats.tidyverse.org/reference/fct_lump.html) used to collapse the least frequent values of a factor into “other” and [`fct_reorder()`](https://forcats.tidyverse.org/reference/fct_reorder.html) to reorder the factor `movie_rating` by another variable, in this case, the median (default function) of `movie_rating` itself. Doing this we can put the `movie_rating` in order on the chart.
+
+Seems that there is a relationship between `movie_review` and `movie_rating`, how much?
+
+```{r movie_x_review_anova}
+# Calculates the "anova" of Linear Regration between Rating and Review
+horror_movies %>% 
+  filter(!is.na(movie_rating)) %>% 
+  mutate( movie_rating = fct_lump(movie_rating, 5) ) %>% 
+  lm(review_rating ~ movie_rating, data=.) %>% 
+  anova()
+```
+
+Let's plot this in a better way.
+
+```{r movie_x_review_better_plot}
+# plotting the mean and standard deviation of movie reviews
+# for each movie rating
+horror_movies %>% 
+  filter(!is.na(movie_rating)) %>% 
+  mutate( movie_rating = fct_lump(movie_rating, 5),
+          movie_rating = fct_reorder(movie_rating, review_rating, na.rm=T) ) %>% 
+  group_by(movie_rating) %>% 
+  summarise(
+    review_rating_mean = mean(review_rating, na.rm=T),
+    review_rating_var  = var(review_rating, na.rm=T),
+    review_rating_sd   = sd(review_rating, na.rm=T),
+    review_rating_error = sqrt(review_rating_var/length(review_rating))
+  ) %>% 
+  ungroup() %>% 
+  ggplot(aes(movie_rating, review_rating_mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin=review_rating_mean-review_rating_error, ymax=review_rating_mean+review_rating_error)) 
+```
+
+Is there genres better evaluated than others?
+
+```{r}
+horror_movies %>% 
+  separate_rows(genres,sep="\\| ") %>% 
+  filter(!is.na(genres)) %>% 
+  mutate( genres = fct_lump(genres, 5)) %>% 
+  ggplot(aes(genres, review_rating)) +
+  geom_boxplot()
+```
+
+There some preferences, but not too much difference.
+
+#### Textual Analysis
+
+Let's explore the `plot` field throught text analysis. Is there any word that influences the `review_rating`?
+
+```{r wordReview}
+library(tidytext) # to tokenize the plot text
+
+# tokenize
+horror_movies_unnested <- horror_movies %>% 
+  # split tokens
+  unnest_tokens(word, plot) %>% 
+  # remove meaningless words
+  anti_join(stop_words, by="word") %>% 
+  filter(!is.na(word))
+
+# lets check
+horror_movies_unnested %>% 
+  count(word, sort=T) %>% 
+  head(10) %>% 
+  kable()
+
+```
+
+Visualizing `word` and the average of `review_rating`.
+
+```{r word_x_avg_rating}
+
+# Visualizing word and the average of review_rating
+horror_movies_unnested %>% 
+  filter(!is.na(review_rating)) %>% 
+  group_by(word) %>% 
+  # by word, count and mean the review_rating
+  summarise(
+    movies=n(),
+    avg_rating = mean(review_rating)
+  ) %>% 
+  arrange(desc(movies)) %>% 
+  # words that appears in the plot of 100 or more movies only
+  filter(movies>=100) %>%
+  mutate(word=fct_reorder(word, avg_rating)) %>% 
+  ggplot(aes(avg_rating, word)) +
+  geom_point()
+
+```
+
+#### Lasso Regression for Predicting Review Rating on Words
+
+Lasso stands for **Least Absolute Shrinkage Selector Operator**, it is a type of regression that allow you to regularize ("shrink") coefficients. This means that the estimated coefficients are pushed towards 0, to make them work better on new data-sets ("optimized for prediction"). This allows you to use complex models and avoid over-fitting at the same time.
+
+You can learn details of this regressions on:
+
++ [A comprehensive beginners guide for Linear, Ridge and Lasso Regression in Python and R](https://www.analyticsvidhya.com/blog/2017/06/a-comprehensive-guide-for-linear-ridge-and-lasso-regression/) @ Analytics Vidhya Blog
++ [Regularization: Ridge, Lasso and Elastic Net](https://www.datacamp.com/community/tutorials/tutorial-ridge-lasso-elastic-net) @ Datacamp
+
+```{r firstLasso}
+library(glmnet) # lasso
+library(Matrix) # to handle sparse matrixes
+
+# word sparse matrix
+movie_word_matrix <- horror_movies_unnested %>% 
+  filter(!is.na(review_rating)) %>% 
+  add_count(word) %>% 
+  # palavras que apareceram pelo menos 20 vezes
+  filter(n>=20) %>% 
+  count(title, word) %>% 
+  # sparse matrix
+  cast_sparse(title, word, n)
+
+# let's see how many words are
+dim(movie_word_matrix)
+
+# indexing review_rating by the word in the sparse matrix
+rating <- horror_movies$review_rating[match(rownames(movie_word_matrix), horror_movies$title)]
+
+# fitting the LASSO model
+lasso_model <- cv.glmnet(movie_word_matrix, rating)
+```
+
+Let's see the characteristics of the fitted model.
+
+```{r checkingTheModel}
+library(broom)
+
+# lets see how the coeficient shrink for some "popular" terms
+# conform the "lambda" term rises
+tidy(lasso_model$glmnet.fit) %>% 
+  filter(term %in% c("friends","evil", "college", "haunted", "mother", "life",
+                     "woods","discover","abandoned", "woods")) %>% 
+  ggplot(aes(lambda, estimate, color=term)) +
+  geom_line() +
+  scale_x_log10() +
+  geom_hline(yintercept = 0, lty=2)
+
+# we are able to visualize the CV performance 
+# in function of lambda parameter
+plot(lasso_model)
+
+# the model give us the lambda for optimal performance
+# (min square feet error)
+log(lasso_model$lambda.min)
+
+# at that lambda level, let's see how each term
+# weighted in the model
+tidy(lasso_model$glmnet.fit) %>% 
+  filter(lambda==lasso_model$lambda.min, 
+         term != "(Intercept)") %>% 
+  mutate( term = fct_reorder(term, estimate) ) %>% 
+  ggplot(aes(term, estimate)) +
+  geom_col() +
+  coord_flip()
+
+# Let's see how the extrem terms shrink
+# acording lambda
+tidy(lasso_model$glmnet.fit) %>% 
+  filter(
+    term %in% c(
+      "seek","quick","military","army", "teacher", "unexpected", "suddenly", # extremes
+      "boy","move","mother","chris","virus","souls","hunters"  # intermediary
+  )) %>% 
+  ggplot(aes(lambda, estimate, color=term)) +
+  geom_vline(xintercept=lasso_model$lambda.min) +
+  geom_line() +
+  scale_x_log10() +
+  geom_hline(yintercept = 0, lty=2)
+
+```
+
+#### Lasso for words and other features
+
+Throwing everthing into a linear model: director, cast, genre, rating, plot and words. David did a "generic" feature generator where he puts in the word sparse matrix other features as "words", see the code.
+
+```{r featureMatrix}
+# this is a generic feature generator
+features <- horror_movies %>% 
+  filter(!is.na(review_rating)) %>% 
+  # features to be added
+  select(title, genres, director, cast, movie_rating, language, release_country) %>% 
+  # clean director column
+  mutate( director = str_remove(director, "Directed by ")) %>% 
+  # transform the info into a key value pair for each movie title
+  # the type is the feature "column"
+  gather(type, value, -title) %>% 
+  filter(!is.na(value)) %>% 
+  # if value field has more than one value (like genres) slip in multiple lines
+  separate_rows(value, sep="\\| ?") %>% 
+  # colapse two columns (type and values) in to column feature
+  unite(feature, type, value, sep=": ") %>% 
+  mutate(n=1)
+
+movie_feature_matrix <- horror_movies_unnested %>% 
+  filter(!is.na(review_rating)) %>% 
+  count(title, feature=paste0("word: ", word)) %>%
+  bind_rows(features) %>% 
+  add_count(feature) %>% 
+  filter( n>=5 ) %>% 
+  cast_sparse(title, feature)
+    
+dim(movie_feature_matrix)
+```
+
+With the steps to transform the feature columns in a *"key-value pair* an then colapse them into a *"feature-word"*, allow you add and remove features simply changing the `select` statement in the code above. David uses the convenient [`tidyr::unite()`](https://tidyr.tidyverse.org/reference/unite.html) function to do the concatenation between two columns.
+
+```{r newLassoModel}
+# indexing movie_rating by feature name matrix
+rating <- horror_movies$review_rating[match(rownames(movie_feature_matrix), horror_movies$title)]
+
+# new model
+feature_lasso_model <- cv.glmnet(movie_feature_matrix, rating)
+plot(feature_lasso_model)
+```
+
+Let's see what are the most influent features in the lasso regression, but at this time, we'll see the coenficients at another level than minimal cross validation erro.
+
+In the lasso model object, `lambda.min` is the value of *lambda* that gives **minimum mean cross-validated error**. The other parameter saved is `lambda.1se`, which gives the **most regularized model** such that error is within *one standard error of the minimum*. 
+
+To use that, we only need to replace `lambda.min` with `lambda.1se`.
+
+```{r featureRank}
+# extracting the model coeficients
+tidy(feature_lasso_model$glmnet.fit) %>% 
+  # at lambda.1se level
+  filter(lambda==feature_lasso_model$lambda.1se, 
+         term != "(Intercept)") %>% 
+  mutate( term = fct_reorder(term, estimate) ) %>% 
+  ggplot(aes(term, estimate)) +
+  geom_col() +
+  coord_flip() +
+  labs(x="", y="Coefficent for predicting horror movie ratings",
+       title="What affects a horror movie rating?",
+       subtitle = "Based on a lasso regression to predict IMDb ratings of ~3000 movies")
+```
+
+#### What am I going to watch?
+
+The end this analysis, let's do a simple query to see what horror movie we could watch.
+
+```{r watchMovie}
+# lets take the dataset
+horror_movies %>% 
+  filter(
+    # selecting a horror movie that is also a commedy
+    str_detect(genres, "Comedy"),
+    !is.na(movie_rating), 
+    !is.na(budget), 
+    movie_rating != "PG" 
+  ) %>% 
+  arrange(desc(review_rating)) %>% 
+  select(title, review_rating, plot, director, budget, language) %>% 
+  head(5) %>% 
+  kable() %>% 
+  kable_styling(font_size = 10)
+
+```
+
+### Pizza Ratings
+
+In the last [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) analysis in this post, we'll analyze a dataset of pizza ratings, just for fun and because everybody likes pizza. :)
+
+<!-- tweet --> 
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">In this <a href="https://twitter.com/hashtag/tidytuesday?src=hash&amp;ref_src=twsrc%5Etfw">#tidytuesday</a> screencast, I analyze a dataset of pizza ratings and discover the best and worse 🍕 in NYC and other cities 📊 <a href="https://t.co/ldUUzsV6MU">https://t.co/ldUUzsV6MU</a> <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/nPth3hqdnS">pic.twitter.com/nPth3hqdnS</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/1179080465162145792?ref_src=twsrc%5Etfw">October 1, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<!-- tweet --> 
+
+{{< tweet 1179080465162145792 >}}
+
+The pizza evaluation datasets are available in the [GitHub's TidyTueday Repo](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-01) there are three different data sources, let's see explore one of them.
+
+```{r loadFirstDataset}
+
+# getting data from github
+pizza_jared <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-01/pizza_jared.csv")
+
+# overal look
+pizza_jared %>% 
+  head(10) %>% 
+  kable() %>% 
+  kable_styling(font_size = 11)
+
+```
+
+#### Simple EDA
+
+Let's look the distribution of answers by place
+
+```{r groupingByPlace}
+answer_order <- c("Never Again","Poor", "Average", "Good","Excellent")
+
+by_place_answer <- pizza_jared %>% 
+  mutate( time = as.POSIXct(time, origin="1970-01-01"),
+          date = as.Date(time),
+          answer = fct_relevel(answer, answer_order)) %>% 
+  group_by(place, answer) %>% 
+  summarise(votes=sum(votes)) %>% 
+  mutate(total = sum(votes)) %>% 
+  mutate(percent = votes/total,
+         answer_integer = as.integer(answer),
+         average=sum(answer_integer*percent)) %>% 
+  ungroup()
+
+by_place_answer %>% 
+  head(10) %>% 
+  kable() %>% 
+  kable_styling(font_size = 10)
+
+```
+```{r visualizingAnswersByPlace}
+# by place
+by_place_answer %>% 
+  # with at least 29 evaluations (cabalistic number to show 9 facets!)
+  filter(total >= 29) %>% 
+  # controls the order of the facets (worst->better)
+  mutate(place = fct_reorder(place, average)) %>%  
+  ggplot(aes(answer, percent)) +
+  geom_col() +
+  facet_wrap(~place) +
+  theme(axis.text.x=element_text(angle=90, hjust = 1)) +
+  labs(x="", y="",
+       title="What is the most popular pizza place in Open Stats meetup?",
+       subtitle="Only the 9 pizza places with the most respondents")
+```
+
+David apply a trick to control the number of places that will be show in the plot.
+
+```{r bestPlacesFirst}
+by_place_answer %>% 
+  # trick to choose "top N"
+  # reorder by total de votes in reverse order
+  # convert to integer and get "rank" <= N
+  filter(as.integer(fct_reorder(place, total, .desc = T))<=16,
+         answer!="Fair") %>% # there just one vote with answer 'fair'
+  mutate(place = glue("{place} ({total})"), # number of samples
+         place = fct_reorder(place, average)) %>% 
+  ggplot(aes(answer, percent)) +
+  geom_col() +
+  facet_wrap(~place) +
+  theme(axis.text.x=element_text(angle=90, hjust = 1)) +
+  labs(x="", y="",
+       title="What is the most popular pizza place in Open Stats meetup?",
+       subtitle="Only the 16 pizza places with the most respondents")
+```
+
+#### Where is the best places?
+
+Now we'll plot the evaluations of each place but also plot the confidence interval of each evaluation. First we build an auxiliary function to use with our dataset that sums each answer by place.
+
+```{r repeatedTTest}
+# generate a sample from 'x' with each 'frequency'
+# then apply a t.test
+t_test_repeated <- function(x,frequency){
+  tidy(t.test(rep(x,frequency)))
+}
+
+# check
+t_test_repeated(c(1,2,3,4,5),c(5,10,100,50,30))
+```
+
+
+```{r plotAnswerAndCI}
+# ploting the values
+by_place_answer %>% 
+  # pelo menos cinco votos
+  filter(total>=5) %>% 
+  # por local
+  group_by(place, total) %>% 
+  # apply t.test in the answers
+  # look that the column answer an votes, grouped by place, are "vectors"
+  summarise(t_test_result=list(t_test_repeated(answer_integer, votes))) %>% 
+  ungroup() %>% 
+  unnest(t_test_result) %>% 
+  select(place, total, average=estimate, low=conf.low, high=conf.high) %>% 
+  mutate(place = glue("{place} ({total})"), # number of samples
+         place=fct_reorder(place, average)) %>% 
+  top_n(16,total) %>% 
+  ggplot(aes(average, place)) +
+  geom_point(aes(size=total)) +
+  geom_errorbarh(aes(xmin=low, xmax=high)) +
+  labs(x="Average score (1-5 Likert Scale)",
+       y="",
+       title="What is the most popular pizza place in Open Stats meetup?",
+       subtitle = "Only the 16 pizza places with the most respondents",
+       size="Respondents")
+  
+by_place <- by_place_answer %>% 
+  distinct(place, total, average)
+```
+
+#### Barstool Sports Dataset
+
+Now, let's look another dataset, from [Barstool Sports](https://www.barstoolsports.com/).
+
+```{r barstoolData}
+# reading from github
+pizza_barstool <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-01/pizza_barstool.csv")
+
+pizza_barstool %>% 
+  glimpse()
+```
+
+#### Basic EDA
+
+Do higher price place makes better evaluated pizzas?
+
+```{r pizzaPriceScore}
+# from places with more than 50 evaluations
+pizza_barstool %>% 
+  top_n(50, review_stats_all_count) %>% 
+  # plot price level vs review
+  ggplot(aes(price_level, review_stats_all_average_score, group=price_level)) +
+  geom_boxplot()
+```
+
+What are the places with best pizzas?
+
+```{r barstoolEDA}
+# from places with more than 50 evaluations
+pizza_barstool %>% 
+  filter(review_stats_all_count>=50) %>% 
+  mutate(name = fct_reorder(name, review_stats_all_average_score)) %>% 
+  ggplot(aes(review_stats_all_average_score, name, size=review_stats_all_count)) +
+  geom_point() +
+  labs(x="Average rating", size="# of review", y="",
+       title="Barstool Sports ratings of pizza places",
+       subtitle = "only places with at least 50 reviews")
+```
+
+Where are these places?
+
+```{r pizzaCitie}
+# What places have best pizzas?
+pizza_barstool %>%
+  filter( review_stats_all_count >= 20 ) %>% 
+  # by city
+  add_count(city) %>% 
+  # cities with at least 6 places
+  filter(n>=6) %>% 
+  mutate( city = glue("{city} ({n})") ) %>% 
+  ggplot(aes(city, review_stats_all_average_score)) +
+  geom_boxplot() +
+  labs(subtitle = "Only pizza places with at least 20 reviews", y="review", x="")
+
+```
+
+Brooklyn has the best pizzas!
+
+#### Comparing Reviews
+
+The dataset has two kinds of pizza evaluation, let's check the differences.
+
+```{r}
+# select the reviews
+pizza_barstool %>% 
+  select(place=name,
+         price_level, 
+         contains("review")) %>% 
+  rename_all(~str_remove(., "review_stats_")) %>% 
+  select(-contains("provider")) %>% 
+  select(contains("count")) %>% 
+  gather(key, value) %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  facet_wrap(~key)
+```
+
+Does Barstool Sports' Dave agree with the critics?
+
+```{r daveVsCritics}
+#  taking the name, price and reviews
+pizza_cleaned <- pizza_barstool %>% 
+  select(place=name,
+         price_level, 
+         contains("review")) %>% 
+  # cleaning column names
+  rename_all(~str_remove(., "review_stats_")) %>% 
+  select(-contains("provider"))
+
+# ploting Daves x Critics
+pizza_cleaned %>% 
+  filter(critic_count>0) %>% 
+  ggplot(aes(critic_average_score, dave_average_score)) +
+  geom_point() +
+  geom_abline(color="red", linetype="dashed") + # reference line
+  geom_smooth(method = "lm") +
+  labs(x="Critic average score", y="Dave score", 
+       title="Does Barstool Sports' Dave agree with the critics?")
+  
+```
+
+In overal the evaluations has some correlation. Let's see Community vs Critics
+
+```{r communityVsCritics}
+pizza_cleaned %>% 
+  filter( community_count >=20,
+          critic_count > 0) %>% 
+  ggplot(aes(critic_average_score, community_average_score)) +
+  geom_point() +
+  geom_abline(color="red") +
+  geom_smooth(method="lm")
+  
+```
+
+That is very bad, and Dave vs. Critics?
+
+```{r}
+pizza_cleaned %>% 
+  filter( community_count >=20 ) %>% 
+  ggplot(aes(community_average_score, dave_average_score)) +
+  geom_point(aes( size=community_count)) +
+  geom_abline(color="red", linetype="dashed") +
+  geom_smooth(method="lm") +
+  labs(size="# of community reviews", x="community score", y="Dave score")
+```
+
+Dave score are remarkable close to the community reviews.
