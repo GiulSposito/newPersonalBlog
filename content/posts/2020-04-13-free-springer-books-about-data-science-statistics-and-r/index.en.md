@@ -23,7 +23,7 @@ toc:
   enable: yes
 math:
   enable: no
-lightgallery: yes
+lightgallery: no
 license: ''
 ---
 
