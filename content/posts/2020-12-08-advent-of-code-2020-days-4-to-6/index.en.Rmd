@@ -4,10 +4,10 @@ author: Giuliano Sposito
 date: '2020-12-08'
 slug: 'advent-of-code-2020-04-06'
 categories:
-  - data science
+  - R
 tags:
   - advend of code
-  - data science
+  - data handling
   - rstats
 subtitle: ''
 lastmod: '2021-11-09T23:11:39-03:00'

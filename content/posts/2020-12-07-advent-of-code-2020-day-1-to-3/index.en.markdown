@@ -4,12 +4,12 @@ author: Giuliano Sposito
 date: '2020-12-07'
 slug: 'advent-of-code-2020-01-03'
 categories:
-  - data science
+  - R
 tags:
   - rstats
   - tidyverse
   - advend of code
-  - data analysis
+  - data handling
 subtitle: ''
 lastmod: '2021-11-09T22:40:18-03:00'
 authorLink: ''

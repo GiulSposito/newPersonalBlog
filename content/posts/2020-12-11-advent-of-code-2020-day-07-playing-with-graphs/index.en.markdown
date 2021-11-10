@@ -4,9 +4,9 @@ author: Giuliano Sposito
 date: '2020-12-11'
 slug: 'advent-of-code-2020-day-07-playing-with-graphs'
 categories:
-  - data science
+  - R
 tags:
-  - advend of code
+  - data handling
   - rstats
   - tidygraph
   - ggraph
@@ -278,27 +278,27 @@ paths
 
 ```
 ## [[1]]
-## + 2/9 vertices, named, from 300b4ef:
+## + 2/9 vertices, named, from 2ce48ee:
 ## [1] shiny gold   bright white
 ## 
 ## [[2]]
-## + 3/9 vertices, named, from 300b4ef:
+## + 3/9 vertices, named, from 2ce48ee:
 ## [1] shiny gold   bright white light red   
 ## 
 ## [[3]]
-## + 3/9 vertices, named, from 300b4ef:
+## + 3/9 vertices, named, from 2ce48ee:
 ## [1] shiny gold   bright white dark orange 
 ## 
 ## [[4]]
-## + 2/9 vertices, named, from 300b4ef:
+## + 2/9 vertices, named, from 2ce48ee:
 ## [1] shiny gold   muted yellow
 ## 
 ## [[5]]
-## + 3/9 vertices, named, from 300b4ef:
+## + 3/9 vertices, named, from 2ce48ee:
 ## [1] shiny gold   muted yellow light red   
 ## 
 ## [[6]]
-## + 3/9 vertices, named, from 300b4ef:
+## + 3/9 vertices, named, from 2ce48ee:
 ## [1] shiny gold   muted yellow dark orange
 ```
 
