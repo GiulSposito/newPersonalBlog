@@ -44,7 +44,7 @@ languages:
           post: ''
           pre: ''
           title: ''
-          url: '/2018-01-14-we-have-a-blog/'
+          url: /about/
           weight: 5
         - identifier: github
           name: ''
