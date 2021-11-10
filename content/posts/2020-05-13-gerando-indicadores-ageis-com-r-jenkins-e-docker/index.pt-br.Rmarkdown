@@ -49,21 +49,21 @@ Parte deste trabalho é sobre aculturamento do time, ou seja, as *squads* precis
 Para agilizar esse aspecto da consultoria, sem ter que demandar e especificar uma outra equipe de [ETL](https://pt.wikipedia.org/wiki/Extract%2C_transform%2C_load)/[BI](https://en.wikipedia.org/wiki/Business_intelligence_software), começamos a extrair manualmente os dados do *Jira* e gerar as métricas e indicadores rapidamente usando *R scripts*, e o impacto foi muito grande. A materialização dos artefatos analíticos, entregue na mão das *Squads* foi bem positiva e rapidamente eles entenderam as informações e ficaram dependentes dos reports que gerávamos para tomada de ações imediatas no dia-a-dia. Esse sucesso criou um outro problema, automatizar a geração dessas informações para que elas sempre estivessem disponíveis e não dependessem de alguém para gerá-las.
 
 Para automatizar, orquestrar, otimizar os custos e facilitar a integração dessas atividades montamos uma espécie de *Pipeline para Continuos Data Science* baseando-se em uma infraestrutura de [*CI/CD*](https://en.wikipedia.org/wiki/CI/CD) clássica de engenharia de software.
-<p></p>
+
 
 ![Visão Consolidada de Indicadores Corporativos](images/dash_corporativo.png)
 
 Essa abordagem foi inspirada nos grupos de desafios do [*kaggle*](https://www.kaggle.com/) que tínhamos na empresa de vez em quando. Neste desafios tínhamos um grupo de 3 ou 4 pessoas trabalhando simultaneamente no desafio, construindo em paralelo e simultaneamente as etapas de [Exploração dos Dados](https://pt.wikipedia.org/wiki/An%C3%A1lise_explorat%C3%B3ria_de_dados), [Limpeza e Organização dos Datasets](https://en.wikipedia.org/wiki/Tidy_data), [Engenharia de Features](https://en.wikipedia.org/wiki/Feature_engineering), [Treinar um modelo](https://docs.microsoft.com/en-us/azure/machine-learning/studio-module-reference/train-model) e [Avaliação de Performance](https://www.analyticsvidhya.com/blog/2019/08/11-important-model-evaluation-error-metrics/). Essa solução permitia que cientistas de dados trabalhando em pontos diferentes do *pipeline* e ao *comitar* um novo código no controlador de versão, a partes afetadas do fluxo fossem executadas automaticamente. Isso nos dava bastante agilidade e independência durante os trabalhos no desafio.
 
 De maneira oportuna, além da consultoria de desenvolvimento ágil, também tínhamos uma outra iniciativa no banco, desta vez trabalhando na definição e construção do ambiente de [*CI/CD*](https://en.wikipedia.org/wiki/CI/CD) corporativo. No momento que nos questionamos como automatizar mais rápido e fácil, a geração dos indicadores e métricas, então a opção de usar a mesma estratégia ficou evidente. Além disso, poderíamos evoluir os relatórios e indicadores a medida que a implantação de métricas e indicadores ágeis ganhava consistência e maturidade, sem ter que manter disponível disponível e alocada, uma terceira equipe de [ETL](https://pt.wikipedia.org/wiki/Extract%2C_transform%2C_load) e [BI](https://en.wikipedia.org/wiki/Business_intelligence_software) no banco.
-<p></p>
+
 
 #### Componentes da Solução
 
 O ambiente de [*CI/CD*](https://en.wikipedia.org/wiki/CI/CD) para automatizar o *pipeline* era composto das entidades abaixo descritas, e foram usadas da seguinte maneira:
 
 ![](images/jira_r_components.png)
-<p></p>
+
 1. [**Jenkins**](https://www.jenkins.io/): Jenkins é um servidor de automação gratuito e de código aberto. Ajuda a automatizar as partes do desenvolvimento de software relacionadas à construção, teste e implantação, facilitando a integração contínua e a entrega contínua, funcionando grosseiramente falando, como um orquestrador de [taréfas (ou *jobs*)](https://www.guru99.com/create-builds-jenkins-freestyle-project.html). Era usado para orquestrar os *jobs* do [*pipeline*](https://en.wikipedia.org/wiki/Pipeline_(computing)), instanciando os containers dentro dos [slaves](https://www.edureka.co/blog/jenkins-master-and-slave-architecture-a-complete-guide/) e executando os scripts que efetuavam as atividades do [*pipeline*](https://en.wikipedia.org/wiki/Pipeline_(computing)). Neste caso, todos os *jobs* rodavam por esquema de [agendamento](https://www.baeldung.com/jenkins-job-schedule).
 1. [**Jira**](https://www.atlassian.com/br/software/jira): A principal ferramenta de software usada pelas equipes ágeis para o monitoramento de tarefas e acompanhamento de projetos. Tem como objetivo principal garantir o gerenciamento (e rastreamento) de todas as suas atividades em único lugar. Tudo que uma equipe ágil faz acaba sendo registrada no *Jira*, assim para acompanhar a performance de um time basta acessar o histórico de atividades registradas na ferramenta e a partir dele calcular indicadores *Leadtime*, Esforço por História, Taxas de Defeitos dos Projetos, *Throughput*, etc. O acesso às essas informações era feita pela [REST API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/) disponível.
 1. [**GitLab**](https://about.gitlab.com/): é um gerenciador de repositório de software baseado em [*Git*](https://pt.wikipedia.org/wiki/Git), com suporte a *Wiki*, gerenciamento de tarefas e integração com outras ferramentas de [*CI/CD*](https://en.wikipedia.org/wiki/CI/CD). *GitLab* é similar ao *GitHub*, mas permite que os desenvolvedores armazenem o código em seus próprios servidores ao invés de servidores de terceiros. Foi usado para armazenar o próprio código de scripts do [*pipeline*](https://en.wikipedia.org/wiki/Pipeline_(computing)) de dados.
@@ -86,7 +86,7 @@ Uma conjunto grande de pacotes foi usado para garantir o [*pipeline*](https://en
 
 ![Flexdashboard e Plotly](images/dashboard_panel01.png)
 
-A combinação do *flexdashboard* com *plotly* foi um grande diferencial. Os reports pareciam verdadeiros painéis de BI, veja [este exemplo](/docs/project_dashboard.html). Além disso, eles tinham como vantagem de poderem ser compartilhados e distribuídos aos envolvidos e interessados, sem restrição de acesso (autenticação e rede) ou número de licenças, problemas que são comumente encontrados quando se resolve de maneira tradicional. 
+A combinação do *flexdashboard* com *plotly* foi um grande diferencial. Os reports pareciam verdadeiros painéis de BI, veja [este exemplo](assets/project_dashboard.html). Além disso, eles tinham como vantagem de poderem ser compartilhados e distribuídos aos envolvidos e interessados, sem restrição de acesso (autenticação e rede) ou número de licenças, problemas que são comumente encontrados quando se resolve de maneira tradicional. 
 
 ### Descrição do *pipeline*
 
@@ -246,7 +246,7 @@ QueryProject <- function(key, userAuth=NULL){
 
 ```
 
-<p></p>
+
 
 ##### (2) Job de Calculo de Métricas e Indicadores
 
@@ -299,7 +299,7 @@ jira_model %>%
 
 A estrutura do *ChangeLog* do *Jira* é praticamente um metamodelo, pois rastreia as informações de *update* de todos as atributos de uma *Issue*. A sequencia de transformação não é trivial, uma vez feita, um *tibble* de saída era gerado e adicionado ao conjunto de artefatos que são exportados para o *Nexus* para ser eventualmente utilizados em *jobs* subsequentes.
 
-<p></p>
+
 ##### (3) Job de Publicação de Resultados
 
 Último passo do [*pipeline*](https://en.wikipedia.org/wiki/Pipeline_(computing)) e um dos mais relevantes, pois decide qual é o formato que a informação vai ter ao chegar na mão das *Squads* e dos gestores do banco. O *job* de geração de relatório funciona como os demais, recupera o contexto deixado pelos *jobs* anteriores, recuperando os artefatos *RDSs* do *Nexus*, e a partir daí gerar uma série de relatórios, usando principalmente [*RMarkdown*](https://rmarkdown.rstudio.com/) e uma combinação de [*flexdashboard*](https://rmarkdown.rstudio.com/flexdashboard/) com [*plotly*](https://plotly.com/r/), quase sempre [*renderizados*](https://rmarkdown.rstudio.com/docs/reference/render.html) para [*HTML*](https://pt.wikipedia.org/wiki/HTML). Também eram gerados alguns arquivos XSLX, PPT e PDFs, mas a maioria absoluta dos relatórios estava em formato [*HTML*](https://pt.wikipedia.org/wiki/HTML). 
@@ -330,7 +330,7 @@ sequenceDiagram
 
 Os principais artefatos gerados nesta etapa eram:
 
-1. **Dashboard de Projeto**: um *flexdashboard* consolidando visão de performance de um [projeto no jira](https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html). Veja [este exemplo](/docs/project_dashboard.html).
+1. **Dashboard de Projeto**: um *flexdashboard* consolidando visão de performance de um [projeto no jira](https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html). Veja [este exemplo](assets/project_dashboard.html).
 1. **Squad Dashboard**: um *flexdashboard* consolidando a visão de métricas de indicadores de uma *Squad Ágil* identificada por [*Jira Sprint*](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-sprint/).
 1. **Baseline Dashboad**: Também um *flexdashboard* contendo a visão consolidada de indicadores de todas as *Squads* e *Projetos* dos banco.
 1. **Squad Compliance Report**: Um *HTML* por *sprint* ativo, informando aspectos da própria saúde da coleta de dados, como volume de horas reportado por usuário por dia, completude dos campos informativos das *Issues*, identificação e classificação de defeitos, etc. 
@@ -366,7 +366,7 @@ renderProjectDashboard <- function(pkey, compressFile = T) {
 
 Antes do *R script* encerrar, ele envia os relatórios gerados para o *Conluence* como anexos de páginas dos projetos, através de uma *REST API* e do *httr* package. Além disso, disparava uma série de e-mails para os líderes e aos gestores do banco, informando da disponibilização dos relatórios atualizados, bem como as respectivas [*URLs*](https://pt.wikipedia.org/wiki/URL) para consultá-los.
 
-<p></p>
+
 ##### (4) Job de Exportação de Dados
 
 Para permitir aos gestores e líderes manipularem diretamente os dados extraídos e gerados pelo pipeline, a fim de criar outras visões particulares e específicas, adicionamos uma etapa de exportação dos [dados brutos](https://en.wikipedia.org/wiki/Raw_data) (*raw data*) em planilhas *excel*, que era a ferramenta mais acessível e popular no banco. 
