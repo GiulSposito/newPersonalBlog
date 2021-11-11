@@ -12,7 +12,7 @@ languages:
   en:
     copyright: This work is licensed under a Creative Commons Attribution-NonCommercial
       4.0 International License.
-    googleAnalytics: 'UA-112393378-1'
+    googleAnalytics: 'G-C6S5BE2KHE'
     hasCJKLanguage: no
     languageCode: en
     languageName: English
@@ -164,7 +164,7 @@ languages:
   pt-br:
     copyright: This work is licensed under a Creative Commons Attribution-NonCommercial
       4.0 International License.
-    googleAnalytics: 'UA-112393378-1'
+    googleAnalytics: 'G-C6S5BE2KHE'
     hasCJKLanguage: no
     languageCode: pt-br
     languageName: Portuguese
