@@ -404,7 +404,7 @@ Now, for each year we have the frequency decay from its peak, and yes, the data 
 
 $$ y(t) = y_{f} + (y_{f}-y_{0}) e^{- \alpha t} $$
 
-We are interest in the $\alpha$ coefficient, the decay rate, from it we can get the year half-life:
+We are interest in the $ \alpha $ coefficient, the decay rate, from it we can get the year half-life:
 
 $$ y(t) = Ce^{-\alpha t} $$
 

@@ -504,9 +504,9 @@ decay.data %>%
 
 Now, for each year we have the frequency decay from its peak, and yes, the data seems a exponential decay. So, let's calculates each year 'half-life'. To do so, we'll fit and exponential equation of this format:
 
-$$ y(t) = y_f + (y_f-y_0) e^{- \alpha t} $$
+$$ y(t) = y_{f} + (y_{f}-y_{0}) e^{- \alpha t} $$
 
-We are interest in the `\(\alpha\)` coefficient, the decay rate, from it we can get the year half-life:
+We are interest in the $ \alpha $ coefficient, the decay rate, from it we can get the year half-life:
 
 $$ y(t) = Ce^{-\alpha t} $$
 
