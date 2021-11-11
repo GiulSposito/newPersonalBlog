@@ -315,13 +315,13 @@ languages:
     weight: 1
 params:
   analytics:
-    enable: no
+    enable: yes
     fathom:
       id: ''
       server: ''
     google:
       anonymizeIP: yes
-      id: ''
+      id: 'G-C6S5BE2KHE'
   cdn:
     data: jsdelivr.yml
   compatibility:
