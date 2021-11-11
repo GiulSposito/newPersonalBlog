@@ -12,7 +12,7 @@ languages:
   en:
     copyright: This work is licensed under a Creative Commons Attribution-NonCommercial
       4.0 International License.
-    googleAnalytics: 'G-C6S5BE2KHE'
+    googleAnalytics: 'G-FGRV4TQZ8Q'
     hasCJKLanguage: no
     languageCode: en
     languageName: English
@@ -164,7 +164,7 @@ languages:
   pt-br:
     copyright: This work is licensed under a Creative Commons Attribution-NonCommercial
       4.0 International License.
-    googleAnalytics: 'G-C6S5BE2KHE'
+    googleAnalytics: 'G-FGRV4TQZ8Q'
     hasCJKLanguage: no
     languageCode: pt-br
     languageName: Portuguese
@@ -321,7 +321,7 @@ params:
       server: ''
     google:
       anonymizeIP: yes
-      id: 'G-C6S5BE2KHE'
+      id: 'G-FGRV4TQZ8Q'
   cdn:
     data: jsdelivr.yml
   compatibility:
