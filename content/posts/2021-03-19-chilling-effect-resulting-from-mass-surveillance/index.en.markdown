@@ -828,13 +828,13 @@ fit_mcp
 ##   2: Y ~ 1 ~ 1 + T
 ## 
 ## Population-level parameters:
-##     name    mean   lower   upper Rhat n.eff
-##     cp_1      17      15      21    1   216
-##    int_1 2633169 2213786 3019736    1   123
-##    int_2 2480197 1989271 2916712    1    20
-##  sigma_1  385460  281313  503309    1   644
-##      T_1   46866    1977   97277    1    36
-##      T_2   -8970  -55655   34420    1  1724
+##     name    mean    lower   upper Rhat n.eff
+##     cp_1      17  9.7e+00      20  1.0   324
+##    int_1 2644487  2.2e+06 3062903  1.0   174
+##    int_2 2481880  2.0e+06 3013548  1.1    45
+##  sigma_1  389904  2.8e+05  511277  1.0   504
+##      T_1   45970 -2.3e+03   93767  1.0    43
+##      T_2   -9057 -6.3e+04   29466  1.0   960
 ```
 
 That is cool, we can see that we detect a change point (parameter $ cp_{1} `\() around the 16o period, that is june, in your dataset. The model also show us the parameters fitted in each linear regression (\)` int $ for intercepts and $ T $ for slopes).
