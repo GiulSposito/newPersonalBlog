@@ -25,6 +25,8 @@ math:
 lightgallery: no
 license: ''
 disqusIdentifier: 'implementing-lenet-with-mxnet-in-r'
+aliases:
+  - /2018/01/implementing-lenet-with-mxnet-in-r/
 ---
 
 

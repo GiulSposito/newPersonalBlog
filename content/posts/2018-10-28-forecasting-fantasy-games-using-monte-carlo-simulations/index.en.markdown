@@ -26,6 +26,8 @@ math:
 lightgallery: no
 license: ''
 disqusIdentifier: 'forecasting-fantasy-games-using-monte-carlo-simulations'
+aliases:
+  - /2018/10/forecasting-fantasy-games-using-monte-carlo-simulations/
 ---
 <script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />

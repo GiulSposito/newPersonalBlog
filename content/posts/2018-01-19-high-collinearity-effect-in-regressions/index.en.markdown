@@ -25,6 +25,8 @@ math:
 lightgallery: no
 license: ''
 disqusIdentifier: 'high-collinearity-effect-in-regressions'
+aliases:
+  - /2018/01/high-collinearity-effect-in-regressions/
 ---
 <script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />

@@ -25,6 +25,8 @@ math:
   enable: no
 lightgallery: no
 license: ''
+aliases: 
+  - /2019/01/tensorflow-and-keras-with-r/
 ---
 
 

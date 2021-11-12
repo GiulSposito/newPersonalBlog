@@ -26,6 +26,8 @@ math:
   enable: no
 lightgallery: no
 license: ''
+aliases:
+  - /2019/10/análise-de-sentimentos-via-emojis-em-chat-do-whatsapp/
 ---
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
