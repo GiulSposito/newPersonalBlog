@@ -83,9 +83,9 @@ languages:
       search:
         absoluteURL: no
         algolia:
-          appID: PASDMWALPK
-          index: index.en
-          searchKey: b42948e51daaa93df92381c8e2ac0f93
+          appID: 3TEZEC4ERO
+          index: yetanotheriteration
+          searchKey: e15b56d18a5a4c47feb4a071fafdfcae
         contentLength: 4000
         enable: yes
         highlightTag: em
@@ -235,9 +235,9 @@ languages:
       search:
         absoluteURL: no
         algolia:
-          appID: PASDMWALPK
-          index: index.en
-          searchKey: b42948e51daaa93df92381c8e2ac0f93
+          appID: 3TEZEC4ERO
+          index: 'yai.pt-br'
+          searchKey: e15b56d18a5a4c47feb4a071fafdfcae
         contentLength: 4000
         enable: yes
         highlightTag: em
