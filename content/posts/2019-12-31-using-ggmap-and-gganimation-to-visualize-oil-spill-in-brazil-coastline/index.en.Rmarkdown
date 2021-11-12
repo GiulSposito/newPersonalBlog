@@ -354,9 +354,9 @@ stains %>%
 
 ### Plotting as a Map
 
-With the data in hand, we'll try to visualize the communities affected by the oil spill placing the data in a map. There are several frameworks for plotting maps in R, in this post we will use the [`ggmap` package](https://www.littlemissdata.com/blog/maps), which we already have used [previously in the past](https://yetanotheriteration.netlify.com/2018/01/ploting-your-mtb-track-with-r/).
+With the data in hand, we'll try to visualize the communities affected by the oil spill placing the data in a map. There are several frameworks for plotting maps in R, in this post we will use the [`ggmap` package](https://www.littlemissdata.com/blog/maps), which we already have used [previously in the past](/2018-01-16-ploting-your-mtb-track-with-r/).
 
-Before to use `ggmap`, we'll need to get the Google Map API Key and register it, but the procedure is pretty straightforward, [just following these instructions](https://developers.google.com/maps/documentation/embed/get-api-key). In my code, I always store the keys and others sensible information in [`yalm` files](https://en.wikipedia.org/wiki/YAML) to avoid accidentaly publish then in the GitHub, [I also commented about this strategy in a older post](https://yetanotheriteration.netlify.com/2019/03/comparing-fitbit-and-polar-h7-heart-rate-data/). 
+Before to use `ggmap`, we'll need to get the Google Map API Key and register it, but the procedure is pretty straightforward, [just following these instructions](https://developers.google.com/maps/documentation/embed/get-api-key). In my code, I always store the keys and others sensible information in [`yalm` files](https://en.wikipedia.org/wiki/YAML) to avoid accidentaly publish then in the GitHub, [I also commented about this strategy in a older post](/2019-03-05-comparing-fitbit-and-polar-h7-heart-rate-data/). 
 
 
 ```{r ggmapTest, warning=FALSE, message=FALSE}

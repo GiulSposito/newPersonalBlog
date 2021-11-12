@@ -58,7 +58,7 @@ O pacote [`rwhatsapp`](https://cran.r-project.org/web/packages/rwhatsapp/index.h
 
 A principal (e única) função no pacote, é a `rwa_read()`, que permite importar os arquivos `TXT` (e `ZIP`) diretamente, o que significa que você pode simplesmente fornecer o caminho para um arquivo para carregar as mensagens direto num `data.frame`. Exportar uma conversa de `WhatsApp` também é bem direto, basta [seguir as instruções](https://tecnoblog.net/194147/whatsapp-salvar-historico-conversa/) disponíveis. Para este post, vou utilizar a conversão de um grupo meu de uma liga de [Fantasy](http://fantasy.nfl.com), assim poderemos fazer uma comparação do volume de mensagens enviadas com respeito aos horários e eventos relacionados aos jogos da [NFL](https://www.nfl.com).
 
-Aliás, essa minha [*Liga de Fantasy*](https://dudesfootball.netlify.com), já foi tema de outro post neste blog, que envolvia fazer [simulações de Montecarlo para prever resultados dos jogos](https://yetanotheriteration.netlify.com/2018/10/forecasting-fantasy-games-using-monte-carlo-simulations/), e claro, também usando [`R`](https://www.r-project.org/).
+Aliás, essa minha [*Liga de Fantasy*](https://dudesfootball.netlify.com), já foi tema de outro post neste blog, que envolvia fazer [simulações de Montecarlo para prever resultados dos jogos](/2018-10-28-forecasting-fantasy-games-using-monte-carlo-simulations/), e claro, também usando [`R`](https://www.r-project.org/).
 
 
 ```{r loadLibsNData, eval=FALSE}

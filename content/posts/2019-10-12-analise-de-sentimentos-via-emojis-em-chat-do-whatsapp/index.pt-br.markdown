@@ -26,11 +26,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
-aliases:
-  - /2019/10/análise-de-sentimentos-via-emojis-em-chat-do-whatsapp/
 ---
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
@@ -50,6 +46,9 @@ O pacote rwhatsapp, desenvolvido e disponibilizado por Johannes Grubber, permite
 
 <!--more-->
 
+
+
+
 <!--
 {{< admonition type=warning title="Emoji Enconding" open=true >}}
 Estou tendo problemas de encoding dos [caracteres unicode dos emojis](https://unicode.org/emoji/charts/full-emoji-list.html) com esse [novo template](https://hugoloveit.com/) que trata eles de maneira diferente, então eles não estão aparecendo (caracter branco) ou estão parecendo "escapados" (tipo: <U+0000>). O [post original](https://yetanotheriteration.netlify.app/2019/10/an%C3%A1lise-de-sentimentos-via-emojis-em-chat-do-whatsapp/) (no template antigo) está funcionando, sendo melhor acompanhar por lá enquanto eu não resolvo aqui.
@@ -68,7 +67,7 @@ O pacote [`rwhatsapp`](https://cran.r-project.org/web/packages/rwhatsapp/index.h
 
 A principal (e única) função no pacote, é a `rwa_read()`, que permite importar os arquivos `TXT` (e `ZIP`) diretamente, o que significa que você pode simplesmente fornecer o caminho para um arquivo para carregar as mensagens direto num `data.frame`. Exportar uma conversa de `WhatsApp` também é bem direto, basta [seguir as instruções](https://tecnoblog.net/194147/whatsapp-salvar-historico-conversa/) disponíveis. Para este post, vou utilizar a conversão de um grupo meu de uma liga de [Fantasy](http://fantasy.nfl.com), assim poderemos fazer uma comparação do volume de mensagens enviadas com respeito aos horários e eventos relacionados aos jogos da [NFL](https://www.nfl.com).
 
-Aliás, essa minha [*Liga de Fantasy*](https://dudesfootball.netlify.com), já foi tema de outro post neste blog, que envolvia fazer [simulações de Montecarlo para prever resultados dos jogos](https://yetanotheriteration.netlify.com/2018/10/forecasting-fantasy-games-using-monte-carlo-simulations/), e claro, também usando [`R`](https://www.r-project.org/).
+Aliás, essa minha [*Liga de Fantasy*](https://dudesfootball.netlify.com), já foi tema de outro post neste blog, que envolvia fazer [simulações de Montecarlo para prever resultados dos jogos](/2018-10-28-forecasting-fantasy-games-using-monte-carlo-simulations/), e claro, também usando [`R`](https://www.r-project.org/).
 
 
 
@@ -108,7 +107,7 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-20 22:04:40 </td>
    <td style="text-align:left;"> NFL </td>
-   <td style="text-align:left;"> It's Football, dudes: &#x200E;As mensagens deste grupo estão protegidas com a criptografia de ponta a ponta. </td>
+   <td style="text-align:left;"> It's Football, dudes: &lt;U+200E&gt;As mensagens deste grupo estão protegidas com a criptografia de ponta a ponta. </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:left;"> NULL </td>
@@ -117,7 +116,7 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:39:07 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x200E;imagem ocultada </td>
+   <td style="text-align:left;"> &lt;U+200E&gt;imagem ocultada </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:left;"> NULL </td>
@@ -144,19 +143,19 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:41 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F926;&#x0001F3FB;&#x200D;&#x2642;&#x0001F926;&#x0001F3FB;&#x200D;&#x2642;&#x0001F926;&#x0001F3FB;&#x200D;&#x2642; </td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;&lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;&lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:left;"> &#x0001F926;&#x0001F3FB;&#x200D;&#x2642;, &#x0001F926;&#x0001F3FB;&#x200D;&#x2642;, &#x0001F926;&#x0001F3FB;&#x200D;&#x2642; </td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;, &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt;, &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> man facepalming: light skin tone, man facepalming: light skin tone, man facepalming: light skin tone </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:47 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
   </tr>
   <tr>
@@ -171,7 +170,7 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 17:56:38 </td>
    <td style="text-align:left;"> Hilton </td>
-   <td style="text-align:left;"> &#x200E;imagem ocultada </td>
+   <td style="text-align:left;"> &lt;U+200E&gt;imagem ocultada </td>
    <td style="text-align:left;"> ./data/nfl_dudes.zip </td>
    <td style="text-align:right;"> 8 </td>
    <td style="text-align:left;"> NULL </td>
@@ -359,61 +358,61 @@ chat %>%
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:41 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F926;&#x0001F3FB;&#x200D;&#x2642; </td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> man facepalming: light skin tone </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:41 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F926;&#x0001F3FB;&#x200D;&#x2642; </td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> man facepalming: light skin tone </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:41 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F926;&#x0001F3FB;&#x200D;&#x2642; </td>
+   <td style="text-align:left;"> &lt;U+0001F926&gt;&lt;U+0001F3FB&gt;&lt;U+200D&gt;&lt;U+2642&gt; </td>
    <td style="text-align:left;"> man facepalming: light skin tone </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 12:40:47 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 18:36:34 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> face with tears of joy </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 18:36:34 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> face with tears of joy </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-21 18:36:34 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> face with tears of joy </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-23 07:32:21 </td>
    <td style="text-align:left;"> Leonel </td>
-   <td style="text-align:left;"> &#x0001F923; </td>
+   <td style="text-align:left;"> &lt;U+0001F923&gt; </td>
    <td style="text-align:left;"> rolling on the floor laughing </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-24 19:03:52 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> face screaming in fear </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2019-03-24 19:05:34 </td>
    <td style="text-align:left;"> Leonel </td>
-   <td style="text-align:left;"> &#x0001F47F; </td>
+   <td style="text-align:left;"> &lt;U+0001F47F&gt; </td>
    <td style="text-align:left;"> angry face with horns </td>
   </tr>
 </tbody>
@@ -620,8 +619,8 @@ emoji.table %>%
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &#x0001F602; </td>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:right;"> 128514 </td>
    <td style="text-align:right;"> 14622 </td>
    <td style="text-align:right;"> 0.805 </td>
@@ -634,8 +633,8 @@ emoji.table %>%
    <td style="text-align:left;"> Emoticons </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x2764; </td>
-   <td style="text-align:left;"> &#x2764; </td>
+   <td style="text-align:left;"> &lt;U+2764&gt; </td>
+   <td style="text-align:left;"> &lt;U+2764&gt; </td>
    <td style="text-align:right;"> 10084 </td>
    <td style="text-align:right;"> 8050 </td>
    <td style="text-align:right;"> 0.747 </td>
@@ -648,8 +647,8 @@ emoji.table %>%
    <td style="text-align:left;"> Dingbats </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x2665; </td>
-   <td style="text-align:left;"> &#x2665; </td>
+   <td style="text-align:left;"> &lt;U+2665&gt; </td>
+   <td style="text-align:left;"> &lt;U+2665&gt; </td>
    <td style="text-align:right;"> 9829 </td>
    <td style="text-align:right;"> 7144 </td>
    <td style="text-align:right;"> 0.754 </td>
@@ -662,8 +661,8 @@ emoji.table %>%
    <td style="text-align:left;"> Miscellaneous Symbols </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F60D; </td>
-   <td style="text-align:left;"> &#x0001F60D; </td>
+   <td style="text-align:left;"> &lt;U+0001F60D&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F60D&gt; </td>
    <td style="text-align:right;"> 128525 </td>
    <td style="text-align:right;"> 6359 </td>
    <td style="text-align:right;"> 0.765 </td>
@@ -676,8 +675,8 @@ emoji.table %>%
    <td style="text-align:left;"> Emoticons </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F62D; </td>
-   <td style="text-align:left;"> &#x0001F62D; </td>
+   <td style="text-align:left;"> &lt;U+0001F62D&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F62D&gt; </td>
    <td style="text-align:right;"> 128557 </td>
    <td style="text-align:right;"> 5526 </td>
    <td style="text-align:right;"> 0.803 </td>
@@ -690,8 +689,8 @@ emoji.table %>%
    <td style="text-align:left;"> Emoticons </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F618; </td>
-   <td style="text-align:left;"> &#x0001F618; </td>
+   <td style="text-align:left;"> &lt;U+0001F618&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F618&gt; </td>
    <td style="text-align:right;"> 128536 </td>
    <td style="text-align:right;"> 3648 </td>
    <td style="text-align:right;"> 0.854 </td>
@@ -704,8 +703,8 @@ emoji.table %>%
    <td style="text-align:left;"> Emoticons </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F60A; </td>
-   <td style="text-align:left;"> &#x0001F60A; </td>
+   <td style="text-align:left;"> &lt;U+0001F60A&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F60A&gt; </td>
    <td style="text-align:right;"> 128522 </td>
    <td style="text-align:right;"> 3186 </td>
    <td style="text-align:right;"> 0.813 </td>
@@ -718,8 +717,8 @@ emoji.table %>%
    <td style="text-align:left;"> Emoticons </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F44C; </td>
-   <td style="text-align:left;"> &#x0001F44C; </td>
+   <td style="text-align:left;"> &lt;U+0001F44C&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F44C&gt; </td>
    <td style="text-align:right;"> 128076 </td>
    <td style="text-align:right;"> 2925 </td>
    <td style="text-align:right;"> 0.805 </td>
@@ -732,8 +731,8 @@ emoji.table %>%
    <td style="text-align:left;"> Miscellaneous Symbols and Pictographs </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F495; </td>
-   <td style="text-align:left;"> &#x0001F495; </td>
+   <td style="text-align:left;"> &lt;U+0001F495&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F495&gt; </td>
    <td style="text-align:right;"> 128149 </td>
    <td style="text-align:right;"> 2400 </td>
    <td style="text-align:right;"> 0.766 </td>
@@ -746,8 +745,8 @@ emoji.table %>%
    <td style="text-align:left;"> Miscellaneous Symbols and Pictographs </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F44F; </td>
-   <td style="text-align:left;"> &#x0001F44F; </td>
+   <td style="text-align:left;"> &lt;U+0001F44F&gt; </td>
+   <td style="text-align:left;"> &lt;U+0001F44F&gt; </td>
    <td style="text-align:right;"> 128079 </td>
    <td style="text-align:right;"> 2336 </td>
    <td style="text-align:right;"> 0.787 </td>
@@ -806,9 +805,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-16 21:54:45 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F602;&#x0001F602;&#x0001F602;&#x0001F602;&#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt;&lt;U+0001F602&gt;&lt;U+0001F602&gt;&lt;U+0001F602&gt;&lt;U+0001F602&gt; </td>
    <td style="text-align:right;"> 4728 </td>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> face with tears of joy </td>
    <td style="text-align:right;"> 0.247 </td>
    <td style="text-align:right;"> 0.285 </td>
@@ -818,9 +817,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-16 23:14:23 </td>
    <td style="text-align:left;"> Leonel </td>
-   <td style="text-align:left;"> Dolphins vai ter o primeiro e o segundo pick do Draft &#x0001F605; </td>
+   <td style="text-align:left;"> Dolphins vai ter o primeiro e o segundo pick do Draft &lt;U+0001F605&gt; </td>
    <td style="text-align:right;"> 4766 </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
    <td style="text-align:right;"> 0.292 </td>
    <td style="text-align:right;"> 0.237 </td>
@@ -830,9 +829,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 08:20:31 </td>
    <td style="text-align:left;"> Roander </td>
-   <td style="text-align:left;"> Se tiver mal é só pegar o FH pra dar um up na tabela &#x0001F61C; </td>
+   <td style="text-align:left;"> Se tiver mal é só pegar o FH pra dar um up na tabela &lt;U+0001F61C&gt; </td>
    <td style="text-align:right;"> 4773 </td>
-   <td style="text-align:left;"> &#x0001F61C; </td>
+   <td style="text-align:left;"> &lt;U+0001F61C&gt; </td>
    <td style="text-align:left;"> winking face with tongue </td>
    <td style="text-align:right;"> 0.112 </td>
    <td style="text-align:right;"> 0.322 </td>
@@ -842,9 +841,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 13:43:09 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:right;"> 4804 </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
    <td style="text-align:right;"> 0.292 </td>
    <td style="text-align:right;"> 0.237 </td>
@@ -854,9 +853,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 13:46:08 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x0001F60E; </td>
+   <td style="text-align:left;"> &lt;U+0001F60E&gt; </td>
    <td style="text-align:right;"> 4812 </td>
-   <td style="text-align:left;"> &#x0001F60E; </td>
+   <td style="text-align:left;"> &lt;U+0001F60E&gt; </td>
    <td style="text-align:left;"> smiling face with sunglasses </td>
    <td style="text-align:right;"> 0.106 </td>
    <td style="text-align:right;"> 0.297 </td>
@@ -866,9 +865,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 13:53:30 </td>
    <td style="text-align:left;"> Leonel </td>
-   <td style="text-align:left;"> Cara, tava torcendo tanto para ele fazer 20 pontos.. pq eu ganharia por .5 &#x0001F605; </td>
+   <td style="text-align:left;"> Cara, tava torcendo tanto para ele fazer 20 pontos.. pq eu ganharia por .5 &lt;U+0001F605&gt; </td>
    <td style="text-align:right;"> 4815 </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
    <td style="text-align:right;"> 0.292 </td>
    <td style="text-align:right;"> 0.237 </td>
@@ -878,9 +877,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 13:58:53 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:right;"> 4819 </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
    <td style="text-align:right;"> 0.292 </td>
    <td style="text-align:right;"> 0.237 </td>
@@ -890,9 +889,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 13:59:34 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:right;"> 4823 </td>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> grinning face with sweat </td>
    <td style="text-align:right;"> 0.292 </td>
    <td style="text-align:right;"> 0.237 </td>
@@ -902,9 +901,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 14:05:01 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> Quem acha q o Kaepernick pode voltar levanta a mão? &#x0001F60E; &#x0001F44D;&#x0001F3FB; </td>
+   <td style="text-align:left;"> Quem acha q o Kaepernick pode voltar levanta a mão? &lt;U+0001F60E&gt; &lt;U+0001F44D&gt;&lt;U+0001F3FB&gt; </td>
    <td style="text-align:right;"> 4824 </td>
-   <td style="text-align:left;"> &#x0001F60E; </td>
+   <td style="text-align:left;"> &lt;U+0001F60E&gt; </td>
    <td style="text-align:left;"> smiling face with sunglasses </td>
    <td style="text-align:right;"> 0.106 </td>
    <td style="text-align:right;"> 0.297 </td>
@@ -914,9 +913,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 14:05:01 </td>
    <td style="text-align:left;"> Leandro </td>
-   <td style="text-align:left;"> Quem acha q o Kaepernick pode voltar levanta a mão? &#x0001F60E; &#x0001F44D;&#x0001F3FB; </td>
+   <td style="text-align:left;"> Quem acha q o Kaepernick pode voltar levanta a mão? &lt;U+0001F60E&gt; &lt;U+0001F44D&gt;&lt;U+0001F3FB&gt; </td>
    <td style="text-align:right;"> 4824 </td>
-   <td style="text-align:left;"> &#x0001F44D; </td>
+   <td style="text-align:left;"> &lt;U+0001F44D&gt; </td>
    <td style="text-align:left;"> thumbs up: light skin tone </td>
    <td style="text-align:right;"> 0.115 </td>
    <td style="text-align:right;"> 0.248 </td>
@@ -926,9 +925,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 14:05:14 </td>
    <td style="text-align:left;"> Hilton </td>
-   <td style="text-align:left;"> &#x261D;&#x0001F3FB; </td>
+   <td style="text-align:left;"> &lt;U+261D&gt;&lt;U+0001F3FB&gt; </td>
    <td style="text-align:right;"> 4825 </td>
-   <td style="text-align:left;"> &#x261D; </td>
+   <td style="text-align:left;"> &lt;U+261D&gt; </td>
    <td style="text-align:left;"> index pointing up: light skin tone </td>
    <td style="text-align:right;"> 0.144 </td>
    <td style="text-align:right;"> 0.402 </td>
@@ -938,9 +937,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 14:05:54 </td>
    <td style="text-align:left;"> Marcos </td>
-   <td style="text-align:left;"> &#x0001F44E;&#x0001F3FB; </td>
+   <td style="text-align:left;"> &lt;U+0001F44E&gt;&lt;U+0001F3FB&gt; </td>
    <td style="text-align:right;"> 4826 </td>
-   <td style="text-align:left;"> &#x0001F44E; </td>
+   <td style="text-align:left;"> &lt;U+0001F44E&gt; </td>
    <td style="text-align:left;"> thumbs down: light skin tone </td>
    <td style="text-align:right;"> 0.494 </td>
    <td style="text-align:right;"> 0.199 </td>
@@ -950,9 +949,9 @@ emoji.chat %>%
   <tr>
    <td style="text-align:left;"> 2019-09-17 14:07:35 </td>
    <td style="text-align:left;"> Hilton </td>
-   <td style="text-align:left;"> Eu tentei ajudá-lo, mas ele não captou minha oferta, acho que pq estamos na mesma divisão &#x0001F60E; </td>
+   <td style="text-align:left;"> Eu tentei ajudá-lo, mas ele não captou minha oferta, acho que pq estamos na mesma divisão &lt;U+0001F60E&gt; </td>
    <td style="text-align:right;"> 4828 </td>
-   <td style="text-align:left;"> &#x0001F60E; </td>
+   <td style="text-align:left;"> &lt;U+0001F60E&gt; </td>
    <td style="text-align:left;"> smiling face with sunglasses </td>
    <td style="text-align:right;"> 0.106 </td>
    <td style="text-align:right;"> 0.297 </td>
@@ -1175,112 +1174,112 @@ bind_cols(
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> tears </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F608; </td>
+   <td style="text-align:left;"> &lt;U+0001F608&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F929; </td>
+   <td style="text-align:left;"> &lt;U+0001F929&gt; </td>
    <td style="text-align:left;"> struck </td>
    <td style="text-align:right;"> -1 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> joy </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:left;"> &#x0001F525; </td>
+   <td style="text-align:left;"> &lt;U+0001F525&gt; </td>
    <td style="text-align:left;"> fire </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F628; </td>
+   <td style="text-align:left;"> &lt;U+0001F628&gt; </td>
    <td style="text-align:left;"> fearful </td>
    <td style="text-align:right;"> -2 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F923; </td>
+   <td style="text-align:left;"> &lt;U+0001F923&gt; </td>
    <td style="text-align:left;"> laughing </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:left;"> &#x0001F614; </td>
+   <td style="text-align:left;"> &lt;U+0001F614&gt; </td>
    <td style="text-align:left;"> pensive </td>
    <td style="text-align:right;"> -1 </td>
-   <td style="text-align:left;"> &#x0001F61F; </td>
+   <td style="text-align:left;"> &lt;U+0001F61F&gt; </td>
    <td style="text-align:left;"> worried </td>
    <td style="text-align:right;"> -3 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> screaming </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F91F; </td>
+   <td style="text-align:left;"> &lt;U+0001F91F&gt; </td>
    <td style="text-align:left;"> love </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:left;"> &#x0001F494; </td>
+   <td style="text-align:left;"> &lt;U+0001F494&gt; </td>
    <td style="text-align:left;"> broken </td>
    <td style="text-align:right;"> -1 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> fear </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F613; </td>
+   <td style="text-align:left;"> &lt;U+0001F613&gt; </td>
    <td style="text-align:left;"> downcast </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F618; </td>
+   <td style="text-align:left;"> &lt;U+0001F618&gt; </td>
    <td style="text-align:left;"> kiss </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F47F; </td>
+   <td style="text-align:left;"> &lt;U+0001F47F&gt; </td>
    <td style="text-align:left;"> angry </td>
    <td style="text-align:right;"> -3 </td>
-   <td style="text-align:left;"> &#x0001F60D; </td>
+   <td style="text-align:left;"> &lt;U+0001F60D&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F642; </td>
+   <td style="text-align:left;"> &lt;U+0001F642&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F604; </td>
+   <td style="text-align:left;"> &lt;U+0001F604&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F60A; </td>
+   <td style="text-align:left;"> &lt;U+0001F60A&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F641; </td>
+   <td style="text-align:left;"> &lt;U+0001F641&gt; </td>
    <td style="text-align:left;"> frowning </td>
    <td style="text-align:right;"> -1 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F601; </td>
+   <td style="text-align:left;"> &lt;U+0001F601&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F60A; </td>
+   <td style="text-align:left;"> &lt;U+0001F60A&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F607; </td>
+   <td style="text-align:left;"> &lt;U+0001F607&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F62D; </td>
+   <td style="text-align:left;"> &lt;U+0001F62D&gt; </td>
    <td style="text-align:left;"> crying </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F61E; </td>
+   <td style="text-align:left;"> &lt;U+0001F61E&gt; </td>
    <td style="text-align:left;"> disappointed </td>
    <td style="text-align:right;"> -2 </td>
-   <td style="text-align:left;"> &#x0001F626; </td>
+   <td style="text-align:left;"> &lt;U+0001F626&gt; </td>
    <td style="text-align:left;"> frowning </td>
    <td style="text-align:right;"> -1 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F60E; </td>
+   <td style="text-align:left;"> &lt;U+0001F60E&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F970; </td>
+   <td style="text-align:left;"> &lt;U+0001F970&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:left;"> &#x0001F627; </td>
+   <td style="text-align:left;"> &lt;U+0001F627&gt; </td>
    <td style="text-align:left;"> anguished </td>
    <td style="text-align:right;"> -3 </td>
   </tr>
@@ -1457,130 +1456,130 @@ bind_cols(
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &#x0001F61E; </td>
+   <td style="text-align:left;"> &lt;U+0001F61E&gt; </td>
    <td style="text-align:left;"> disappointed </td>
    <td style="text-align:left;"> anger </td>
-   <td style="text-align:left;"> &#x0001F601; </td>
+   <td style="text-align:left;"> &lt;U+0001F601&gt; </td>
    <td style="text-align:left;"> beaming </td>
    <td style="text-align:left;"> joy </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> fear </td>
    <td style="text-align:left;"> anger </td>
-   <td style="text-align:left;"> &#x0001F601; </td>
+   <td style="text-align:left;"> &lt;U+0001F601&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:left;"> joy </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> screaming </td>
    <td style="text-align:left;"> anger </td>
-   <td style="text-align:left;"> &#x0001F602; </td>
+   <td style="text-align:left;"> &lt;U+0001F602&gt; </td>
    <td style="text-align:left;"> joy </td>
    <td style="text-align:left;"> joy </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F641; </td>
+   <td style="text-align:left;"> &lt;U+0001F641&gt; </td>
    <td style="text-align:left;"> frowning </td>
    <td style="text-align:left;"> anger </td>
-   <td style="text-align:left;"> &#x0001F60E; </td>
+   <td style="text-align:left;"> &lt;U+0001F60E&gt; </td>
    <td style="text-align:left;"> smiling </td>
    <td style="text-align:left;"> joy </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F3C8; </td>
+   <td style="text-align:left;"> &lt;U+0001F3C8&gt; </td>
    <td style="text-align:left;"> football </td>
    <td style="text-align:left;"> anticipation </td>
-   <td style="text-align:left;"> &#x0001F614; </td>
+   <td style="text-align:left;"> &lt;U+0001F614&gt; </td>
    <td style="text-align:left;"> pensive </td>
    <td style="text-align:left;"> sadness </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F601; </td>
+   <td style="text-align:left;"> &lt;U+0001F601&gt; </td>
    <td style="text-align:left;"> beaming </td>
    <td style="text-align:left;"> anticipation </td>
-   <td style="text-align:left;"> &#x0001F61E; </td>
+   <td style="text-align:left;"> &lt;U+0001F61E&gt; </td>
    <td style="text-align:left;"> disappointed </td>
    <td style="text-align:left;"> sadness </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F618; </td>
+   <td style="text-align:left;"> &lt;U+0001F618&gt; </td>
    <td style="text-align:left;"> kiss </td>
    <td style="text-align:left;"> anticipation </td>
-   <td style="text-align:left;"> &#x0001F628; </td>
+   <td style="text-align:left;"> &lt;U+0001F628&gt; </td>
    <td style="text-align:left;"> fearful </td>
    <td style="text-align:left;"> sadness </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F929; </td>
+   <td style="text-align:left;"> &lt;U+0001F929&gt; </td>
    <td style="text-align:left;"> star </td>
    <td style="text-align:left;"> anticipation </td>
-   <td style="text-align:left;"> &#x0001F62D; </td>
+   <td style="text-align:left;"> &lt;U+0001F62D&gt; </td>
    <td style="text-align:left;"> crying </td>
    <td style="text-align:left;"> sadness </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F61E; </td>
+   <td style="text-align:left;"> &lt;U+0001F61E&gt; </td>
    <td style="text-align:left;"> disappointed </td>
    <td style="text-align:left;"> disgust </td>
-   <td style="text-align:left;"> &#x0001F618; </td>
+   <td style="text-align:left;"> &lt;U+0001F618&gt; </td>
    <td style="text-align:left;"> kiss </td>
    <td style="text-align:left;"> surprise </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F624; </td>
+   <td style="text-align:left;"> &lt;U+0001F624&gt; </td>
    <td style="text-align:left;"> nose </td>
    <td style="text-align:left;"> disgust </td>
-   <td style="text-align:left;"> &#x0001F62E; </td>
+   <td style="text-align:left;"> &lt;U+0001F62E&gt; </td>
    <td style="text-align:left;"> mouth </td>
    <td style="text-align:left;"> surprise </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> screaming </td>
    <td style="text-align:left;"> disgust </td>
-   <td style="text-align:left;"> &#x0001F92A; </td>
+   <td style="text-align:left;"> &lt;U+0001F92A&gt; </td>
    <td style="text-align:left;"> zany </td>
    <td style="text-align:left;"> surprise </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F641; </td>
+   <td style="text-align:left;"> &lt;U+0001F641&gt; </td>
    <td style="text-align:left;"> frowning </td>
    <td style="text-align:left;"> disgust </td>
-   <td style="text-align:left;"> &#x0001F92D; </td>
+   <td style="text-align:left;"> &lt;U+0001F92D&gt; </td>
    <td style="text-align:left;"> mouth </td>
    <td style="text-align:left;"> surprise </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F605; </td>
+   <td style="text-align:left;"> &lt;U+0001F605&gt; </td>
    <td style="text-align:left;"> sweat </td>
    <td style="text-align:left;"> fear </td>
-   <td style="text-align:left;"> &#x0001F3C6; </td>
+   <td style="text-align:left;"> &lt;U+0001F3C6&gt; </td>
    <td style="text-align:left;"> trophy </td>
    <td style="text-align:left;"> trust </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F613; </td>
+   <td style="text-align:left;"> &lt;U+0001F613&gt; </td>
    <td style="text-align:left;"> sweat </td>
    <td style="text-align:left;"> fear </td>
-   <td style="text-align:left;"> &#x0001F4B0; </td>
+   <td style="text-align:left;"> &lt;U+0001F4B0&gt; </td>
    <td style="text-align:left;"> money </td>
    <td style="text-align:left;"> trust </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> fear </td>
    <td style="text-align:left;"> fear </td>
-   <td style="text-align:left;"> &#x0001F4C8; </td>
+   <td style="text-align:left;"> &lt;U+0001F4C8&gt; </td>
    <td style="text-align:left;"> chart </td>
    <td style="text-align:left;"> trust </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &#x0001F631; </td>
+   <td style="text-align:left;"> &lt;U+0001F631&gt; </td>
    <td style="text-align:left;"> screaming </td>
    <td style="text-align:left;"> fear </td>
-   <td style="text-align:left;"> &#x0001F4CA; </td>
+   <td style="text-align:left;"> &lt;U+0001F4CA&gt; </td>
    <td style="text-align:left;"> chart </td>
    <td style="text-align:left;"> trust </td>
   </tr>
