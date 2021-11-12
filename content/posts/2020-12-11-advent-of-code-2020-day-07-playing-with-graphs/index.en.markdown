@@ -32,7 +32,7 @@ In this post, we explore the day 7 puzzles of the Advent Of Code 2020 using netw
 
 <!--more-->
 
-This post continues the [Advent Of Code 2020 series](/2020/12/advent-of-code-2020-part_02/) an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. In this post, we explore the characteristics of day 7 puzzles to explore the use of  [Graphs](https://en.wikipedia.org/wiki/Graph_theory) in R. Interpreting the _bag regulations_ as a _network_ we are capable to solve the puzzles with simple few lines of code.
+This post continues the [Advent Of Code 2020 series]/2020-12-08-advent-of-code-2020-days-4-to-6/) an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. In this post, we explore the characteristics of day 7 puzzles to explore the use of  [Graphs](https://en.wikipedia.org/wiki/Graph_theory) in R. Interpreting the _bag regulations_ as a _network_ we are capable to solve the puzzles with simple few lines of code.
 
 ### Day 7: Handy Haversacks
 
@@ -278,27 +278,27 @@ paths
 
 ```
 ## [[1]]
-## + 2/9 vertices, named, from 2ce48ee:
+## + 2/9 vertices, named, from 3d23ebf:
 ## [1] shiny gold   bright white
 ## 
 ## [[2]]
-## + 3/9 vertices, named, from 2ce48ee:
+## + 3/9 vertices, named, from 3d23ebf:
 ## [1] shiny gold   bright white light red   
 ## 
 ## [[3]]
-## + 3/9 vertices, named, from 2ce48ee:
+## + 3/9 vertices, named, from 3d23ebf:
 ## [1] shiny gold   bright white dark orange 
 ## 
 ## [[4]]
-## + 2/9 vertices, named, from 2ce48ee:
+## + 2/9 vertices, named, from 3d23ebf:
 ## [1] shiny gold   muted yellow
 ## 
 ## [[5]]
-## + 3/9 vertices, named, from 2ce48ee:
+## + 3/9 vertices, named, from 3d23ebf:
 ## [1] shiny gold   muted yellow light red   
 ## 
 ## [[6]]
-## + 3/9 vertices, named, from 2ce48ee:
+## + 3/9 vertices, named, from 3d23ebf:
 ## [1] shiny gold   muted yellow dark orange
 ```
 

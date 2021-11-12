@@ -243,7 +243,7 @@ fitbit_hr %>%
 
 #### Polar H7
 
-Unlike the **Fitbit**, to access the heart rate data of the **Polar H7**, the easiest way is to pull the data from the App used in to track the training session, at that time I used the [Strava Application](https://www.strava.com/) connected to the heart monitor by bluetooth. As we did in the post **["Ploting your mtb track with R"](https://yetanotheriteration.netlify.com/2018/01/ploting-your-mtb-track-with-r/)**, we download the [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format) file containing the data recorded during the exercise session, directly from the **Strava** website, and then process the XML to extract the data we are looking for.
+Unlike the **Fitbit**, to access the heart rate data of the **Polar H7**, the easiest way is to pull the data from the App used in to track the training session, at that time I used the [Strava Application](https://www.strava.com/) connected to the heart monitor by bluetooth. As we did in the post **["Ploting your mtb track with R"](/2018-01-16-ploting-your-mtb-track-with-r/)**, we download the [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format) file containing the data recorded during the exercise session, directly from the **Strava** website, and then process the XML to extract the data we are looking for.
 
 
 ```r
@@ -833,5 +833,5 @@ References used in this post:
 1. https://www.fitbit.com
 1. https://dev.fitbit.com
 1. https://seer.ufrgs.br/hcpa/article/view/11727/7021
-1. https://yetanotheriteration.netlify.com/2018/01/ploting-your-mtb-track-with-r/
+1. https://yetanotheriteration.netlify.com/2018-01-16-ploting-your-mtb-track-with-r/
 1. https://www.telegraph.co.uk/technology/news/12086337/Fitbit-heart-rate-tracking-is-dangerously-inaccurate-lawsuit-claims.html

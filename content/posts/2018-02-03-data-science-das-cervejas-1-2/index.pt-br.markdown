@@ -28,6 +28,8 @@ math:
 lightgallery: no
 license: ''
 disqusIdentifier: 'data-science-das-cervejas'
+aliases:
+  - /2018/02/data-science-das-cervejas-1-2/
 ---
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />

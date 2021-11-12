@@ -31,6 +31,8 @@ math:
 lightgallery: no
 license: ''
 disqusIdentifier: 'data-science-das-cervejas'
+aliases:
+  - /2018/02/data-science-das-cervejas-2-2/
 ---
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
@@ -45,7 +47,7 @@ Esta é a segunda parte do post sobre _text mining_ usando como base, a avaliaç
 
 ### Que cerveja é similar a outra?
 
-O primeiro passo neste processo é encontrar que semelhanças aproximam os diferentes tipos de cerveja, para tal, vamos recuperar os dados obtidos no [post anterior](https://yetanotheriteration.netlify.com/2018/02/data-science-das-cervejas-1-2/). A nossa base de avaliações de cervejas, obtido via _data scraping_ do blog [Cerva Nossa](https://cervanossa.wordpress.com/) do Marcos Nogueira, e a contagem de palavras por tipo.
+O primeiro passo neste processo é encontrar que semelhanças aproximam os diferentes tipos de cerveja, para tal, vamos recuperar os dados obtidos no [post anterior](/pt-br/2018-02-03-data-science-das-cervejas-1-2/). A nossa base de avaliações de cervejas, obtido via _data scraping_ do blog [Cerva Nossa](https://cervanossa.wordpress.com/) do Marcos Nogueira, e a contagem de palavras por tipo.
 
 
 ```r
@@ -296,7 +298,7 @@ beer_wordc %>%
  
  Podemos notar que há uma série de palavras comuns descrevendo ambos os tipos, como _maltada_, _café_, _cevada_, _espuma_ e _duradouro_, que são características comuns entre os dois.
  
- Mas e se quiséssemos evidenciar o que difere uma tipo do outro? Usaríamos a mesma técnica usada no [post anterior](https://yetanotheriteration.netlify.com/2018/02/data-science-das-cervejas-1-2/), calcularíamos quais as palavras mais importantes, distintas entre as descrições dos dois tipos, usando [TF_IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf).
+ Mas e se quiséssemos evidenciar o que difere uma tipo do outro? Usaríamos a mesma técnica usada no [post anterior](/pt-br/2018-02-03-data-science-das-cervejas-1-2/), calcularíamos quais as palavras mais importantes, distintas entre as descrições dos dois tipos, usando [TF_IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf).
 
 
 

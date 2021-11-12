@@ -25,12 +25,10 @@ math:
   enable: no
 lightgallery: no
 license: ''
-aliases: 
-  - /2019/01/tensorflow-and-keras-with-r/
 ---
 
 
-I'll start series of posts about [Keras](https://keras.io/), a high-level [neural networks](https://en.wikipedia.org/wiki/Artificial_neural_network) API developed with a focus on enabling fast experimentation, running on top of [TensorFlow](https://www.tensorflow.org), but using its [R interface](https://keras.rstudio.com/). To start, we'll review our [LeNet implemantation with MXNET](https://yetanotheriteration.netlify.com/2018/01/implementing-lenet-with-mxnet-in-r/) for [MNIST problem](http://yann.lecun.com/exdb/mnist/), a traditional "[Hello World](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program)" in the Neural Network world.
+I'll start series of posts about [Keras](https://keras.io/), a high-level [neural networks](https://en.wikipedia.org/wiki/Artificial_neural_network) API developed with a focus on enabling fast experimentation, running on top of [TensorFlow](https://www.tensorflow.org), but using its [R interface](https://keras.rstudio.com/). To start, we'll review our [LeNet implemantation with MXNET](/2018-01-22-implementing-lenet-with-mxnet-in-r/) for [MNIST problem](http://yann.lecun.com/exdb/mnist/), a traditional "[Hello World](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program)" in the Neural Network world.
 
 
 <!--more-->
@@ -288,7 +286,7 @@ As you see, it's an impressive 99% of accuracy.
 
 ### Visualizing the Activation Layers
 
-As we did in the [mxnet post](https://yetanotheriteration.netlify.com/2018/01/implementing-lenet-with-mxnet-in-r/), let's see how the internal layers react to a input data, visualizing the neuron's activations pattern in the conv layers:
+As we did in the [mxnet post](/2018-01-22-implementing-lenet-with-mxnet-in-r/), let's see how the internal layers react to a input data, visualizing the neuron's activations pattern in the conv layers:
 
 
 ```r

@@ -30,7 +30,7 @@ Advent of Code is an Advent calendar of small programming puzzles for a variety 
 
 <!--more-->
 
-This post continues the [Advent Of Code 2020 series](/2020/12/advent-of-code-2020-day-07-playing-with-graphs.en-us/) an advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. These are my six solutions to the puzzles from day 8 to day 10, using R.
+This post continues the [Advent Of Code 2020 series](/2020-12-11-advent-of-code-2020-day-07-playing-with-graphs/) an advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. These are my six solutions to the puzzles from day 8 to day 10, using R.
 
 ### Day 8: Handheld Halting
 

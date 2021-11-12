@@ -25,6 +25,8 @@ math:
   enable: no
 lightgallery: no
 license: ''
+aliases:
+  - /2020/04/free-springer-books-about-data-science-statistics-and-r/
 ---
 
 With the Coronavirus outbreak having an unprecedented impact on education, Springer Nature is launching a global program to support learning and teaching at higher education institutions worldwide, enabling to access for free more than 500 key textbooks across Springer Nature’s eBook subject collections. These books will be available via SpringerLink until at least the end of July. See some Data Science and Statistics (with R) related books we selected.  
