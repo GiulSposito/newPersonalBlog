@@ -36,7 +36,7 @@ license: ''
 <link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
 
 
-[Jon Penney (2016)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645) explored whether the widespread publicity about NSA/PRISM surveillance (i.e., _the Snowden revelations_) in June 2013 was associated with a sharp and sudden decrease in traffic to Wikipedia articles on topics that raise privacy concerns. This post tries to reproduce some of this findings.
+[Jon Penney (2016)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645)[^1] explored whether the widespread publicity about NSA/PRISM surveillance (i.e., _the Snowden revelations_) in June 2013 was associated with a sharp and sudden decrease in traffic to Wikipedia articles on topics that raise privacy concerns. This post tries to reproduce some of this findings.
 
 
 <!--more-->
@@ -89,43 +89,43 @@ head(trend_data) %>%
    <td style="text-align:left;"> 732 </td>
    <td style="text-align:left;"> en </td>
    <td style="text-align:left;"> python_(programming_language) </td>
-   <td style="text-align:left;"> 2019-11-11 </td>
-   <td style="text-align:right;"> 8429 </td>
+   <td style="text-align:left;"> 2019-11-15 </td>
+   <td style="text-align:right;"> 7301 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 1 </td>
    <td style="text-align:left;"> en </td>
    <td style="text-align:left;"> r_(programming_language) </td>
-   <td style="text-align:left;"> 2019-11-11 </td>
-   <td style="text-align:right;"> 4719 </td>
+   <td style="text-align:left;"> 2019-11-15 </td>
+   <td style="text-align:right;"> 3052 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 733 </td>
    <td style="text-align:left;"> en </td>
    <td style="text-align:left;"> python_(programming_language) </td>
-   <td style="text-align:left;"> 2019-11-12 </td>
-   <td style="text-align:right;"> 8621 </td>
+   <td style="text-align:left;"> 2019-11-16 </td>
+   <td style="text-align:right;"> 4948 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2 </td>
    <td style="text-align:left;"> en </td>
    <td style="text-align:left;"> r_(programming_language) </td>
-   <td style="text-align:left;"> 2019-11-12 </td>
-   <td style="text-align:right;"> 7490 </td>
+   <td style="text-align:left;"> 2019-11-16 </td>
+   <td style="text-align:right;"> 2279 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 734 </td>
    <td style="text-align:left;"> en </td>
    <td style="text-align:left;"> python_(programming_language) </td>
-   <td style="text-align:left;"> 2019-11-13 </td>
-   <td style="text-align:right;"> 8147 </td>
+   <td style="text-align:left;"> 2019-11-17 </td>
+   <td style="text-align:right;"> 5353 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 3 </td>
    <td style="text-align:left;"> en </td>
    <td style="text-align:left;"> r_(programming_language) </td>
-   <td style="text-align:left;"> 2019-11-13 </td>
-   <td style="text-align:right;"> 7481 </td>
+   <td style="text-align:left;"> 2019-11-17 </td>
+   <td style="text-align:right;"> 2259 </td>
   </tr>
 </tbody>
 </table>
@@ -386,7 +386,7 @@ sec_articles %>%
 
 #### The Statistical Model
 
-From Jesse Lecy and Federica Fusi's [Interrupted Time Series](https://ds4ps.org/pe4ps-textbook/docs/p-020-time-series.html#the-statistical-model) we have the following scenario:
+From Jesse Lecy and Federica Fusi's [Interrupted Time Series](https://ds4ps.org/pe4ps-textbook/docs/p-020-time-series.html#the-statistical-model)[^2] we have the following scenario:
 
 {{< figure src="./images/Picture3.4.png" title="" >}}
 
@@ -829,18 +829,18 @@ fit_mcp
 ## 
 ## Population-level parameters:
 ##     name    mean    lower   upper Rhat n.eff
-##     cp_1      17  9.7e+00      20  1.0   324
-##    int_1 2644487  2.2e+06 3062903  1.0   174
-##    int_2 2481880  2.0e+06 3013548  1.1    45
-##  sigma_1  389904  2.8e+05  511277  1.0   504
-##      T_1   45970 -2.3e+03   93767  1.0    43
-##      T_2   -9057 -6.3e+04   29466  1.0   960
+##     cp_1      17  8.6e+00      19  1.2   216
+##    int_1 2617605  2.2e+06 3031343  1.3    58
+##    int_2 2549948  2.1e+06 3567887  1.6    26
+##  sigma_1  392620  2.8e+05  514340  1.0   545
+##      T_1   45681 -1.2e+04   98605  1.5    22
+##      T_2  -12569 -7.5e+04   30097  1.0  1213
 ```
 
-That is cool, we can see that we detect a change point (parameter $ cp_{1} `\() around the 16o period, that is june, in your dataset. The model also show us the parameters fitted in each linear regression (\)` int $ for intercepts and $ T $ for slopes).
+That is cool, we can see that we detect a change point ( parameter $ cp_{1} $ ) around the 16o period, that is june, in your dataset. The model also show us the parameters fitted in each linear regression ( $ int $ for intercepts and $ T $ for slopes).
 
-### Reference
+### References
 
-* Penney, Jonathon. 2016. “Chilling Effects: Online Surveillance and Wikipedia Use.” Berkeley Technology Law Journal 31 (1): 117. doi:10.15779/Z38SS13. - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645
+[^1]: Penney, Jonathon. 2016. “Chilling Effects: Online Surveillance and Wikipedia Use.” Berkeley Technology Law Journal 31 (1): 117. doi:10.15779/Z38SS13. - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645
 
-* Jesse Lecy and Federica Fusi. "Foundations of Program Evaluation: Regression Tools for Impact Analysis" - https://ds4ps.org/pe4ps-textbook/docs/index.html
+[^2]: Jesse Lecy and Federica Fusi. "Foundations of Program Evaluation: Regression Tools for Impact Analysis" - https://ds4ps.org/pe4ps-textbook/docs/index.html

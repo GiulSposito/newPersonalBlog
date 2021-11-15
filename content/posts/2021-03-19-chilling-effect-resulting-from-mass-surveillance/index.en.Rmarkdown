@@ -26,7 +26,7 @@ license: ''
 ---
 
 
-[Jon Penney (2016)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645) explored whether the widespread publicity about NSA/PRISM surveillance (i.e., _the Snowden revelations_) in June 2013 was associated with a sharp and sudden decrease in traffic to Wikipedia articles on topics that raise privacy concerns. This post tries to reproduce some of this findings.
+[Jon Penney (2016)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645)[^1] explored whether the widespread publicity about NSA/PRISM surveillance (i.e., _the Snowden revelations_) in June 2013 was associated with a sharp and sudden decrease in traffic to Wikipedia articles on topics that raise privacy concerns. This post tries to reproduce some of this findings.
 
 
 <!--more-->
@@ -215,7 +215,7 @@ sec_articles %>%
 
 #### The Statistical Model
 
-From Jesse Lecy and Federica Fusi's [Interrupted Time Series](https://ds4ps.org/pe4ps-textbook/docs/p-020-time-series.html#the-statistical-model) we have the following scenario:
+From Jesse Lecy and Federica Fusi's [Interrupted Time Series](https://ds4ps.org/pe4ps-textbook/docs/p-020-time-series.html#the-statistical-model)[^2] we have the following scenario:
 
 {{< figure src="./images/Picture3.4.png" title="" >}}
 
@@ -398,10 +398,10 @@ fit_mcp
 
 ```
 
-That is cool, we can see that we detect a change point (parameter $ cp_{1} $) around the 16o period, that is june, in your dataset. The model also show us the parameters fitted in each linear regression ($ int $ for intercepts and $ T $ for slopes).
+That is cool, we can see that we detect a change point ( parameter $ cp_{1} $ ) around the 16o period, that is june, in your dataset. The model also show us the parameters fitted in each linear regression ( $ int $ for intercepts and $ T $ for slopes).
 
-### Reference
+### References
 
-* Penney, Jonathon. 2016. “Chilling Effects: Online Surveillance and Wikipedia Use.” Berkeley Technology Law Journal 31 (1): 117. doi:10.15779/Z38SS13. - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645
+[^1]: Penney, Jonathon. 2016. “Chilling Effects: Online Surveillance and Wikipedia Use.” Berkeley Technology Law Journal 31 (1): 117. doi:10.15779/Z38SS13. - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2769645
 
-* Jesse Lecy and Federica Fusi. "Foundations of Program Evaluation: Regression Tools for Impact Analysis" - https://ds4ps.org/pe4ps-textbook/docs/index.html
+[^2]: Jesse Lecy and Federica Fusi. "Foundations of Program Evaluation: Regression Tools for Impact Analysis" - https://ds4ps.org/pe4ps-textbook/docs/index.html
