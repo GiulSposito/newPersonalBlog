@@ -1,5 +1,5 @@
 ---
-title: Measuring the return on investment in onlines ad campaigns
+title: Power Analysis | Measuring the ROI in onlines ad campaigns
 author: Giuliano Sposito
 date: '2021-11-19'
 slug: 'bit-by-Bit-power-analysis'
@@ -9,8 +9,9 @@ tags:
   - rstats
   - power analysis
   - hypothesis test
+  - simulation
   - sample size
-subtitle: ''
+subtitle: 'Case Simulation'
 lastmod: '2021-11-15T17:38:47-03:00'
 draft: yes
 authorLink: ''
@@ -27,30 +28,63 @@ lightgallery: no
 license: ''
 ---
 
-This post is based in exercises 21 and 24 of Matthew J. Salganik's book [Bit by Bit: Social Research in the Digital Age](https://www.amazon.com/Bit-Social-Research-Digital-Age/dp/0691158649), from chapter 4.
+This post explore the **power analysis** technique using case scenarios in the exercises 21 and 24 of Matthew J. Salganik's book [Bit by Bit: Social Research in the Digital Age](https://www.amazon.com/Bit-Social-Research-Digital-Age/dp/0691158649), from chapter 4. 
+
 
 <!--more-->
 
+### Introduction
+
+Power is the probability of detecting an effect, given that the effect is really there. In other words, it is the probability of rejecting the null hypothesis when it is in fact false. For example, let’s say that we have a simple study with drug A and a placebo group, and that the drug truly is effective; the power is the probability of finding a difference between the two groups.[^ucla]
+
+So, imagine that we had a power of .8 and that this simple study was conducted many times. Having **power of .8 means that 80% of the time**, we would **get a statistically significant difference** between the drug A and placebo groups. This also means that 20% of the times that we run this experiment, we will not obtain a statistically significant effect between the two groups, even though there really is an effect in reality.
+
+Perhaps **the most common use is to determine the necessary number of subjects needed to detect an effect of a given size**. Note that trying to find the absolute, bare minimum number of subjects needed in the study is often not a good idea. Additionally, **power analysis can be used to determine power, given an effect size and the number of subjects available**. You might do this when you know, for example, that only 75 subjects are available (or that you only have the budget for 75 subjects), and you want to know if you will have enough power to justify actually doing the study. In most cases, **there is really no point to conducting a study that is seriously underpowered**. 
+
+Besides the issue of the number of necessary subjects, there are other good reasons for doing a power analysis. For example, a power analysis is often required as part of a grant proposal.  And finally, doing a power analysis is often just part of doing good research; A power analysis is a good way of making sure that you have thought through every aspect of the study and the statistical analysis before you start collecting data.
+
+### Examples
+
+#### Sample Size
+
+We'll apply *power analysis* in its case more common, to determine the necessary number of subjects to detect a given effect, in this case let's use the [`{pwr package}`](https://cran.r-project.org/web/packages/pwr/pwr.pdf) in a scenario of drug treatment. Lets consider a control group and a treatment group to COVID-19, for example. To simplify the case we assume that the recovery time for COVID-19 is normally distributed around 21.91 days (mean) and standard deviation of 5.33 days[^covid], how many subjects we will have to had to detect a treatment that can shorter the recovery in 5 days?
+
 
 ```{r simpleCase}
+# install.packages("pwr")
+library(pwr)
+library(magrittr)
+library(ggplot2)
+
+library(tidyverse)
+
 # covid recovery time (mean and sd)
 mo <- 21.91
 s0 <- 5.33
 
-# efect size: want to detect 5 day early-recovery time 
+# we want to detect 5 day early-recovery time (same standard deviation) 
 mt <- mo-5
 
 # simulation of populations
-pop <- rnorm(10000, mo, s0)
-pop2 <- rnorm(10000, mo-mt, s0)
+cntrl <- rnorm(10000, mo, s0)
+treat <- rnorm(10000, mt, s0)
+
+# lets see the populations
+data.frame(
+  recoveryTime = c(cntrl, treat),
+  group = rep(c("control","treat"), each=10000)
+) %>%
+  ggplot(aes(x=recoveryTime, fill=group, group=group))+
+  geom_histogram(alpha=.5, position = 'identity') +
+  theme_minimal()
 
 # size efect 21.91 to 16.91
-se <- (mo-mt)/s0
+# in this case (simple t.test) the effect size is the mean difference in
+# standard deviations (like z-score)
+es <- (mo-mt)/s0
 
 # sample size
-# install.packages("pwr")
-library(pwr)
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = se)
+pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
 pa
 
 smpA <- sample(pop, ceiling(pa$n))
@@ -115,5 +149,11 @@ Imagine that you have written the memo described above, and someone from the mar
 [^1]: Lewis, Randall A. and Rao, Justin M., The Unfavorable Economics of Measuring the Returns to Advertising (September 18, 2014). Available at SSRN: https://ssrn.com/abstract=2367103 or http://dx.doi.org/10.2139/ssrn.2367103
 
 [^2]: Cohen, J. (1992). A power primer. Psychological Bulletin, 112(1), 155–159. https://doi.org/10.1037/0033-2909.112.1.155
+
+[^ucla]: [Introduction to Power Analysis, UCLA](https://stats.idre.ucla.edu/other/mult-pkg/seminars/intro-power/)
+
+[^covid]: [Estimation of COVID-19 recovery and decease periods in Canada using machine learning algorithms](https://www.medrxiv.org/content/10.1101/2021.07.16.21260675v1.full)
+
+[^stats]: [Power Analysis Overview](https://www.statmethods.net/stats/power.html)
 
 <!-- dolar &#36; --> 
