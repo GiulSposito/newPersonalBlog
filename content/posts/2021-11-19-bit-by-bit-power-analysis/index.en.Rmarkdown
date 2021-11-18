@@ -43,19 +43,24 @@ Perhaps **the most common use is to determine the necessary number of subjects n
 
 Besides the issue of the number of necessary subjects, there are other good reasons for doing a power analysis. For example, a power analysis is often required as part of a grant proposal.  And finally, doing a power analysis is often just part of doing good research; A power analysis is a good way of making sure that you have thought through every aspect of the study and the statistical analysis before you start collecting data.
 
+```{r setup, echo=FALSE}
+# default chunk behavior
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache=TRUE)
+set.seed(1234) 
+```
+
+
 ### Examples
 
-#### Sample Size
+#### Finding The Sample Size
 
 We'll apply *power analysis* in its case more common, to determine the necessary number of subjects to detect a given effect, in this case let's use the [`{pwr package}`](https://cran.r-project.org/web/packages/pwr/pwr.pdf) in a scenario of drug treatment. Lets consider a control group and a treatment group to COVID-19, for example. To simplify the case we assume that the recovery time for COVID-19 is normally distributed around 21.91 days (mean) and standard deviation of 5.33 days[^covid], how many subjects we will have to had to detect a treatment that can shorter the recovery in 5 days?
 
 
-```{r simpleCase}
+```{r simpleCasePops}
 # install.packages("pwr")
 library(pwr)
-library(magrittr)
-library(ggplot2)
-
+library(broom)
 library(tidyverse)
 
 # covid recovery time (mean and sd)
@@ -65,36 +70,117 @@ s0 <- 5.33
 # we want to detect 5 day early-recovery time (same standard deviation) 
 mt <- mo-5
 
-# simulation of populations
-cntrl <- rnorm(10000, mo, s0)
-treat <- rnorm(10000, mt, s0)
+# simulation the populations
+cntrl <- rnorm(10000, mo, s0) #control
+treat <- rnorm(10000, mt, s0) #under treatment
 
-# lets see the populations
+# lets see the populations 
 data.frame(
   recoveryTime = c(cntrl, treat),
   group = rep(c("control","treat"), each=10000)
 ) %>%
   ggplot(aes(x=recoveryTime, fill=group, group=group))+
   geom_histogram(alpha=.5, position = 'identity') +
-  theme_minimal()
+  theme_minimal() +
+  labs(title = "Population Distribuition", subtitle = "Comparing control group and treatment group")
+```
 
+Geramos duas populações em que a separação da média, ou seja, o tamanho do efeito do tratamento é bem evidente. Vamos fazer a análise de poder para tentar detectar uma separação como essa, de ~5 dias.
+
+A fórmula de calculo do tamanho do efeito para ser usada neste caso é a distância entre médias em desvio padrões[^stats]:
+
+$$ d=\frac{|\mu_{control}-\mu_{treat}|}{\sigma} $$
+
+where $ \mu $ são as médias dos grupos e $ \sigma $ é o desvio padrão, que vamos considerar (para facilitar) o mesmo entre as populações. Assim podemos usar o pacote `{pwr}` para calcular o número de amostras das populações que nos garatam testar, com 80% de segurança, a nulabilidade de uma hipótese com 0.05 de significância.
+
+```{r sampleSize}
 # size efect 21.91 to 16.91
 # in this case (simple t.test) the effect size is the mean difference in
 # standard deviations (like z-score)
 es <- (mo-mt)/s0
 
-# sample size
+# Power Analysis 
 pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
 pa
+```
 
-smpA <- sample(pop, ceiling(pa$n))
-smpB <- sample(pop2, ceiling(pa$n))
+Então, o tamanho mínimo das amostras para esse caso é `r ceiling(pa$n)` indicado pelo parâmetro `n`. Vamos testar:
 
-t.test(smpA, smpB)
+```{r hypotesesTest}
+smpC <- sample(cntrl, ceiling(pa$n))
+smpT <- sample(treat, ceiling(pa$n))
+
+t <- t.test(smpT, smpC)
+t
+```
+Podemos ver que conseguimos testar a hipotese com um `p.value` de `r t$p.value`, mostrando que as amostras podem ter vindo de fato de duas populações diferentes.
+
+Para entender melhor o numero, vamos ver como o `p.value` deste caso se comporta diante de tamanho de amostras diferentes (algo como fazer o _p.hacking_):
+
+```{r phaking}
+
+# tamanhos de amostras para testarmos
+# de 3 ao numero sugerido pela power analysis + 2
+n_samples <- 3:(ceiling(pa$n)+2)
+
+# repetindo o experimento 100 vezes para cada tipo de tamanho de mostras
+iter.tests <- 1:100 %>% 
+  purrr::map_df(function(.i){
+    n_samples %>% 
+      purrr::map_df(function(n){
+      smpC <- sample(cntrl,n)
+      smpT <- sample(treat,n)
+      t.test(smpC, smpT) %>% 
+        tidy() %>% 
+        dplyr::select(p.value) %>% 
+        dplyr::mutate(sample_size=n) %>% 
+        return()
+      }) 
+  })
+
+iter.tests %>% 
+  ggplot(aes(x=as.factor(sample_size), y=p.value)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0.05, color="red", linetype="dashed")+
+  theme_minimal()
 
 
 ```
 
+Dá para perceber que o teste de hipóteses vindo de populações diferentes passa a rejeitar a hipotese nula, com 0.05 de signficancia, quando o número se aproxima do tamanho da amostra sugerida pela análise de potência. Inclusive dá pra saber com que frequência isso acontece.
+
+
+```{r}
+iter.tests %>% 
+  mutate( rejected = p.value <=0.05 ) %>% 
+  count(rejected, sample_size) %>% 
+  mutate(n=n/100) %>% 
+  filter(rejected==T) %>% 
+  ggplot(aes(x=sample_size, y=n)) +
+  geom_hline(yintercept = pa$power, color="red", linetype="dashed" ) +
+  geom_vline(xintercept = ceiling(pa$n), color="red", linetype="dashed") +
+  geom_point() + 
+  ylim(0,1) +
+  theme_minimal()
+```
+
+Da para ver que a quantidade de vezes que a gente consegue obter significancia 0.05 ao tentar rejeitar a hipótese nula ultrapassa os 80% (power parameter) quando o tamanho da amostra sugerida chega perto do número estimado pela análise de potência, como é de se esperar.
+
+#### What effect seze we can detect in a situation?
+
+O outro jeito de usar a análise de potência é para descobrir, dado um determinado cenário de analise, qual o menor tamanho de efeito que nós conseguiríamos comprovar estatísticamente. Por exemplo, imaginem que no cenário acima, tempo de recuperação da COVID-19 ($ \mu=21.9,  \sigma=5.33 $ ) se pesquisadores tivessem feito um trial com 50 pessoas, sendo 25 delas crupo de controle e 25 sob tratamento, qual é o menor efeito do tratamento que poderíamos detectar com significância estatística?
+
+Esse uso é mais direto da fórmula:
+
+```{r}
+
+# Power Analysis 
+pa <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa
+
+
+```
+Assim o tamanho do efeito que poderíamos comprovar estatisticamente é `r round(pa$h,3)`, e que neste caso seria de `r round(pa$h * s0,2)` dias ($ h*\sigma $).
 
 ```{r rlnorm}
 
@@ -107,6 +193,8 @@ print(paste("shape:", shape))
 draws3 <- rlnorm(n=1000000, location, shape)
 mean(draws3)
 sd(draws3)
+
+
 
 ```
 

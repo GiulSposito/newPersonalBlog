@@ -1,5 +1,5 @@
 ---
-title: Measuring the return on investment in onlines ad campaigns
+title: Power Analysis | Measuring the ROI in onlines ad campaigns
 author: Giuliano Sposito
 date: '2021-11-19'
 slug: 'bit-by-Bit-power-analysis'
@@ -9,8 +9,9 @@ tags:
   - rstats
   - power analysis
   - hypothesis test
+  - simulation
   - sample size
-subtitle: ''
+subtitle: 'Case Simulation'
 lastmod: '2021-11-15T17:38:47-03:00'
 draft: yes
 authorLink: ''
@@ -27,38 +28,79 @@ lightgallery: no
 license: ''
 ---
 
-This post is based in exercises 21 and 24 of Matthew J. Salganik's book [Bit by Bit: Social Research in the Digital Age](https://www.amazon.com/Bit-Social-Research-Digital-Age/dp/0691158649), from chapter 4.
+This post explore the **power analysis** technique using case scenarios in the exercises 21 and 24 of Matthew J. Salganik's book [Bit by Bit: Social Research in the Digital Age](https://www.amazon.com/Bit-Social-Research-Digital-Age/dp/0691158649), from chapter 4. 
+
 
 <!--more-->
+
+### Introduction
+
+Power is the probability of detecting an effect, given that the effect is really there. In other words, it is the probability of rejecting the null hypothesis when it is in fact false. For example, let’s say that we have a simple study with drug A and a placebo group, and that the drug truly is effective; the power is the probability of finding a difference between the two groups.[^ucla]
+
+So, imagine that we had a power of .8 and that this simple study was conducted many times. Having **power of .8 means that 80% of the time**, we would **get a statistically significant difference** between the drug A and placebo groups. This also means that 20% of the times that we run this experiment, we will not obtain a statistically significant effect between the two groups, even though there really is an effect in reality.
+
+Perhaps **the most common use is to determine the necessary number of subjects needed to detect an effect of a given size**. Note that trying to find the absolute, bare minimum number of subjects needed in the study is often not a good idea. Additionally, **power analysis can be used to determine power, given an effect size and the number of subjects available**. You might do this when you know, for example, that only 75 subjects are available (or that you only have the budget for 75 subjects), and you want to know if you will have enough power to justify actually doing the study. In most cases, **there is really no point to conducting a study that is seriously underpowered**. 
+
+Besides the issue of the number of necessary subjects, there are other good reasons for doing a power analysis. For example, a power analysis is often required as part of a grant proposal.  And finally, doing a power analysis is often just part of doing good research; A power analysis is a good way of making sure that you have thought through every aspect of the study and the statistical analysis before you start collecting data.
+
+
+
+
+### Examples
+
+#### Finding The Sample Size
+
+We'll apply *power analysis* in its case more common, to determine the necessary number of subjects to detect a given effect, in this case let's use the [`{pwr package}`](https://cran.r-project.org/web/packages/pwr/pwr.pdf) in a scenario of drug treatment. Lets consider a control group and a treatment group to COVID-19, for example. To simplify the case we assume that the recovery time for COVID-19 is normally distributed around 21.91 days (mean) and standard deviation of 5.33 days[^covid], how many subjects we will have to had to detect a treatment that can shorter the recovery in 5 days?
 
 
 
 ```r
+# install.packages("pwr")
+library(pwr)
+library(broom)
+library(tidyverse)
+
 # covid recovery time (mean and sd)
 mo <- 21.91
 s0 <- 5.33
 
-# efect size: want to detect 5 day early-recovery time 
+# we want to detect 5 day early-recovery time (same standard deviation) 
 mt <- mo-5
 
-# simulation of populations
-pop <- rnorm(10000, mo, s0)
-pop2 <- rnorm(10000, mo-mt, s0)
+# simulation the populations
+cntrl <- rnorm(10000, mo, s0) #control
+treat <- rnorm(10000, mt, s0) #under treatment
 
-# size efect 21.91 to 16.91
-se <- (mo-mt)/s0
-
-# sample size
-# install.packages("pwr")
-library(pwr)
+# lets see the populations 
+data.frame(
+  recoveryTime = c(cntrl, treat),
+  group = rep(c("control","treat"), each=10000)
+) %>%
+  ggplot(aes(x=recoveryTime, fill=group, group=group))+
+  geom_histogram(alpha=.5, position = 'identity') +
+  theme_minimal() +
+  labs(title = "Population Distribuition", subtitle = "Comparing control group and treatment group")
 ```
 
-```
-## Warning: package 'pwr' was built under R version 4.0.5
-```
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/simpleCasePops-1.png" width="672" />
+
+Geramos duas populações em que a separação da média, ou seja, o tamanho do efeito do tratamento é bem evidente. Vamos fazer a análise de poder para tentar detectar uma separação como essa, de ~5 dias.
+
+A fórmula de calculo do tamanho do efeito para ser usada neste caso é a distância entre médias em desvio padrões[^stats]:
+
+$$ d=\frac{|\mu_{control}-\mu_{treat}|}{\sigma} $$
+
+where $ \mu $ são as médias dos grupos e $ \sigma $ é o desvio padrão, que vamos considerar (para facilitar) o mesmo entre as populações. Assim podemos usar o pacote `{pwr}` para calcular o número de amostras das populações que nos garatam testar, com 80% de segurança, a nulabilidade de uma hipótese com 0.05 de significância.
+
 
 ```r
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = se)
+# size efect 21.91 to 16.91
+# in this case (simple t.test) the effect size is the mean difference in
+# standard deviations (like z-score)
+es <- (mo-mt)/s0
+
+# Power Analysis 
+pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
 pa
 ```
 
@@ -75,27 +117,112 @@ pa
 ## NOTE: same sample sizes
 ```
 
-```r
-smpA <- sample(pop, ceiling(pa$n))
-smpB <- sample(pop2, ceiling(pa$n))
+Então, o tamanho mínimo das amostras para esse caso é 18 indicado pelo parâmetro `n`. Vamos testar:
 
-t.test(smpA, smpB)
+
+```r
+smpC <- sample(cntrl, ceiling(pa$n))
+smpT <- sample(treat, ceiling(pa$n))
+
+t <- t.test(smpT, smpC)
+t
 ```
 
 ```
 ## 
 ## 	Welch Two Sample t-test
 ## 
-## data:  smpA and smpB
-## t = 9.0987, df = 33.139, p-value = 1.569e-10
+## data:  smpT and smpC
+## t = -2.1779, df = 22.83, p-value = 0.04
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  11.68256 18.41041
+##  -8.3533209 -0.2132659
 ## sample estimates:
 ## mean of x mean of y 
-## 21.568124  6.521641
+##  17.03722  21.32051
+```
+Podemos ver que conseguimos testar a hipotese com um `p.value` de 0.0399981, mostrando que as amostras podem ter vindo de fato de duas populações diferentes.
+
+Para entender melhor o numero, vamos ver como o `p.value` deste caso se comporta diante de tamanho de amostras diferentes (algo como fazer o _p.hacking_):
+
+
+```r
+# tamanhos de amostras para testarmos
+# de 3 ao numero sugerido pela power analysis + 2
+n_samples <- 3:(ceiling(pa$n)+2)
+
+# repetindo o experimento 100 vezes para cada tipo de tamanho de mostras
+iter.tests <- 1:100 %>% 
+  purrr::map_df(function(.i){
+    n_samples %>% 
+      purrr::map_df(function(n){
+      smpC <- sample(cntrl,n)
+      smpT <- sample(treat,n)
+      t.test(smpC, smpT) %>% 
+        tidy() %>% 
+        dplyr::select(p.value) %>% 
+        dplyr::mutate(sample_size=n) %>% 
+        return()
+      }) 
+  })
+
+iter.tests %>% 
+  ggplot(aes(x=as.factor(sample_size), y=p.value)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0.05, color="red", linetype="dashed")+
+  theme_minimal()
 ```
 
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/phaking-1.png" width="672" />
+
+Dá para perceber que o teste de hipóteses vindo de populações diferentes passa a rejeitar a hipotese nula, com 0.05 de signficancia, quando o número se aproxima do tamanho da amostra sugerida pela análise de potência. Inclusive dá pra saber com que frequência isso acontece.
+
+
+
+```r
+iter.tests %>% 
+  mutate( rejected = p.value <=0.05 ) %>% 
+  count(rejected, sample_size) %>% 
+  mutate(n=n/100) %>% 
+  filter(rejected==T) %>% 
+  ggplot(aes(x=sample_size, y=n)) +
+  geom_hline(yintercept = pa$power, color="red", linetype="dashed" ) +
+  geom_vline(xintercept = ceiling(pa$n), color="red", linetype="dashed") +
+  geom_point() + 
+  ylim(0,1) +
+  theme_minimal()
+```
+
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+
+Da para ver que a quantidade de vezes que a gente consegue obter significancia 0.05 ao tentar rejeitar a hipótese nula ultrapassa os 80% (power parameter) quando o tamanho da amostra sugerida chega perto do número estimado pela análise de potência, como é de se esperar.
+
+#### What effect seze we can detect in a situation?
+
+O outro jeito de usar a análise de potência é para descobrir, dado um determinado cenário de analise, qual o menor tamanho de efeito que nós conseguiríamos comprovar estatísticamente. Por exemplo, imaginem que no cenário acima, tempo de recuperação da COVID-19 ($ \mu=21.9,  \sigma=5.33 $ ) se pesquisadores tivessem feito um trial com 50 pessoas, sendo 25 delas crupo de controle e 25 sob tratamento, qual é o menor efeito do tratamento que poderíamos detectar com significância estatística?
+
+Esse uso é mais direto da fórmula:
+
+
+```r
+# Power Analysis 
+pa <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa
+```
+
+```
+## 
+##      Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+## 
+##               h = 0.7924125
+##               n = 25
+##       sig.level = 0.05
+##           power = 0.8
+##     alternative = two.sided
+## 
+## NOTE: same sample sizes
+```
+Assim o tamanho do efeito que poderíamos comprovar estatisticamente é 0.792, e que neste caso seria de 4.22 dias ($ h*\sigma $).
 
 
 ```r
@@ -124,7 +251,7 @@ mean(draws3)
 ```
 
 ```
-## [1] 9.995123
+## [1] 10.00364
 ```
 
 ```r
@@ -132,7 +259,7 @@ sd(draws3)
 ```
 
 ```
-## [1] 4.992182
+## [1] 5.016131
 ```
 
 
@@ -174,5 +301,11 @@ Imagine that you have written the memo described above, and someone from the mar
 [^1]: Lewis, Randall A. and Rao, Justin M., The Unfavorable Economics of Measuring the Returns to Advertising (September 18, 2014). Available at SSRN: https://ssrn.com/abstract=2367103 or http://dx.doi.org/10.2139/ssrn.2367103
 
 [^2]: Cohen, J. (1992). A power primer. Psychological Bulletin, 112(1), 155–159. https://doi.org/10.1037/0033-2909.112.1.155
+
+[^ucla]: [Introduction to Power Analysis, UCLA](https://stats.idre.ucla.edu/other/mult-pkg/seminars/intro-power/)
+
+[^covid]: [Estimation of COVID-19 recovery and decease periods in Canada using machine learning algorithms](https://www.medrxiv.org/content/10.1101/2021.07.16.21260675v1.full)
+
+[^stats]: [Power Analysis Overview](https://www.statmethods.net/stats/power.html)
 
 <!-- dolar &#36; --> 
