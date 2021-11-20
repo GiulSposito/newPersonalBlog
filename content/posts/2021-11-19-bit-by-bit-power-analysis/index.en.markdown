@@ -30,6 +30,11 @@ license: ''
 
 This post explore the **power analysis** technique using case scenarios in the exercises 21 and 24 of Matthew J. Salganik's book [Bit by Bit: Social Research in the Digital Age](https://www.amazon.com/Bit-Social-Research-Digital-Age/dp/0691158649), from chapter 4. 
 
+This activity will give you practice with power analysis, creating simulations, and communicating your results with words and graphs. It should help you conduct power analysis for any kind of experiment, not just experiments designed to estimate ROI. This activity assumes that you have some experience with statistical testing and power analysis. If you are not familiar with power analysis, I recommend that you read “A Power Primer” by Cohen (1992)[^2].
+
+This activity was inspired by a lovely paper by Lewis and Rao (2015)[^1], which vividly illustrates a fundamental statistical limitation of even massive experiments. Their paper—which originally had the provocative title “On the Near-Impossibility of Measuring the Returns to Advertising”—shows how difficult it is to measure the return on investment of online ads, even with digital experiments involving millions of customers. More generally, Lewis and Rao (2015) illustrate a fundamental statistical fact that is particularly important for digital-age experiments: it is hard to estimate small treatment effects amidst noisy outcome data.
+
+
 
 <!--more-->
 
@@ -64,17 +69,17 @@ library(tidyverse)
 mo <- 21.91
 s0 <- 5.33
 
-# we want to detect 5 day early-recovery time (same standard deviation) 
+# we want to detect 5 day early-recovery time (at same standard deviation) 
 mt <- mo-5
 
 # simulation the populations
-cntrl <- rnorm(10000, mo, s0) #control
-treat <- rnorm(10000, mt, s0) #under treatment
+popCntrl <- rnorm(10000, mo, s0) #control
+popTreat <- rnorm(10000, mt, s0) #under treatment
 
 # lets see the populations 
 data.frame(
-  recoveryTime = c(cntrl, treat),
-  group = rep(c("control","treat"), each=10000)
+  recoveryTime = c(popCntrl, popTreat),
+  group = rep(c("control","popTreat"), each=10000)
 ) %>%
   ggplot(aes(x=recoveryTime, fill=group, group=group))+
   geom_histogram(alpha=.5, position = 'identity') +
@@ -88,7 +93,7 @@ Geramos duas populações em que a separação da média, ou seja, o tamanho do 
 
 A fórmula de calculo do tamanho do efeito para ser usada neste caso é a distância entre médias em desvio padrões[^stats]:
 
-$$ d=\frac{|\mu_{control}-\mu_{treat}|}{\sigma} $$
+$$ d=\frac{|\mu_{control}-\mu_{popTreat}|}{\sigma} $$
 
 where $ \mu $ são as médias dos grupos e $ \sigma $ é o desvio padrão, que vamos considerar (para facilitar) o mesmo entre as populações. Assim podemos usar o pacote `{pwr}` para calcular o número de amostras das populações que nos garatam testar, com 80% de segurança, a nulabilidade de uma hipótese com 0.05 de significância.
 
@@ -121,8 +126,8 @@ Então, o tamanho mínimo das amostras para esse caso é 18 indicado pelo parâm
 
 
 ```r
-smpC <- sample(cntrl, ceiling(pa$n))
-smpT <- sample(treat, ceiling(pa$n))
+smpC <- sample(popCntrl, ceiling(pa$n))
+smpT <- sample(popTreat, ceiling(pa$n))
 
 t <- t.test(smpT, smpC)
 t
@@ -141,6 +146,7 @@ t
 ## mean of x mean of y 
 ##  17.03722  21.32051
 ```
+
 Podemos ver que conseguimos testar a hipotese com um `p.value` de 0.0399981, mostrando que as amostras podem ter vindo de fato de duas populações diferentes.
 
 Para entender melhor o numero, vamos ver como o `p.value` deste caso se comporta diante de tamanho de amostras diferentes (algo como fazer o _p.hacking_):
@@ -151,26 +157,30 @@ Para entender melhor o numero, vamos ver como o `p.value` deste caso se comporta
 # de 3 ao numero sugerido pela power analysis + 2
 n_samples <- 3:(ceiling(pa$n)+2)
 
-# repetindo o experimento 100 vezes para cada tipo de tamanho de mostras
+# repetindo o experimento 100 vezes
 iter.tests <- 1:100 %>% 
-  purrr::map_df(function(.i){
+  map_df(function(.i){
+    # para cada tamanho de amostra aplicamos t.test 
     n_samples %>% 
-      purrr::map_df(function(n){
-      smpC <- sample(cntrl,n)
-      smpT <- sample(treat,n)
-      t.test(smpC, smpT) %>% 
+      map_df(function(n){
+      t.test(sample(popCntrl,n), sample(popTreat,n)) %>% 
         tidy() %>% 
-        dplyr::select(p.value) %>% 
-        dplyr::mutate(sample_size=n) %>% 
+        select(p.value) %>% 
+        mutate(sample_size=n) %>% 
         return()
       }) 
   })
 
+# plotando os p.values encontrado para cada tamanho de amostra diferente
 iter.tests %>% 
   ggplot(aes(x=as.factor(sample_size), y=p.value)) +
   geom_boxplot() +
   geom_hline(yintercept = 0.05, color="red", linetype="dashed")+
-  theme_minimal()
+  theme_minimal() + 
+  labs(title = "Sample size effect in P-Value",
+       subtitle = "P-Value distribution in 100 t.test at different samples sizes",
+       y = "p.value distribution",
+       x = "sample size")
 ```
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/phaking-1.png" width="672" />
@@ -180,24 +190,30 @@ Dá para perceber que o teste de hipóteses vindo de populações diferentes pas
 
 
 ```r
+# encontra qual a propoção de null hypothesis rejected em cada tamanho de amostra
 iter.tests %>% 
   mutate( rejected = p.value <=0.05 ) %>% 
   count(rejected, sample_size) %>% 
-  mutate(n=n/100) %>% 
-  filter(rejected==T) %>% 
+  mutate(n=n/100) %>% # pct
+  filter(rejected==T) %>% # visualizando a porporcao por tamanho de amostra
   ggplot(aes(x=sample_size, y=n)) +
+  # linha onde está parametro "power"
   geom_hline(yintercept = pa$power, color="red", linetype="dashed" ) +
+  # quantidade de amostras sugerida para encontrar o effect size
   geom_vline(xintercept = ceiling(pa$n), color="red", linetype="dashed") +
   geom_point() + 
   ylim(0,1) +
-  theme_minimal()
+  theme_minimal() +
+  labs(title = "Power",
+       subtitle="Probability that your test will find a true statistically significant",
+       x="sample size", y="power")
 ```
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 Da para ver que a quantidade de vezes que a gente consegue obter significancia 0.05 ao tentar rejeitar a hipótese nula ultrapassa os 80% (power parameter) quando o tamanho da amostra sugerida chega perto do número estimado pela análise de potência, como é de se esperar.
 
-#### What effect seze we can detect in a situation?
+#### What effect size we can detect in a situation?
 
 O outro jeito de usar a análise de potência é para descobrir, dado um determinado cenário de analise, qual o menor tamanho de efeito que nós conseguiríamos comprovar estatísticamente. Por exemplo, imaginem que no cenário acima, tempo de recuperação da COVID-19 ($ \mu=21.9,  \sigma=5.33 $ ) se pesquisadores tivessem feito um trial com 50 pessoas, sendo 25 delas crupo de controle e 25 sob tratamento, qual é o menor efeito do tratamento que poderíamos detectar com significância estatística?
 
@@ -206,8 +222,8 @@ Esse uso é mais direto da fórmula:
 
 ```r
 # Power Analysis 
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
-pa
+pa2 <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa2
 ```
 
 ```
@@ -222,50 +238,13 @@ pa
 ## 
 ## NOTE: same sample sizes
 ```
-Assim o tamanho do efeito que poderíamos comprovar estatisticamente é 0.792, e que neste caso seria de 4.22 dias ($ h*\sigma $).
+
+Assim o tamanho do efeito que poderíamos comprovar estatisticamente é 0.938, e que neste caso seria de 5 dias ($ h*\sigma $).
 
 
-```r
-m <- 10
-s <- 5
-location <- log(m^2 / sqrt(s^2 + m^2))
-shape <- sqrt(log(1 + (s^2 / m^2)))
-print(paste("location:", location))
-```
+### Case from bit-by-bit book
 
-```
-## [1] "location: 2.19101331733694"
-```
-
-```r
-print(paste("shape:", shape))
-```
-
-```
-## [1] "shape: 0.472380727077439"
-```
-
-```r
-draws3 <- rlnorm(n=1000000, location, shape)
-mean(draws3)
-```
-
-```
-## [1] 10.00364
-```
-
-```r
-sd(draws3)
-```
-
-```
-## [1] 5.016131
-```
-
-
-21
-
-Imagine that you are working as a data scientist at a tech company. Someone from the marketing department asks for your help in evaluating an experiment that they are planning in order to measure the return on investment (ROI) for a new online ad campaign. ROI is defined as the net profit from the campaign divided by the cost of the campaign. For example, a campaign that had no effect on sales would have an ROI of −100%; a campaign where profits generated were equal to costs would have an ROI of 0; and a campaign where profits generated were double the cost would have an ROI of 200%.
+Imagine that you are working as a data scientist at a tech company. Someone from the marketing department asks for your help in evaluating an experiment that they are planning in order to measure the return on investment (ROI) for a new online ad campaign. **ROI is defined as the net profit from the campaign divided by the cost of the campaign**. For example, a campaign that had no effect on sales would have an ROI of −100%; a campaign where profits generated were equal to costs would have an ROI of 0; and a campaign where profits generated were double the cost would have an ROI of 200%.
 
 Before launching the experiment, the marketing department provides you with the following information based on their earlier research (in fact, these values are typical of the real online ad campaigns reported in Lewis and Rao (2015)[^1]):
 
@@ -283,13 +262,21 @@ Write a memo evaluating this proposed experiment. Your memo should use evidence 
 A good memo will address this specific case; a better memo will generalize from this case in one way (e.g., show how the decision changes as a function of the size of the effect of the campaign); and a great memo will present a fully generalized result. Your memo should use graphs to help illustrate
 your results.
 
+
+{{< admonition type=tip title="Hints" open=true >}}
 Here are two hints. First, the marketing department might have provided you with some unnecessary information, and they might have failed to provide you with some necessary information. Second, if you are using R, be aware that [the rlnorm() function does not work the way that many people expect](https://msalganik.wordpress.com/2017/01/21/making-sense-of-the-rlnorm-function-in-r/).
+{{< /admonition >}}
 
-This activity will give you practice with power analysis, creating simulations, and communicating your results with words and graphs. It should help you conduct power analysis for any kind of experiment, not just experiments designed to estimate ROI. This activity assumes that you have some experience
-with statistical testing and power analysis. If you are not familiar with power analysis, I recommend that you read “A Power Primer” by Cohen (1992)[^2].
 
-This activity was inspired by a lovely paper by Lewis and Rao (2015)[^1], which vividly illustrates a fundamental statistical limitation of even massive experiments. Their paper—which originally had the provocative title “On the Near-Impossibility of Measuring the Returns to Advertising”—shows how
-difficult it is to measure the return on investment of online ads, even with digital experiments involving millions of customers. More generally, Lewis and Rao (2015) illustrate a fundamental statistical fact that is particularly important for digital-age experiments: it is hard to estimate small treatment effects amidst noisy outcome data.
+
+
+
+
+
+
+21
+
+
 
 24
 
