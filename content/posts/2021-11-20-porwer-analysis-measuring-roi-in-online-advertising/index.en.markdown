@@ -1,0 +1,90 @@
+---
+title: Porwer Analysis | Measuring the ROI in onlines AD campaigns
+author: 'Giuliano Sposito'
+date: '2021-11-20'
+slug: 'bit-by-Bit-power-analysis-02-02'
+categories:
+  - data science
+tags:
+  - rstats
+  - power analysis
+  - hypothesis test
+  - simulation
+  - sample size
+subtitle: 'Power Analysis - Part 02 - Bit-by-bit Book'
+lastmod: '2021-11-20T10:46:20-03:00'
+authorLink: ''
+description: ''
+hiddenFromHomePage: no
+hiddenFromSearch: no
+featuredImage: 'images/guide_to_facebook-ads01.png'
+featuredImagePreview: 'images/facebook-ads-scaled.png'
+toc:
+  enable: yes
+math:
+  enable: yes
+lightgallery: no
+license: ''
+draft: yes
+---
+
+This post explore the **power analysis** technique using case scenarios in the exercises 21 and 24 of Matthew J. Salganik's book [Bit by Bit: Social Research in the Digital Age](https://www.amazon.com/Bit-Social-Research-Digital-Age/dp/0691158649), from chapter 4. 
+
+<!--more-->
+
+### Case from bit-by-bit book
+
+This activity will give you practice with power analysis, creating simulations, and communicating your results with words and graphs. It should help you conduct power analysis for any kind of experiment, not just experiments designed to estimate ROI. This activity assumes that you have some experience with statistical testing and power analysis. If you are not familiar with power analysis, I recommend that you read “A Power Primer” by Cohen (1992)[^2].
+
+This activity was inspired by a lovely paper by Lewis and Rao (2015)[^1], which vividly illustrates a fundamental statistical limitation of even massive experiments. Their paper—which originally had the provocative title “On the Near-Impossibility of Measuring the Returns to Advertising”—shows how difficult it is to measure the return on investment of online ads, even with digital experiments involving millions of customers. More generally, Lewis and Rao (2015) illustrate a fundamental statistical fact that is particularly important for digital-age experiments: it is hard to estimate small treatment effects amidst noisy outcome data.
+
+
+#### Scenario
+
+Imagine that you are working as a data scientist at a tech company. Someone from the marketing department asks for your help in evaluating an experiment that they are planning in order to measure the return on investment (ROI) for a new online ad campaign. **ROI is defined as the net profit from the campaign divided by the cost of the campaign**. For example, a campaign that had no effect on sales would have an ROI of −100%; a campaign where profits generated were equal to costs would have an ROI of 0; and a campaign where profits generated were double the cost would have an ROI of 200%.
+
+Before launching the experiment, the marketing department provides you with the following information based on their earlier research (in fact, these values are typical of the real online ad campaigns reported in Lewis and Rao (2015)[^1]):
+
+* The mean sales per customer follows a log-normal distribution with a mean of `$7` and a standard deviation of `$75`.
+* The campaign is expected to increase sales by `$0.35` per customer, which corresponds to an increase in profit of `$0.175` per customer.
+* The planned size of the experiment is 200,000 people: half in the treatment group and half in the control group.
+* The cost of the campaign is `$0.14` per participant.
+* The expected ROI for the campaign is 25% [(0.175 − 0.14)/0.14]. In other words, the marketing department believes that for each 100 dollars spent on marketing, the company will earn an additional `$25` in profit.
+
+#### Questions
+
+Write a memo evaluating this proposed experiment. Your memo should **use evidence from a simulation that you create**, and it should address two major issues: 
+
+1. Would you recommend launching this experiment as planned? If so, why? If not, why not? Be sure to be clear about the criteria that you are using to make this decision. 
+1. What sample size would you recommend for this experiment? Again please be sure to be clear about the criteria that you are using to make this decision.
+
+A good memo will address this specific case; a better memo will generalize from this case in one way (e.g., show how the decision changes as a function of the size of the effect of the campaign); and a great memo will present a fully generalized result. Your memo should use graphs to help illustrate
+your results.
+
+{{< admonition type=tip title="Hints" open=true >}}
+Here are two hints. First, the marketing department might have provided you with some unnecessary information, and they might have failed to provide you with some necessary information. Second, if you are using R, be aware that [the rlnorm() function does not work the way that many people expect](https://msalganik.wordpress.com/2017/01/21/making-sense-of-the-rlnorm-function-in-r/).
+{{< /admonition >}}
+
+###
+
+
+
+
+
+
+
+
+
+21
+
+
+
+24
+
+Imagine that you have written the memo described above, and someone from the marketing department provides one piece of new information: they expect a 0.4 correlation between sales before and after the experiment. How does this change the recommendations in your memo? (Hint: see section 4.6.2 for more on the difference-of-means estimator and the difference-in-differences estimator.)
+
+### References
+
+[^1]: Lewis, Randall A. and Rao, Justin M., The Unfavorable Economics of Measuring the Returns to Advertising (September 18, 2014). Available at SSRN: https://ssrn.com/abstract=2367103 or http://dx.doi.org/10.2139/ssrn.2367103
+
+[^2]: Cohen, J. (1992). A power primer. Psychological Bulletin, 112(1), 155–159. https://doi.org/10.1037/0033-2909.112.1.155
