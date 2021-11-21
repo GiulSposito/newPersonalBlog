@@ -143,7 +143,7 @@ t
 ##  17.03722  21.32051
 ```
 
-As you see, we can test the hypothesis with a `p.value` of 0.0399981, showing that the two sample came indeed from different populations.
+As you see, we can test the hypothesis with a `p.value` of 0.04, showing that the two sample came indeed from different populations.
 
 To understand this analysis, lets see how the `p.value` behavior in this case, for different samples sizes (something like to a [_p.hacking_](https://scienceinthenewsroom.org/resources/statistical-p-hacking-explained/)):
 
@@ -182,7 +182,7 @@ iter.tests %>%
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/phaking-1.png" width="672" />
 
-You can see that the hypothesis test fo two samples comming from different populations, start to indicate a statistical significance of 0.05 to reject the null hypothesis when the sample size get close the number suggested by the power analysis (18), also we can check the frequency which a _t.test_ finds statistical significance for each sample size.
+You can see that the hypothesis test of two samples comming from different populations, start to indicate a statistical significance of 0.05 to reject the null hypothesis when the sample size get close the number suggested by the power analysis (18), also we can check the frequency which a _t.test_ finds statistical significance for each sample size.
 
 
 ```r
