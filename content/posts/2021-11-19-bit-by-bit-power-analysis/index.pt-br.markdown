@@ -98,24 +98,24 @@ Onde $ \mu $ são as respectivas médias do grupos e $ \sigma $ é o desvio padr
 es <- (mo-mt)/s0
 
 # Power Analysis 
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
+pa <- pwr.t.test(sig.level = 0.05, power = .8, d = es)
 pa
 ```
 
 ```
 ## 
-##      Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+##      Two-sample t test power calculation 
 ## 
-##               h = 0.9380863
-##               n = 17.8382
+##               n = 18.84853
+##               d = 0.9380863
 ##       sig.level = 0.05
 ##           power = 0.8
 ##     alternative = two.sided
 ## 
-## NOTE: same sample sizes
+## NOTE: n is number in *each* group
 ```
 
-Obtemos o tamanho mínimo da amostra para este caso como 18 indicado pelo parâmetro `n` no valor de retorno. Vamos checar:
+Obtemos o tamanho mínimo da amostra para este caso como 19 indicado pelo parâmetro `n` no valor de retorno. Vamos checar:
 
 
 ```r
@@ -133,16 +133,16 @@ t
 ## 	Welch Two Sample t-test
 ## 
 ## data:  smpT and smpC
-## t = -2.1779, df = 22.83, p-value = 0.04
+## t = -2.193, df = 26.52, p-value = 0.03727
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -8.3533209 -0.2132659
+##  -8.2565512 -0.2710736
 ## sample estimates:
 ## mean of x mean of y 
-##  17.03722  21.32051
+##  16.77456  21.03837
 ```
 
-Como você pode ver, podemos testar a hipótese com um _p.value_ de 0.04, mostrando que as duas amostras vieram de fato de populações diferentes.
+Como você pode ver, podemos testar a hipótese com um _p.value_ de 0.0373, mostrando que as duas amostras vieram de fato de populações diferentes.
 
 Para entender essa análise, vamos ver como o comportamento do _p.value_ neste caso, para diferentes tamanhos de amostras vamos repetir a amostragem e o teste estatístico 100 vezes e observar a distribuição do seu valor.
 
@@ -181,7 +181,7 @@ iter.tests %>%
 
 <img src="/posts/2021-11-19-bit-by-bit-power-analysis/index.pt-br_files/figure-html/phaking-1.png" width="672" />
 
-Você pode ver que o teste de hipótese de duas amostras provenientes de populações diferentes começa a indicar uma significância estatística de 0,05 (na maioria dos casos) para rejeitar a _hipótese nula_ quando o tamanho da amostra se aproxima do número sugerido pela análise de poder (18), também podemos medir a frequência com que um _t.test_ encontra significância estatística para cada tamanho de amostra diferente.
+Você pode ver que o teste de hipótese de duas amostras provenientes de populações diferentes começa a indicar uma significância estatística de 0,05 (na maioria dos casos) para rejeitar a _hipótese nula_ quando o tamanho da amostra se aproxima do número sugerido pela análise de poder (19), também podemos medir a frequência com que um _t.test_ encontra significância estatística para cada tamanho de amostra diferente.
 
 
 ```r
@@ -208,7 +208,7 @@ iter.tests %>%
 
 <img src="/posts/2021-11-19-bit-by-bit-power-analysis/index.pt-br_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
-A frequência com que o _t.test_ passa a obter 0,05 como _p.value_ para rejeitar a _hipótese nula_ ultrapassa 80% (_parâmetro de potência_) quando o tamanho da amostra chega perto do 18, como era e se esperar, uma vez que realizamos a _análise de potência_ com 0,8 como parâmetro _potência_.
+A frequência com que o _t.test_ passa a obter 0,05 como _p.value_ para rejeitar a _hipótese nula_ ultrapassa 80% (_parâmetro de potência_) quando o tamanho da amostra chega perto do 19, como era e se esperar, uma vez que realizamos a _análise de potência_ com 0,8 como parâmetro _potência_.
 
 #### Que tamanho de efeito podemos detectar em uma situação?
 
@@ -219,21 +219,21 @@ Usando o mesmo pacote e função, mas agora, passando nos parâmetros o tamanho 
 
 ```r
 # Power Analysis 
-pa2 <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa2 <- pwr.t.test(sig.level = 0.05, power = .8, n=25)
 pa2
 ```
 
 ```
 ## 
-##      Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+##      Two-sample t test power calculation 
 ## 
-##               h = 0.7924125
 ##               n = 25
+##               d = 0.8087121
 ##       sig.level = 0.05
 ##           power = 0.8
 ##     alternative = two.sided
 ## 
-## NOTE: same sample sizes
+## NOTE: n is number in *each* group
 ```
 
 Assim, obtemos que o _tamanho do efeito_ que podemos detectar estatisticamente é de 0.938, que neste caso representa 5 em dias de recuperação ($ h * \sigma $).

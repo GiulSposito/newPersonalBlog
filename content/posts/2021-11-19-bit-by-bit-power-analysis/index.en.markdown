@@ -98,25 +98,25 @@ where $ \mu $ are the respective group means and $ \sigma $ is the common standa
 es <- (mo-mt)/s0
 
 # Power Analysis 
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
+pa <- pwr.t.test(sig.level = 0.05, power = .8, d = es)
 pa
 ```
 
 ```
 ## 
-##      Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+##      Two-sample t test power calculation 
 ## 
-##               h = 0.9380863
-##               n = 17.8382
+##               n = 18.84853
+##               d = 0.9380863
 ##       sig.level = 0.05
 ##           power = 0.8
 ##     alternative = two.sided
 ## 
-## NOTE: same sample sizes
+## NOTE: n is number in *each* group
 ```
 
 
-We get the minimal sample size to this case as 18 indicated by the parameter `n` in the return value. Lets check:
+We get the minimal sample size to this case as 19 indicated by the parameter `n` in the return value. Lets check:
 
 
 ```r
@@ -134,16 +134,16 @@ t
 ## 	Welch Two Sample t-test
 ## 
 ## data:  smpT and smpC
-## t = -2.1779, df = 22.83, p-value = 0.04
+## t = -2.193, df = 26.52, p-value = 0.03727
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -8.3533209 -0.2132659
+##  -8.2565512 -0.2710736
 ## sample estimates:
 ## mean of x mean of y 
-##  17.03722  21.32051
+##  16.77456  21.03837
 ```
 
-As you see, we can test the hypothesis with a `p.value` of 0.04, showing that the two sample came indeed from different populations.
+As you see, we can test the hypothesis with a `p.value` of 0.0373, showing that the two sample came indeed from different populations.
 
 To understand this analysis, lets see how the `p.value` behavior in this case, for different samples sizes (something like to a [_p.hacking_](https://scienceinthenewsroom.org/resources/statistical-p-hacking-explained/)):
 
@@ -182,7 +182,7 @@ iter.tests %>%
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/phaking-1.png" width="672" />
 
-You can see that the hypothesis test of two samples comming from different populations, start to indicate a statistical significance of 0.05 to reject the null hypothesis when the sample size get close the number suggested by the power analysis (18), also we can check the frequency which a _t.test_ finds statistical significance for each sample size.
+You can see that the hypothesis test of two samples comming from different populations, start to indicate a statistical significance of 0.05 to reject the null hypothesis when the sample size get close the number suggested by the power analysis (19), also we can check the frequency which a _t.test_ finds statistical significance for each sample size.
 
 
 ```r
@@ -209,7 +209,7 @@ iter.tests %>%
 
 <img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
-The frequency that a _t.test_ can get 0.05 as _p.value_ to reject the null hypothesis surpass 80% (_power parameter_) when the sample size pass 18, as expected, once we perform the _power analysis_ with 0.8 as _power_ parameter.
+The frequency that a _t.test_ can get 0.05 as _p.value_ to reject the null hypothesis surpass 80% (_power parameter_) when the sample size pass 19, as expected, once we perform the _power analysis_ with 0.8 as _power_ parameter.
 
 #### What effect size we can detect in a situation?
 
@@ -220,21 +220,21 @@ Using the same package and function, but now, passing in the parameters the samp
 
 ```r
 # Power Analysis 
-pa2 <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa2 <- pwr.t.test(sig.level = 0.05, power = .8, n=25)
 pa2
 ```
 
 ```
 ## 
-##      Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+##      Two-sample t test power calculation 
 ## 
-##               h = 0.7924125
 ##               n = 25
+##               d = 0.8087121
 ##       sig.level = 0.05
 ##           power = 0.8
 ##     alternative = two.sided
 ## 
-## NOTE: same sample sizes
+## NOTE: n is number in *each* group
 ```
 
 So, we get the _effect size_ that we can statistically detect of a value 0.938, that in this case represents 5 days of recovery ($ h*\sigma $).

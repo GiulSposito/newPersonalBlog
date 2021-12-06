@@ -98,7 +98,7 @@ Onde $ \mu $ são as respectivas médias do grupos e $ \sigma $ é o desvio padr
 es <- (mo-mt)/s0
 
 # Power Analysis 
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
+pa <- pwr.t.test(sig.level = 0.05, power = .8, d = es)
 pa
 ```
 
@@ -189,13 +189,13 @@ Usando o mesmo pacote e função, mas agora, passando nos parâmetros o tamanho 
 ```{r}
 
 # Power Analysis 
-pa2 <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa2 <- pwr.t.test(sig.level = 0.05, power = .8, n=25)
 pa2
 
 
 ```
 
-Assim, obtemos que o _tamanho do efeito_ que podemos detectar estatisticamente é de `r round(pa$h, 3)`, que neste caso representa `r round(pa$h*s0,2)` em dias de recuperação ($ h * \sigma $).
+Assim, obtemos que o _tamanho do efeito_ que podemos detectar estatisticamente é de `r round(pa$d, 3)`, que neste caso representa `r round(pa$d*s0,2)` em dias de recuperação ($ h * \sigma $).
 
 ### Conclusão
 

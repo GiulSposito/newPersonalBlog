@@ -98,7 +98,7 @@ where $ \mu $ are the respective group means and $ \sigma $ is the common standa
 es <- (mo-mt)/s0
 
 # Power Analysis 
-pa <- pwr.2p.test(sig.level = 0.05, power = .8, h = es)
+pa <- pwr.t.test(sig.level = 0.05, power = .8, d = es)
 pa
 ```
 
@@ -190,13 +190,13 @@ Using the same package and function, but now, passing in the parameters the samp
 ```{r}
 
 # Power Analysis 
-pa2 <- pwr.2p.test(sig.level = 0.05, power = .8, n=25)
+pa2 <- pwr.t.test(sig.level = 0.05, power = .8, n=25)
 pa2
 
 
 ```
 
-So, we get the _effect size_ that we can statistically detect of a value `r round(pa$h,3)`, that in this case represents `r round(pa$h * s0,2)` days of recovery ($ h*\sigma $).
+So, we get the _effect size_ that we can statistically detect of a value `r round(pa$d,3)`, that in this case represents `r round(pa$d * s0,2)` days of recovery ($ h*\sigma $).
 
 ### Conclusion
 
