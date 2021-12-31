@@ -34,7 +34,7 @@ Este _post_ explora a técnica de análise de potência. Potência é a probabil
 
 ### Introdução
 
-Então, imagine que tivéssemos uma potência de 0,8 e que este estudo simples foi realizado muitas vezes. Tendo **potênica de 0,8 significa que 80% do tempo**, obteríamos **uma diferença estatisticamente significativa** entre os grupos de medicamento A e placebo. Isso também significa que **20% das vezes que executamos esta experiência, não obteremos um efeito estatisticamente significativo entre os dois grupos, embora realmente haja um efeito na realidade&&.
+Então, imagine que tivéssemos uma potência de 0,8 e que este estudo simples foi realizado muitas vezes. Tendo **potênica de 0,8 significa que 80% do tempo**, obteríamos **uma diferença estatisticamente significativa** entre os grupos de medicamento A e placebo. Isso também significa que **20% das vezes que executamos esta experiência, não obteremos um efeito estatisticamente significativo** entre os dois grupos, embora realmente haja um efeito na realidade.
 
 Talvez **o uso mais comum seja determinar o número necessário de amostras para detectar um efeito de um determinado tamanho**. Observe que tentar encontrar o número mínimo absoluto de amostras necessários no estudo muitas vezes não é uma boa ideia. Por outro lado, **a análise de potênica pode ser usada para determinar a potênica, dado um tamanho de efeito e o número de amostras disponíveis**. Você pode fazer isso quando sabe, por exemplo, que apenas 75 amostras estão disponíveis para a análise (ou que você só tem orçamento só para 75 amostragens) e deseja saber se terá potênica suficiente para justificar a realização do estudo. Em muitos casos, **realmente não há sentido em conduzir um estudo seriamente insuficiente**.
 
