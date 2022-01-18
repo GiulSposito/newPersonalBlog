@@ -32,7 +32,7 @@ license: ''
 
 
 
-Can you image and real business case where you apply machine learning to build and Random Forest classifier where its accuracy of the model isn't the main metric to pay attention? In real case scenarios the cost and benefits can affect a model in different aspects, this post exercises a business case where the return of an investment is dependent of the behavior of the precision metric.
+Can you image and real business case where you apply machine learning to build and Random Forest classifier and its accuracy of the model isn't the (only) main metric to pay attention? In real case scenarios the cost and benefits can affect a model in different aspects, this post exercises a business case where the return of an investment is dependent of the behavior of the precision metric.
 
 <!--more-->
 
@@ -161,7 +161,7 @@ app_model
 ```
 ## parsnip model object
 ## 
-## Fit time:  581ms 
+## Fit time:  489ms 
 ## Ranger result
 ## 
 ## Call:
