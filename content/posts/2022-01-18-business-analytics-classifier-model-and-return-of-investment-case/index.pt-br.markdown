@@ -1,5 +1,5 @@
 ---
-title: Business Analytics | Classifier Model and Return of Investment Case
+title: Business Analytics | Modelo de classificação em um caso de Retorno do Investimento
 author: Giuliano Sposito
 date: '2022-01-18'
 slug: 'classifier-model-and-return-of-investment'
@@ -32,19 +32,19 @@ license: ''
 
 
 
-Can you image and real business case where you apply machine learning to build and Random Forest classifier and its accuracy of the model isn't the (only) main metric to pay attention? In real case scenarios the cost and benefits can affect a model in different aspects, this post exercises a business case where the return of an investment is dependent of the behavior of the precision metric.
+Você pode imaginar um caso de negócios real onde você aplica aprendizado de máquina para construir um classificador (Random Forest) e a precisão do acurácia não é a (única) métrica a ser observada e levanda em conta? Em cenários reais os custos e benefícios podem afetar um modelo em diferentes aspectos, muitas vezes retorno de um investimento é dependente do comportamento da métrica precisão (_precision_).
 
 <!--more-->
 
-### Intro
+### Introdução
 
-Missed appointments cost the US healthcare system over $150 billion a year. Missed appointments directly cause loss of revenue and under-utilization of precious medical resources. It also leads to long patient waiting times and in the long run, leads to higher medical costs.
+Consultas médicas perdidas custam ao sistema de saúde dos EUA mais de US$ 150 bilhões por ano. Elas causam diretamente a perda de receita e a subutilização dos escaços e preciosos recursos médicos, além disso, também leva a longos tempos de espera de pacientes e a longo prazo eleva os custos médicos como um todo.
 
-In this context lets build a predictive model to estimate if an patient will miss an appointment and use the prediction to take an action to try to avoid the cancellation.
+Nesse contexto, vamos construir um modelo preditivo para estimar se um paciente perderá uma consulta e usar a previsão para como base para tomada de ação a fim de tentar evitar o cancelamento.
 
-### Dataset
+### Dados
 
-We obtained a [data set](./assets/data.xlsx) with 7,463 medical appointments over a three year period at a specialized care clinic. In this data set, each row corresponds to an appointment and indicates whether it was cancelled or not. 
+Obtivemos um [conjunto de dados](./assets/data.xlsx) com 7.463 consultas médicas em um período de três anos em uma clínica especializada. Nesse conjunto de dados cada linha corresponde a um compromisso e indica se foi cancelado ou não.
 
 
 ```r
@@ -70,9 +70,9 @@ dim(appdata)
 ## [1] 7463   12
 ```
 
-#### Data Overview
+#### Visão geral dos dados
 
-Lets see the overall aspect of the data set
+Vamos ver o aspecto geral do conjunto de dados
 
 
 ```r
@@ -118,11 +118,11 @@ Table: Table 1: Data summary
 |age            |         0|             1|       54.09|       18.52|       6|       47|       57|       67|       90|▂▂▆▇▂ |
 |time_since_reg |         0|             1|     4754.47|     2399.85|     179|     4374|     5686|     6196|     8421|▂▁▁▇▁ |
 
-In total, 1662 out of 7463 appointments were cancelled, we can see it from column **status** (our target).
+No total, 1.662 dos 7.463 agendamentos foram cancelados, podemos ver na coluna **status** (nossa variável _target_).
 
-### Model
+### Modelo
 
-Since we are interested in appointment cancellations, the target variable is whether an appointment is cancelled or not and success in this particular context means that an appointment is cancelled.
+Como estamos interessados em cancelamentos de compromissos, a variável alvo é descobrir se um agendamento foi cancelado ou não e o sucesso nesse contexto específico significa prever corretamente que um agendamento foi cancelado.
 
 
 ```r
@@ -161,7 +161,7 @@ app_model
 ```
 ## parsnip model object
 ## 
-## Fit time:  451ms 
+## Fit time:  432ms 
 ## Ranger result
 ## 
 ## Call:
@@ -178,9 +178,9 @@ app_model
 ## OOB prediction error (Brier s.):  0.1617746
 ```
 
-#### Evaluation
+#### Avaliação
 
-How good is our prediction model?
+Quão bom é o nosso modelo?
 
 
 ```r
@@ -226,19 +226,19 @@ app_pred %T>%
   autoplot()
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/modelEval-1.png" width="672" />
+<img src="/posts/2022-01-18-business-analytics-classifier-model-and-return-of-investment-case/index.pt-br_files/figure-html/modelEval-1.png" width="672" />
 
-### Taking a Business Decision to action
+### Desião de Negócio para Tomada de Ação
 
-With the prediction in hands, we can make a business action to try revert appointments cancellations. Let's assume we can make a phone call to anyone predicted as "Cancelled" one or two days early and this will revert around 30% of the cancelled appointments. Is it a viable approach? Is it economically viable? At least, better than let the patient cancel his appointment?
+Com a previsão em mãos, podemos fazer uma ação de negócio para tentar reverter os cancelamentos de agendamentos. Vamos supor que podemos fazer uma ligação telefônica para qualquer pessoa prevista como "Cancelada" com um ou dois dias de antecedência e isso poderá reverter em torno de 30% dos agendamentos que seriam cancelados. Será que essa ação uma abordagem viável? É economicamente viável? Ou, pelo menos, mais em conta do que deixar o paciente cancelar sua consulta?
 
-To decide this we need to characterize the value of some variables, for this exercise we can assume:
+Para decidir isso precisamos estabelecer o valor de algumas variáveis para um modelo econômico de retorno, para este exercício podemos assumir:
 
-* Cost of a phone call: $5
-* Revert appointment cancellation rate: 30%
-* Benefit of an appointment: $60
+* Custo de um telefonema: $5.00
+* Taxa de reversão do cancelamento de agendamento: 30%
+* Benefício de uma consulta não perdida: $60.00
 
-So, we can calculate the *Return of Investment* (_RoI_) of this action:
+Assim, podemos calcular um *Retorno do Investimento* (_RoI_) desta ação neste cenário:
 
 
 ```r
@@ -259,21 +259,21 @@ total_benefit <- cm$table["Cancelled","Cancelled"] * reverse_rate * benefit
 RoI <- total_benefit - total_cost
 ```
 
-So we come out with this result:
+Então obtemos este resultado:
 
-* Total Cost: 202 * $5 = $1010
-* Total Benefit: 89 * 0.3 * $60 = $1602
-* Return: $1602 - $1010 = $592
+* Custo Total: 202 * $5 = $1010
+* Benefício Total: 89 * 0.3 * $60 = $1602
+* Retorno: $1602 - $1010 = $592
 
-As we saw, with a _RoI_ of $592 this action worth to be take.
+Como vimos, com um _RoI_ de $592 vale a pena tomar esta ação.
 
-One aspect essential to pay attention, we call to all patient predict as "cancellation" but we only get return over 30% (reversion rate) of those truly identified as "cancellation", a.k.a, **True Positives**. In other words, the cost of the action is function of **True Positives** plus **False Positives** and the benefit of the action is function only of **True Positives**. This is because a **False Positive** is a patient predicted as "cancellation" but he´ll go to the appointment, so the phone call does not bring any benefit, only cost in those cases.
+Um aspecto essencial para prestarmos atenção, fazemos uma ligação a todos os pacientes que estão previstos como "cancelamento", mas só obtemos retorno em 30% (taxa de reversão) daqueles verdadeiramente identificados como "cancelamento", a.k.a, **Positivos Verdadeiros** (TP). Em outras palavras, o custo da ação é função de **Verdadeiros Positivos** (TP) mais **Falsos Positivos** (FP) mas o benefício da ação é função apenas de **Verdadeiros Positivos** (TP). Isso porque um **Falso Positivo** (FP) é um paciente previsto como "cancelamento" mas ele irá à consulta, então o telefonema não tráz nenhum benefício, apenas custo nesses casos.
 
-#### Improving Business Performance 
+#### Melhorando a Performance da Ação
 
-Can we do better return without improving the model? As the _RoI_ is function of the rate between **True Positives** and **True Positives** + **False Positives** (a.k.a _Precision Metric_) in proportion of the benefits and cost we can _tune_ our classifier changing the [_logistic threshold_](https://deepchecks.com/glossary/classification-threshold/) to change the _precision_ towards to try maximize the _RoI_. 
+Podemos melhorar o retorno da ação sem (necessariamente) melhorar o modelo? Como o _RoI_ é função da taxa entre **Verdadeiros Positivos** (TP) e **Verdadeiros Positivos** (TP) + **Falsos Positivos** (FP) (também conhecido como _Métrica de Precisão_) na proporção dos benefícios e custos, podemos _ajustar_ nosso classificador alterando o [_logístic threshold_](https://deepchecks.com/glossary/classification-threshold/) para alterar a _metrica de precisão_ do modelo a fim de maximizar o _RoI_.
 
-To see this in practice, calculating what happens with our _RoI_ changing the classifier threshold from 0 to 1 in increments of 0.01:
+Para ver isso na prática, vamos calcular o que acontece com nosso _RoI_ alterando o _threshold_ do classificador de 0 para 1 em incrementos de 0,01:
 
 
 ```r
@@ -350,9 +350,9 @@ simulations %>%
     labs(title="Return of Investment", subtitle = "Influence of the Threshold Parameter")
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/thresholdRange-1.png" width="672" />
+<img src="/posts/2022-01-18-business-analytics-classifier-model-and-return-of-investment-case/index.pt-br_files/figure-html/thresholdRange-1.png" width="672" />
 
-We can see the the _RoI_ is better using a threshold between 0.2 and 0.3, and not 0.5 as usually set, more than that, at this level we get worst _accuracy_ for the model, take a look:
+Podemos ver que o melhor _RoI_ é obtido usando um _threshold_ entre 0.2 e 0.3, e não 0.5 como normalmente definido, mais do que isso, neste nível temos uma pior _acurácia_ do modelo, veja:
 
 
 ```r
@@ -385,13 +385,13 @@ simulations %>%
  
 
 
-Compare this the _accuracy_ metric (0.6918542) with the value obtained in the first calculation above (0.7599143). 
+Compare esta métrica de _acurácia_ (0.6918542) com o valor obtido no primeiro cálculo acima (0.7599143).
 
-### Conclusion and Classification Metrics
+### Métricas de Conclusão e Classificação
 
-As we saw, a business decision is not only function of the accuracy of the model, costs and benefits can affect different aspects of the model. Remember to return to real life when applying the model in business case scenarios, to optimize the correct target.
+Como vimos, uma decisão de negócio não é apenas função da precisão do modelo, custos e benefícios podem afetar diferentes aspectos do modelo. Lembre-se de retornar à vida real ao aplicar o modelo em cenários e casos de negócios, para otimizar o objetivo correto.
 
-And, be aware of the classification metrics.
+E esteja sempre ciente das métricas de classificação.
 
 ![Classification Metrics](./images/classification_metrics.png)
 
@@ -415,4 +415,4 @@ simulations %>%
   theme_minimal()
 ```
 
-<img src="{{< blogdown/postref >}}index.en_files/figure-html/classMetricBehavior-1.png" width="672" />
+<img src="/posts/2022-01-18-business-analytics-classifier-model-and-return-of-investment-case/index.pt-br_files/figure-html/classMetricBehavior-1.png" width="672" />

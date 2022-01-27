@@ -36,8 +36,7 @@ This post explore the **power analysis** technique using case scenarios in the e
 
 This activity will give you practice with power analysis, creating simulations, and communicating your results with words and graphs. It should help you conduct power analysis for any kind of experiment, not just experiments designed to estimate ROI. This activity assumes that you have some experience with statistical testing and power analysis. If you are not familiar with power analysis, I recommend that you read “A Power Primer” by Cohen (1992)[^2].
 
-This activity was inspired by a lovely paper by Lewis and Rao (2015)[^1], which vividly illustrates a fundamental statistical limitation of even massive experiments. Their paper—which originally had the provocative title “On the Near-Impossibility of Measuring the Returns to Advertising”—shows how difficult it is to measure the return on investment of online ads, even with digital experiments involving millions of customers. More generally, Lewis and Rao (2015) illustrate a fundamental statistical fact that is particularly important for digital-age experiments: it is hard to estimate small treatment effects amidst noisy outcome data.
-
+This activity was inspired by a lovely paper by Lewis and Rao (2015)[^1], which vividly illustrates a fundamental statistical limitation of even massive experiments. Their paper—which originally had the provocative title “On the Near-Impossibility of Measuring the Returns to Advertising”—shows how difficult it is to measure the return on investment of online ads, even with digital experiments involving millions of customers. More generally, Lewis and Rao (2015)[^1] illustrate a fundamental statistical fact that is particularly important for digital-age experiments: it is hard to estimate small treatment effects amidst noisy outcome data.
 
 #### Scenario
 
@@ -67,6 +66,57 @@ Here are two hints. First, the marketing department might have provided you with
 
 ###
 
+```r
+library(pwr)
+library(broom)
+library(tidyverse)
+```
+
+```
+## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+```
+
+```
+## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.7
+## ✓ tidyr   1.1.4     ✓ stringr 1.4.0
+## ✓ readr   2.1.0     ✓ forcats 0.5.1
+```
+
+```
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+```
+
+```r
+mylrnorm <- function(n, mean=1, sd=1){
+  location <- log(mean^2 / sqrt(sd^2 + mean^2))
+  shape <- sqrt(log(1 + (sd^2 / mean^2)))
+  return(rlnorm(n,  location, shape))
+}
+
+# simple t.test
+cntrl <- mylrnorm(10^5,7,75)
+treat <- mylrnorm(10^5,7.35,75)
+
+
+t.test(treat, cntrl)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  treat and cntrl
+## t = 1.3016, df = 197506, p-value = 0.1931
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.1384295  0.6857624
+## sample estimates:
+## mean of x mean of y 
+##  7.066508  6.792842
+```
 
 
 
