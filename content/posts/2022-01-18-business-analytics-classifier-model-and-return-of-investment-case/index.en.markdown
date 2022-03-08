@@ -28,6 +28,7 @@ math:
   enable: no
 lightgallery: no
 license: ''
+draft: yes
 ---
 
 
