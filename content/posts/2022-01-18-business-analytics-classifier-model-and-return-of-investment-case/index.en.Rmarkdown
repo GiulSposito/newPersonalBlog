@@ -36,7 +36,7 @@ license: ''
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-Can you image and real business case where you apply machine learning to build and Random Forest classifier and its accuracy of the model isn't the (only) main metric to pay attention? In real case scenarios the cost and benefits can affect a model in different aspects, this post exercises a business case where the return of an investment is dependent of the behavior of the precision metric.
+Can you imagine a real business case where you apply machine learning to build and Random Forest classifier and its accuracy of the model isn't the (only) main metric to pay attention? In real case scenarios the cost and benefits can affect a model in different aspects, this post exercises a business case where the return of an investment is dependent of the behavior of the precision metric.
 
 <!--more-->
 
