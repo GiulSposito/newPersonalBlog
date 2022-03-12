@@ -161,7 +161,7 @@ app_model
 ```
 ## parsnip model object
 ## 
-## Fit time:  432ms 
+## Fit time:  443ms 
 ## Ranger result
 ## 
 ## Call:
@@ -347,6 +347,7 @@ simulations %>%
     geom_hline(yintercept = 0, linetype="dashed", color="red") +
     geom_vline(xintercept = 0.5, linetype="dashed", color="darkgrey") +
     scale_x_continuous(breaks=seq(0,1,.1)) +
+    ylim(c(-100,NA)) +
     labs(title="Return of Investment", subtitle = "Influence of the Threshold Parameter")
 ```
 
