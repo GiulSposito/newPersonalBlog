@@ -81,18 +81,15 @@ languages:
         - Theme
         - Hugo
       search:
+        enabler: yes
+        type: lunr
         absoluteURL: no
-        algolia:
-          appID: 3TEZEC4ERO
-          index: yetanotheriteration
-          searchKey: e15b56d18a5a4c47feb4a071fafdfcae
         contentLength: 4000
         enable: yes
         highlightTag: em
         maxResultLength: 10
         placeholder: ''
         snippetLength: 30
-        type: algolia
       social:
         Angellist: ''
         Bandcamp: ''
