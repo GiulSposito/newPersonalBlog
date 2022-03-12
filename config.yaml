@@ -231,17 +231,14 @@ languages:
         - Hugo
       search:
         absoluteURL: no
-        algolia:
-          appID: 3TEZEC4ERO
-          index: 'yai.pt-br'
-          searchKey: e15b56d18a5a4c47feb4a071fafdfcae
         contentLength: 4000
         enable: yes
         highlightTag: em
         maxResultLength: 10
         placeholder: ''
         snippetLength: 30
-        type: algolia
+        enabler: yes
+        type: lunr
       social:
         Angellist: ''
         Bandcamp: ''
