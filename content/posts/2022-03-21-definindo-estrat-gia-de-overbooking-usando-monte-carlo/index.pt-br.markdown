@@ -235,7 +235,7 @@ show_ups
 ```
 
 ```
-## [1] 128
+## [1] 133
 ```
 
 
@@ -282,16 +282,16 @@ sim %>%
 
 | demand| booked| shows| no_shows| showup_rate| overbooked| empty_seats|
 |------:|------:|-----:|--------:|-----------:|----------:|-----------:|
-|    147|    147|   137|       10|   0.9319728|          0|          13|
-|    155|    155|   145|       10|   0.9354839|          0|           5|
-|    144|    144|   131|       13|   0.9097222|          0|          19|
-|    150|    150|   131|       19|   0.8733333|          0|          19|
-|    164|    164|   154|       10|   0.9390244|          4|           0|
-|    159|    159|   144|       15|   0.9056604|          0|           6|
-|    136|    136|   126|       10|   0.9264706|          0|          24|
-|    148|    148|   139|        9|   0.9391892|          0|          11|
-|    133|    133|   121|       12|   0.9097744|          0|          29|
-|    155|    155|   142|       13|   0.9161290|          0|           8|
+|    146|    146|   133|       13|   0.9109589|          0|          17|
+|    152|    152|   136|       16|   0.8947368|          0|          14|
+|    166|    165|   148|       17|   0.8969697|          0|           2|
+|    149|    149|   137|       12|   0.9194631|          0|          13|
+|    126|    126|   114|       12|   0.9047619|          0|          36|
+|    134|    134|   122|       12|   0.9104478|          0|          28|
+|    170|    165|   155|       10|   0.9393939|          5|           0|
+|    136|    136|   129|        7|   0.9485294|          0|          21|
+|    172|    165|   154|       11|   0.9333333|          4|           0|
+|    156|    156|   145|       11|   0.9294872|          0|           5|
 
 Com as situações de embarque simuladas, podemos fazer a análise do comportamento do overbooking real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos) de fato aparecerram no portão de embarque e que precisariam ser remanejados:
 
@@ -299,27 +299,27 @@ Com as situações de embarque simuladas, podemos fazer a análise do comportame
 ```r
 # lets visualize the overbooked passengers distribution
 sim %>% 
-  count(overbooked)
+  count(overbooked) %>% 
+  knitr::kable()
 ```
 
-```
-## # A tibble: 13 × 2
-##    overbooked     n
-##         <dbl> <int>
-##  1          0  8761
-##  2          1   243
-##  3          2   271
-##  4          3   200
-##  5          4   196
-##  6          5   123
-##  7          6    84
-##  8          7    64
-##  9          8    33
-## 10          9    19
-## 11         10     3
-## 12         11     2
-## 13         12     1
-```
+
+
+| overbooked|    n|
+|----------:|----:|
+|          0| 8803|
+|          1|  255|
+|          2|  225|
+|          3|  211|
+|          4|  173|
+|          5|  121|
+|          6|   89|
+|          7|   64|
+|          8|   34|
+|          9|   14|
+|         10|    7|
+|         11|    3|
+|         12|    1|
 
 ```r
 plotdist(sim$overbooked)
@@ -344,7 +344,7 @@ bumped_more_2 <- sim %>%
 
 ```
 ##  total 
-## 0.9275
+## 0.9283
 ```
 
 Neste cenário de 15 acentos adicionais para este voo, com esse perfil de demanda e comportamento de comparecimento não seria possível atender o critério de ter até dois passageiros remanejados em 95% das vezes.
@@ -390,10 +390,7 @@ tibble(overbook=1:20) %>%
 
 <img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simulation-1.png" width="672" />
 
-```r
-# we can see that offering 13 additional seats (over plain capacity) we have less than 5% of chance to bumped more than 2 passengers
-# Offering 18 additional seats (over plain capacity) we have less than 5% of chance to bump more than 5 passengers
-```
+we can see that offering 13 additional seats (over plain capacity) we have less than 5% of chance to bumped more than 2 passengers. Offering 18 additional seats (over plain capacity) we have less than 5% of chance to bump more than 5 passengers
 
 ### Dependência entre demanda e show-up rate
 
@@ -501,33 +498,41 @@ sim
 ## # A tibble: 10,000 × 8
 ##    demand predShowup_rate booked shows no_shows showup_rate overbooked
 ##     <int>           <dbl>  <dbl> <dbl>    <dbl>       <dbl>      <dbl>
-##  1    149           0.917    149   135       14       0.906          0
-##  2    132           0.892    132   115       17       0.871          0
-##  3    144           0.910    144   131       13       0.910          0
-##  4    160           0.934    160   141       19       0.881          0
-##  5    139           0.903    139   127       12       0.914          0
-##  6    139           0.903    139   129       10       0.928          0
-##  7    147           0.914    147   141        6       0.959          0
-##  8    153           0.923    153   141       12       0.922          0
-##  9    168           0.945    165   152       13       0.921          2
-## 10    156           0.928    156   148        8       0.949          0
+##  1    167           0.944    165   159        6       0.964          9
+##  2    153           0.923    153   136       17       0.889          0
+##  3    159           0.932    159   146       13       0.918          0
+##  4    139           0.903    139   126       13       0.906          0
+##  5    142           0.907    142   131       11       0.923          0
+##  6    143           0.909    143   128       15       0.895          0
+##  7    144           0.910    144   128       16       0.889          0
+##  8    142           0.907    142   125       17       0.880          0
+##  9    149           0.917    149   135       14       0.906          0
+## 10    181           0.964    165   154       11       0.933          4
 ## # … with 9,990 more rows, and 1 more variable: empty_seats <dbl>
 ```
 
 ```r
 # lets visualize the overbooked passengers distribution
-sim %>% 
-  head(10) %>%  
-  count(overbooked)
+sim %>%  
+  count(overbooked) %>% 
+  head(10) %>% 
+  knitr::kable()
 ```
 
-```
-## # A tibble: 2 × 2
-##   overbooked     n
-##        <dbl> <int>
-## 1          0     9
-## 2          2     1
-```
+
+
+| overbooked|    n|
+|----------:|----:|
+|          0| 8014|
+|          1|  206|
+|          2|  230|
+|          3|  223|
+|          4|  231|
+|          5|  199|
+|          6|  193|
+|          7|  188|
+|          8|  159|
+|          9|  126|
 
 ```r
 plotdist(sim$overbooked)
@@ -546,6 +551,13 @@ bumped_more_2_dep <- sim %>%
   filter(overbooked>2) %>% 
   summarise( total = sum(n) ) %>% 
   unlist()
+
+bumped_more_2_dep
+```
+
+```
+## total 
+##  1550
 ```
 
 E comprovadamente, apenas 84% de ter dois ou menos passageiros remanejados neste cenário, comparado à 93% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o overbooking, como fizemos no modelo anterior.
@@ -571,15 +583,10 @@ tibble(overbook=1:20) %>%
   theme_light()
 ```
 
-```
-## Warning in rbinom(1, .x, .y): NAs produced
-```
-
 <img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simNewModel-1.png" width="672" />
 
 Obtemos resultados significativamente diferentes quando consideramos que a taxa de show-up é dependente da demanda, de maneira que precisamos oferecer bem menos acentos adicionais a fim da manter uma eventual política de 95% dos vôos com 2 ou menos passageiros remanejados.
 
-# now we got different results
-# probability of 95% to get 2 or less bumped pass: 8 over capacity seats
-# probability of 95% to get 5 or less bumped pass: 12 over capacity seats
-
+Resultados finais para a implatanção de política do _overbooking_:
+* Para ter 2 ou menos passageiros remanejados em 95% dos vöos: 8 acentos adicionais
+* Para ter 5 ou menos passageiros remanejados em 95% dos vöos: 12 acentos adicionais
