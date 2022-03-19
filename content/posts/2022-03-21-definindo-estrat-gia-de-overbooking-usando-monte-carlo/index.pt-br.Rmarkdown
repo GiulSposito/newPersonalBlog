@@ -60,7 +60,8 @@ flight_dt <- raw_data %>%
 # glimpse
 flight_dt %>% 
   head(10) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 
 ```
 
@@ -173,7 +174,8 @@ sim <- simulateDemand(15,10000,150,mean(flight_dt$rate),demand.pois)
 # what we got
 sim %>% 
   head(10) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 ```
 
 Com as situações de embarque simuladas, podemos fazer a análise do comportamento do overbooking real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos) de fato aparecerram no portão de embarque e que precisariam ser remanejados:
@@ -182,7 +184,8 @@ Com as situações de embarque simuladas, podemos fazer a análise do comportame
 # lets visualize the overbooked passengers distribution
 sim %>% 
   count(overbooked) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 
 plotdist(sim$overbooked)
 ```
@@ -298,13 +301,17 @@ simulateDemandShowUpModel <- function(overbook, n, capacity, showup_model) {
 sim <- simulateDemandShowUpModel(15,10000,150,rate_model)
 
 # what we got
-sim
+sim %>% 
+  head(10) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 
 # lets visualize the overbooked passengers distribution
 sim %>%  
   count(overbooked) %>% 
   head(10) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 
 plotdist(sim$overbooked)
 ```

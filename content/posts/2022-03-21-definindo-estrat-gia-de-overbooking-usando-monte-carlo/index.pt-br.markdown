@@ -25,6 +25,16 @@ math:
 lightgallery: no
 license: ''
 ---
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 Nem todos os passageiros que compram uma passagem de avião parecem no momento embarque. Os _no shows_ fazem os vôos ocorrerem com apacidade ociosa e incorrem num custo de oportunidade para a operadora que fazem uso do _overbooking_ (venda da acentos acima da capacidade do vôo) para tentar compensar esse gap. Mas quantos acentos adicionais devemos oferecer sem que isso não vire um problema de crônico de remanejamento de passageiros?
 
@@ -60,23 +70,93 @@ flight_dt <- raw_data %>%
 # glimpse
 flight_dt %>% 
   head(10) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 ```
 
-
-
-|date       | demand| booked| shows|      rate|
-|:----------|------:|------:|-----:|---------:|
-|2014-01-01 |    132|    132|   117| 0.8863636|
-|2014-01-02 |    154|    150|   142| 0.9466667|
-|2014-01-03 |    142|    142|   126| 0.8873239|
-|2014-01-04 |    152|    150|   141| 0.9400000|
-|2014-01-05 |    162|    150|   142| 0.9466667|
-|2014-01-06 |    146|    146|   131| 0.8972603|
-|2014-01-07 |    134|    134|   118| 0.8805970|
-|2014-01-08 |    158|    150|   140| 0.9333333|
-|2014-01-09 |    165|    150|   138| 0.9200000|
-|2014-01-10 |    156|    150|   139| 0.9266667|
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> date </th>
+   <th style="text-align:right;"> demand </th>
+   <th style="text-align:right;"> booked </th>
+   <th style="text-align:right;"> shows </th>
+   <th style="text-align:right;"> rate </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 2014-01-01 </td>
+   <td style="text-align:right;"> 132 </td>
+   <td style="text-align:right;"> 132 </td>
+   <td style="text-align:right;"> 117 </td>
+   <td style="text-align:right;"> 0.8863636 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-02 </td>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 0.9466667 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-03 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 126 </td>
+   <td style="text-align:right;"> 0.8873239 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-04 </td>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 141 </td>
+   <td style="text-align:right;"> 0.9400000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-05 </td>
+   <td style="text-align:right;"> 162 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 0.9466667 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-06 </td>
+   <td style="text-align:right;"> 146 </td>
+   <td style="text-align:right;"> 146 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 0.8972603 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-07 </td>
+   <td style="text-align:right;"> 134 </td>
+   <td style="text-align:right;"> 134 </td>
+   <td style="text-align:right;"> 118 </td>
+   <td style="text-align:right;"> 0.8805970 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-08 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 140 </td>
+   <td style="text-align:right;"> 0.9333333 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-09 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 0.9200000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2014-01-10 </td>
+   <td style="text-align:right;"> 156 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 139 </td>
+   <td style="text-align:right;"> 0.9266667 </td>
+  </tr>
+</tbody>
+</table>
 
 É um dataset bem direto e simples, com as colunas de demanda, quantos passageiros foram registrados, quantos apareceram e qual a taxa de presença (apareceram/registrados).  
 
@@ -90,36 +170,157 @@ flight_dt %>%
 ```
 
 
-Table: Table 1: Data summary
-
-|                         |           |
-|:------------------------|:----------|
-|Name                     |Piped data |
-|Number of rows           |730        |
-|Number of columns        |5          |
-|_______________________  |           |
-|Column type frequency:   |           |
-|numeric                  |4          |
-|POSIXct                  |1          |
-|________________________ |           |
-|Group variables          |None       |
+<table style='width: auto;'
+        class='table table-condensed'>
+<caption>Table 1: Data summary</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:left;">   </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Name </td>
+   <td style="text-align:left;"> Piped data </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Number of rows </td>
+   <td style="text-align:left;"> 730 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Number of columns </td>
+   <td style="text-align:left;"> 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> _______________________ </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Column type frequency: </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> POSIXct </td>
+   <td style="text-align:left;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ________________________ </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Group variables </td>
+   <td style="text-align:left;"> None </td>
+  </tr>
+</tbody>
+</table>
 
 
 **Variable type: numeric**
 
-|skim_variable | n_missing| complete_rate|   mean|    sd|     p0|   p25|    p50|    p75|   p100|hist  |
-|:-------------|---------:|-------------:|------:|-----:|------:|-----:|------:|------:|------:|:-----|
-|demand        |         0|             1| 150.40| 12.28| 117.00| 142.0| 150.00| 158.00| 191.00|▁▆▇▂▁ |
-|booked        |         0|             1| 145.32|  6.85| 117.00| 142.0| 150.00| 150.00| 150.00|▁▁▁▂▇ |
-|shows         |         0|             1| 133.73|  9.10| 106.00| 127.0| 138.00| 141.00| 147.00|▁▂▃▂▇ |
-|rate          |         0|             1|   0.92|  0.03|   0.88|   0.9|   0.92|   0.94|   0.99|▇▃▇▃▁ |
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> skim_variable </th>
+   <th style="text-align:right;"> n_missing </th>
+   <th style="text-align:right;"> complete_rate </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> p0 </th>
+   <th style="text-align:right;"> p25 </th>
+   <th style="text-align:right;"> p50 </th>
+   <th style="text-align:right;"> p75 </th>
+   <th style="text-align:right;"> p100 </th>
+   <th style="text-align:left;"> hist </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> demand </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 150.40 </td>
+   <td style="text-align:right;"> 12.28 </td>
+   <td style="text-align:right;"> 117.00 </td>
+   <td style="text-align:right;"> 142.0 </td>
+   <td style="text-align:right;"> 150.00 </td>
+   <td style="text-align:right;"> 158.00 </td>
+   <td style="text-align:right;"> 191.00 </td>
+   <td style="text-align:left;"> ▁▆▇▂▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> booked </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 145.32 </td>
+   <td style="text-align:right;"> 6.85 </td>
+   <td style="text-align:right;"> 117.00 </td>
+   <td style="text-align:right;"> 142.0 </td>
+   <td style="text-align:right;"> 150.00 </td>
+   <td style="text-align:right;"> 150.00 </td>
+   <td style="text-align:right;"> 150.00 </td>
+   <td style="text-align:left;"> ▁▁▁▂▇ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> shows </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 133.73 </td>
+   <td style="text-align:right;"> 9.10 </td>
+   <td style="text-align:right;"> 106.00 </td>
+   <td style="text-align:right;"> 127.0 </td>
+   <td style="text-align:right;"> 138.00 </td>
+   <td style="text-align:right;"> 141.00 </td>
+   <td style="text-align:right;"> 147.00 </td>
+   <td style="text-align:left;"> ▁▂▃▂▇ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> rate </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.92 </td>
+   <td style="text-align:right;"> 0.03 </td>
+   <td style="text-align:right;"> 0.88 </td>
+   <td style="text-align:right;"> 0.9 </td>
+   <td style="text-align:right;"> 0.92 </td>
+   <td style="text-align:right;"> 0.94 </td>
+   <td style="text-align:right;"> 0.99 </td>
+   <td style="text-align:left;"> ▇▃▇▃▁ </td>
+  </tr>
+</tbody>
+</table>
 
 
 **Variable type: POSIXct**
 
-|skim_variable | n_missing| complete_rate|min        |max        |median              | n_unique|
-|:-------------|---------:|-------------:|:----------|:----------|:-------------------|--------:|
-|date          |         0|             1|2014-01-01 |2015-12-31 |2014-12-31 12:00:00 |      730|
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> skim_variable </th>
+   <th style="text-align:right;"> n_missing </th>
+   <th style="text-align:right;"> complete_rate </th>
+   <th style="text-align:left;"> min </th>
+   <th style="text-align:left;"> max </th>
+   <th style="text-align:left;"> median </th>
+   <th style="text-align:right;"> n_unique </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> date </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 2014-01-01 </td>
+   <td style="text-align:left;"> 2015-12-31 </td>
+   <td style="text-align:left;"> 2014-12-31 12:00:00 </td>
+   <td style="text-align:right;"> 730 </td>
+  </tr>
+</tbody>
+</table>
 
 Como vc pode ver, há um limite superior de 150 na coluna de registrados, indicando que essa é a capacidade do vôo, ou seja, 150 acentos.
 
@@ -235,7 +436,7 @@ show_ups
 ```
 
 ```
-## [1] 133
+## [1] 129
 ```
 
 
@@ -275,23 +476,115 @@ sim <- simulateDemand(15,10000,150,mean(flight_dt$rate),demand.pois)
 # what we got
 sim %>% 
   head(10) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 ```
 
-
-
-| demand| booked| shows| no_shows| showup_rate| overbooked| empty_seats|
-|------:|------:|-----:|--------:|-----------:|----------:|-----------:|
-|    146|    146|   133|       13|   0.9109589|          0|          17|
-|    152|    152|   136|       16|   0.8947368|          0|          14|
-|    166|    165|   148|       17|   0.8969697|          0|           2|
-|    149|    149|   137|       12|   0.9194631|          0|          13|
-|    126|    126|   114|       12|   0.9047619|          0|          36|
-|    134|    134|   122|       12|   0.9104478|          0|          28|
-|    170|    165|   155|       10|   0.9393939|          5|           0|
-|    136|    136|   129|        7|   0.9485294|          0|          21|
-|    172|    165|   154|       11|   0.9333333|          4|           0|
-|    156|    156|   145|       11|   0.9294872|          0|           5|
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> demand </th>
+   <th style="text-align:right;"> booked </th>
+   <th style="text-align:right;"> shows </th>
+   <th style="text-align:right;"> no_shows </th>
+   <th style="text-align:right;"> showup_rate </th>
+   <th style="text-align:right;"> overbooked </th>
+   <th style="text-align:right;"> empty_seats </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9097222 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 139 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.9788732 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 11 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 146 </td>
+   <td style="text-align:right;"> 146 </td>
+   <td style="text-align:right;"> 133 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9109589 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 17 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9133333 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9057971 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 25 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:right;"> 140 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.9790210 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 141 </td>
+   <td style="text-align:right;"> 141 </td>
+   <td style="text-align:right;"> 128 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9078014 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 22 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 141 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.8980892 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 122 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9037037 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 28 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 134 </td>
+   <td style="text-align:right;"> 134 </td>
+   <td style="text-align:right;"> 130 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.9701493 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+</tbody>
+</table>
 
 Com as situações de embarque simuladas, podemos fazer a análise do comportamento do overbooking real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos) de fato aparecerram no portão de embarque e que precisariam ser remanejados:
 
@@ -300,26 +593,72 @@ Com as situações de embarque simuladas, podemos fazer a análise do comportame
 # lets visualize the overbooked passengers distribution
 sim %>% 
   count(overbooked) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 ```
 
-
-
-| overbooked|    n|
-|----------:|----:|
-|          0| 8803|
-|          1|  255|
-|          2|  225|
-|          3|  211|
-|          4|  173|
-|          5|  121|
-|          6|   89|
-|          7|   64|
-|          8|   34|
-|          9|   14|
-|         10|    7|
-|         11|    3|
-|         12|    1|
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> overbooked </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8776 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 274 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 259 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 198 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 160 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 119 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 98 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 59 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 31 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 plotdist(sim$overbooked)
@@ -344,7 +683,7 @@ bumped_more_2 <- sim %>%
 
 ```
 ##  total 
-## 0.9283
+## 0.9309
 ```
 
 Neste cenário de 15 acentos adicionais para este voo, com esse perfil de demanda e comportamento de comparecimento não seria possível atender o critério de ter até dois passageiros remanejados em 95% das vezes.
@@ -491,48 +830,188 @@ simulateDemandShowUpModel <- function(overbook, n, capacity, showup_model) {
 sim <- simulateDemandShowUpModel(15,10000,150,rate_model)
 
 # what we got
-sim
+sim %>% 
+  head(10) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 ```
 
-```
-## # A tibble: 10,000 × 8
-##    demand predShowup_rate booked shows no_shows showup_rate overbooked
-##     <int>           <dbl>  <dbl> <dbl>    <dbl>       <dbl>      <dbl>
-##  1    167           0.944    165   159        6       0.964          9
-##  2    153           0.923    153   136       17       0.889          0
-##  3    159           0.932    159   146       13       0.918          0
-##  4    139           0.903    139   126       13       0.906          0
-##  5    142           0.907    142   131       11       0.923          0
-##  6    143           0.909    143   128       15       0.895          0
-##  7    144           0.910    144   128       16       0.889          0
-##  8    142           0.907    142   125       17       0.880          0
-##  9    149           0.917    149   135       14       0.906          0
-## 10    181           0.964    165   154       11       0.933          4
-## # … with 9,990 more rows, and 1 more variable: empty_seats <dbl>
-```
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> demand </th>
+   <th style="text-align:right;"> predShowup_rate </th>
+   <th style="text-align:right;"> booked </th>
+   <th style="text-align:right;"> shows </th>
+   <th style="text-align:right;"> no_shows </th>
+   <th style="text-align:right;"> showup_rate </th>
+   <th style="text-align:right;"> overbooked </th>
+   <th style="text-align:right;"> empty_seats </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 0.9173813 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 136 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9127517 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 14 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 0.8909471 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 113 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 0.8625954 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 37 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 0.9173813 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.9261745 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 0.9100385 </td>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 123 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.8541667 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 27 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 0.9291298 </td>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 140 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 0.8917197 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 147 </td>
+   <td style="text-align:right;"> 0.9144442 </td>
+   <td style="text-align:right;"> 147 </td>
+   <td style="text-align:right;"> 132 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 0.8979592 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 18 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 173 </td>
+   <td style="text-align:right;"> 0.9526269 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.9515152 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 162 </td>
+   <td style="text-align:right;"> 0.9364727 </td>
+   <td style="text-align:right;"> 162 </td>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.9382716 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 153 </td>
+   <td style="text-align:right;"> 0.9232556 </td>
+   <td style="text-align:right;"> 153 </td>
+   <td style="text-align:right;"> 140 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9150327 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 0.9217870 </td>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.9342105 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 # lets visualize the overbooked passengers distribution
 sim %>%  
   count(overbooked) %>% 
   head(10) %>% 
-  knitr::kable()
+  knitr::kable() %>% 
+  kableExtra::kable_styling(font_size = 11)
 ```
 
-
-
-| overbooked|    n|
-|----------:|----:|
-|          0| 8014|
-|          1|  206|
-|          2|  230|
-|          3|  223|
-|          4|  231|
-|          5|  199|
-|          6|  193|
-|          7|  188|
-|          8|  159|
-|          9|  126|
+<table class="table" style="font-size: 11px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> overbooked </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8039 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 186 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 203 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 193 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 220 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 206 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 195 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 183 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 184 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 135 </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 plotdist(sim$overbooked)
@@ -557,7 +1036,7 @@ bumped_more_2_dep
 
 ```
 ## total 
-##  1550
+##  1572
 ```
 
 E comprovadamente, apenas 84% de ter dois ou menos passageiros remanejados neste cenário, comparado à 93% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o overbooking, como fizemos no modelo anterior.
