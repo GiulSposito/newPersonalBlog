@@ -1,7 +1,7 @@
 ---
 title: Definindo estratégia de overbooking usando Monte Carlo
 author: Giuliano Sposito
-date: '2022-03-21'
+date: '2022-03-20'
 slug: monte-carlo-simulation-overbooking
 categories:
   - advanced business analytics
@@ -435,7 +435,7 @@ show_ups
 ```
 
 ```
-## [1] 124
+## [1] 133
 ```
 
 
@@ -493,22 +493,85 @@ sim %>%
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 148 </td>
-   <td style="text-align:right;"> 148 </td>
-   <td style="text-align:right;"> 139 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 0.9391892 </td>
-   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 138 </td>
    <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.9261745 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 142 </td>
    <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 125 </td>
-   <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 0.8802817 </td>
+   <td style="text-align:right;"> 129 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9084507 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 21 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.8940397 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.8961039 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 139 </td>
+   <td style="text-align:right;"> 139 </td>
+   <td style="text-align:right;"> 133 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.9568345 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 17 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9097222 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9097222 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 169 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 148 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 0.8969697 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.9342105 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 155 </td>
@@ -518,69 +581,6 @@ sim %>%
    <td style="text-align:right;"> 0.9032258 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 137 </td>
-   <td style="text-align:right;"> 137 </td>
-   <td style="text-align:right;"> 124 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9051095 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 26 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 125 </td>
-   <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 0.9541985 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 25 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 134 </td>
-   <td style="text-align:right;"> 16 </td>
-   <td style="text-align:right;"> 0.8933333 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 146 </td>
-   <td style="text-align:right;"> 146 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 0.9452055 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 136 </td>
-   <td style="text-align:right;"> 136 </td>
-   <td style="text-align:right;"> 127 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 0.9338235 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 23 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 137 </td>
-   <td style="text-align:right;"> 137 </td>
-   <td style="text-align:right;"> 120 </td>
-   <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 0.8759124 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 30 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 141 </td>
-   <td style="text-align:right;"> 16 </td>
-   <td style="text-align:right;"> 0.8980892 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 9 </td>
   </tr>
 </tbody>
 </table>
@@ -606,47 +606,55 @@ sim %>%
 <tbody>
   <tr>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8822 </td>
+   <td style="text-align:right;"> 8825 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 245 </td>
+   <td style="text-align:right;"> 243 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 218 </td>
+   <td style="text-align:right;"> 233 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 221 </td>
+   <td style="text-align:right;"> 205 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 176 </td>
+   <td style="text-align:right;"> 156 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 119 </td>
+   <td style="text-align:right;"> 131 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 92 </td>
+   <td style="text-align:right;"> 94 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 55 </td>
+   <td style="text-align:right;"> 59 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 30 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 14 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
 </table>
@@ -674,7 +682,7 @@ bumped_more_2 <- sim %>%
 
 ```
 ##  total 
-## 0.9285
+## 0.9301
 ```
 
 Neste esse perfil de demanda e comportamento de comparecimento não seria possível atender este critério oferecendo 15 acentos adicionais, então quanto acentos deveríamos oferecer para atender a política estabelecida.
@@ -843,48 +851,28 @@ sim %>%
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 122 </td>
-   <td style="text-align:right;"> 0.8777300 </td>
-   <td style="text-align:right;"> 122 </td>
-   <td style="text-align:right;"> 108 </td>
-   <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 0.8852459 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 42 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 0.8968213 </td>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 125 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0.9259259 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 25 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 151 </td>
-   <td style="text-align:right;"> 0.9203184 </td>
-   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 155 </td>
+   <td style="text-align:right;"> 0.9261927 </td>
+   <td style="text-align:right;"> 155 </td>
    <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 0.9403974 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 0.9161290 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 8 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 130 </td>
-   <td style="text-align:right;"> 0.8894785 </td>
-   <td style="text-align:right;"> 130 </td>
-   <td style="text-align:right;"> 112 </td>
-   <td style="text-align:right;"> 18 </td>
-   <td style="text-align:right;"> 0.8615385 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 0.9320670 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.9371069 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 176 </td>
-   <td style="text-align:right;"> 0.9570326 </td>
+   <td style="text-align:right;"> 171 </td>
+   <td style="text-align:right;"> 0.9496898 </td>
    <td style="text-align:right;"> 165 </td>
    <td style="text-align:right;"> 158 </td>
    <td style="text-align:right;"> 7 </td>
@@ -893,28 +881,8 @@ sim %>%
    <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 149 </td>
-   <td style="text-align:right;"> 0.9173813 </td>
-   <td style="text-align:right;"> 149 </td>
-   <td style="text-align:right;"> 137 </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 0.9194631 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 0.9188499 </td>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 136 </td>
-   <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 0.9066667 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 165 </td>
-   <td style="text-align:right;"> 0.9408784 </td>
+   <td style="text-align:right;"> 176 </td>
+   <td style="text-align:right;"> 0.9570326 </td>
    <td style="text-align:right;"> 165 </td>
    <td style="text-align:right;"> 159 </td>
    <td style="text-align:right;"> 6 </td>
@@ -923,24 +891,64 @@ sim %>%
    <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 0.8909471 </td>
-   <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 123 </td>
+   <td style="text-align:right;"> 173 </td>
+   <td style="text-align:right;"> 0.9526269 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 157 </td>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 0.9389313 </td>
+   <td style="text-align:right;"> 0.9515152 </td>
+   <td style="text-align:right;"> 7 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 27 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 0.9203184 </td>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.9470199 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 153 </td>
    <td style="text-align:right;"> 0.9232556 </td>
    <td style="text-align:right;"> 153 </td>
-   <td style="text-align:right;"> 149 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 0.9738562 </td>
+   <td style="text-align:right;"> 147 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.9607843 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 0.9247241 </td>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.9285714 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 169 </td>
+   <td style="text-align:right;"> 0.9467527 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.9575758 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 153 </td>
+   <td style="text-align:right;"> 0.9232556 </td>
+   <td style="text-align:right;"> 153 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 0.9281046 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
   </tr>
 </tbody>
 </table>
@@ -964,43 +972,43 @@ sim %>%
 <tbody>
   <tr>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8019 </td>
+   <td style="text-align:right;"> 7982 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 200 </td>
+   <td style="text-align:right;"> 193 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 201 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 214 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 4 </td>
    <td style="text-align:right;"> 220 </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 233 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 190 </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 221 </td>
+   <td style="text-align:right;"> 209 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 186 </td>
+   <td style="text-align:right;"> 203 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 164 </td>
+   <td style="text-align:right;"> 219 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 166 </td>
+   <td style="text-align:right;"> 179 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 155 </td>
+   <td style="text-align:right;"> 149 </td>
   </tr>
 </tbody>
 </table>
@@ -1027,7 +1035,7 @@ bumped_more_2_dep
 
 ```
 ## total 
-##  1580
+##  1605
 ```
 
 E comprovadamente, apenas 84% de ter dois ou menos passageiros remanejados neste cenário, comparado à 93% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o _overbooking_, como fizemos no modelo anterior.
