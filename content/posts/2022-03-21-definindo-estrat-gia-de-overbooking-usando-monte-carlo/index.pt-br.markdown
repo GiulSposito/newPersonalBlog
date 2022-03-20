@@ -36,23 +36,23 @@ license: ''
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
-Nem todos os passageiros que compram uma passagem de avião parecem no momento embarque. Os _no shows_ fazem os vôos ocorrerem com apacidade ociosa e incorrem num custo de oportunidade para a operadora que fazem uso do _overbooking_ (venda da acentos acima da capacidade do vôo) para tentar compensar esse gap. Mas quantos acentos adicionais devemos oferecer sem que isso não vire um problema de crônico de remanejamento de passageiros?
+Nem todos os passageiros que compram uma passagem de avião aparecem no momento do embarque. Os _no shows_ fazem os vôos ocorrerem com capacidade ociosa e incorrem num custo de oportunidade para a operadora. Para compensar, as companhias aérias fazem uso do _overbooking_ (venda da acentos acima da capacidade do vôo). Mas quantos acentos adicionais devemos oferecer sem que isso não vire um problema de crônico de remanejamento de passageiros?
 
 <!--more-->
 
-O risco que se corre é no momento do embarque ter mais passageiros do que o avião comporta, levando a custos maiores para remanejar os passageiros em outros vôos causando desgaste da marca e satisfação dos usuários. Neste post vamos analisar a distribuição da demanda e o comportamento dos "no shows" a fim de encontrar a melhor estratégia de overbooking através da [simulação por Monte Carlo](https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Monte_Carlo).
+Fazendo _overbooking_ o risco que se corre é, no momento do embarque, ter mais passageiros do que o avião comporta, levando a custos maiores para remanejar os passageiros em outros vôos e causando desgaste da marca através da insatisfação dos usuários. Neste _post_ vamos analisar a distribuição da demanda e o comportamento dos _no shows_ a fim de encontrar a melhor estratégia de overbooking através da [simulação por Monte Carlo](https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Monte_Carlo) para estabelecer uma política de _overbooking_ estatísticamente segura.
 
 ### Abordagem
 
 A abordagem que usaremos para tentar encontrar a melhor estratégia de overbooking seguirá os seguintes passos:
 
-1. Entender o comportamento (distribuição) da demanda
-1. Com base na distribuição da demanda, simular usando Monte Carlo 10 mil vôos
-1. Definir o critério que gostaríamos de atender e então encontrar a melhor estratégia de overbooking
+1. Entender e modelar o comportamento (distribuição) da demanda
+1. Simular situações de embarque usando Monte Carlo
+1. Definir uma estratégia de _overbooking_ com base na probabilidade de remanejamento de passageiros 
 
 ### Os Dados e a Demanda
 
-Como ponto de partida vamos carregar os dados de demanda e comparecimento de um determinado vôo comercial, disponível [nesta planilha de excel](./assets/Flight-Overbooking-Data.xlsx) e fazer uma breve exploração dos dados e tentar entender o comportamento da demanda para que ela possa ser simulada.
+Como ponto de partida vamos carregar os dados de demanda e comparecimento de um determinado vôo comercial disponível [nesta planilha de excel](./assets/Flight-Overbooking-Data.xlsx) e fazer uma breve exploração dos dados e tentar entender o comportamento da demanda para que ela possa ser modelada.
 
 
 ```r
@@ -158,7 +158,7 @@ flight_dt %>%
 </tbody>
 </table>
 
-É um dataset bem direto e simples, com as colunas de demanda, quantos passageiros foram registrados, quantos apareceram e qual a taxa de presença (apareceram/registrados).  
+É um dataset bem direto e simples contendo informações de data, demanda, quantos passageiros foram registrados, quantos apareceram e qual a taxa de presença (apareceram/registrados).  
 
 #### Data Overview
 
@@ -324,7 +324,7 @@ flight_dt %>%
 
 Como vc pode ver, há um limite superior de 150 na coluna de registrados, indicando que essa é a capacidade do vôo, ou seja, 150 acentos.
 
-#### Demand Distribuition
+#### Comportamento da Demanda
 
 Vamos tentar modelar a demanda, fazendo o fit da sua distribuição, para tal usaremos o pacote `{fitdistrplus}`
 
@@ -357,7 +357,7 @@ descdist(flight_dt$demand, boot=1000, discrete = T)
 ```
 O pacote `{fitdistrplus}` indicou três candidatos como melhor fit para a distribuição da demanda: [normal](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_normal), [poisson](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_de_Poisson) ou [negative binomial](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_binomial_negativa). Vamos testar quais das duas mais comuns tem o melhor fit.
 
-##### Normal
+##### Distribuição Normal
 
 
 ```r
@@ -382,7 +382,7 @@ fitdist(flight_dt$demand, "norm", discrete = T) %T>%
 ## sd      0  1
 ```
 
-##### Poisson
+##### Distribuição de Poisson
 
 
 ```r
@@ -402,10 +402,9 @@ fitdist(flight_dt$demand, "pois", discrete = T) %T>%
 ## Loglikelihood:  -2864.742   AIC:  5731.484   BIC:  5736.077
 ```
 
-##### Best Fit
+##### Melhor modelo
 
-Observamos que a distribuição de Poisson tem, marginalmente, p melhor fit observando os indicadores [loglikehood](
-Likelihood vs. Probability: What's the Difference? - Statologyhttps://www.statology.org › likelihood-vs-probability), [IAC](https://pt.wikipedia.org/wiki/Crit%C3%A9rio_de_informa%C3%A7%C3%A3o_de_Akaike) e [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). Vamos então usar poisson como nosso modelo de distribuição para a demanda.
+Observamos que a distribuição de Poisson tem, marginalmente, o melhor fit observando os indicadores [loglikehood](https://www.statology.org › likelihood-vs-probability), [IAC](https://pt.wikipedia.org/wiki/Crit%C3%A9rio_de_informa%C3%A7%C3%A3o_de_Akaike) e [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). Vamos então usar _poisson_ como nosso modelo de distribuição para a demanda.
 
 
 ```r
@@ -413,9 +412,9 @@ Likelihood vs. Probability: What's the Difference? - Statologyhttps://www.statol
 demand.pois <- fitdist(flight_dt$demand, "pois", discrete = T)
 ```
 
-#### Show Up
+#### Comparecimento
 
-O show up pode ser modelado como um sorteio binomial em cima do número de passageiros registrados para o vôo com uma taxa de sucesso determinado pela média histórica.
+O _show up_ pode ser modelado como um sorteio [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) em cima do número de passageiros registrados para o vôo com uma taxa de sucesso determinado pela média histórica.
 
 
 ```r
@@ -436,13 +435,13 @@ show_ups
 ```
 
 ```
-## [1] 129
+## [1] 124
 ```
 
 
-### Modeling
+### Modelo da Simulação
 
-Vamos fazer um modelo para simular n vezes uma situação de voo, neste primeiro modelo vamos estabelecer um número fixo para o overbooking de 15 posições, isto é, 
+Vamos fazer um modelo para simular uma situação de embarque, neste primeiro modelo vamos estabelecer um número fixo para o overbooking de 15 posições, isto é, serão oferecidos para a venda 15 acentos adicionais além da capacidade do vôo (150 posições).
 
 
 ```r
@@ -494,67 +493,85 @@ sim %>%
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 144 </td>
-   <td style="text-align:right;"> 144 </td>
-   <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9097222 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 148 </td>
+   <td style="text-align:right;"> 148 </td>
    <td style="text-align:right;"> 139 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 0.9788732 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.9391892 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 146 </td>
-   <td style="text-align:right;"> 146 </td>
-   <td style="text-align:right;"> 133 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9109589 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 137 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9133333 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 142 </td>
    <td style="text-align:right;"> 125 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9057971 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 0.8802817 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 25 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 143 </td>
-   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:right;"> 155 </td>
+   <td style="text-align:right;"> 155 </td>
    <td style="text-align:right;"> 140 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 0.9790210 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 0.9032258 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 10 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 141 </td>
-   <td style="text-align:right;"> 141 </td>
-   <td style="text-align:right;"> 128 </td>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 124 </td>
    <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9078014 </td>
+   <td style="text-align:right;"> 0.9051095 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 26 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.9541985 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 25 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 134 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.8933333 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 16 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 146 </td>
+   <td style="text-align:right;"> 146 </td>
+   <td style="text-align:right;"> 138 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.9452055 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 136 </td>
+   <td style="text-align:right;"> 136 </td>
+   <td style="text-align:right;"> 127 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.9338235 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 23 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 120 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 0.8759124 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 30 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 157 </td>
@@ -565,28 +582,10 @@ sim %>%
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 9 </td>
   </tr>
-  <tr>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 122 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9037037 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 28 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 134 </td>
-   <td style="text-align:right;"> 134 </td>
-   <td style="text-align:right;"> 130 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 0.9701493 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
 </tbody>
 </table>
 
-Com as situações de embarque simuladas, podemos fazer a análise do comportamento do overbooking real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos) de fato aparecerram no portão de embarque e que precisariam ser remanejados:
+Com um modelo para simular uma situação de embarque, podemos fazer a análise do comportamento da frequencia do _overbooking_ real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos), comparecem no portão de embarque e que precisariam ser remanejados para outros vôos (ou compensados financeiramente).
 
 
 ```r
@@ -607,23 +606,23 @@ sim %>%
 <tbody>
   <tr>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8776 </td>
+   <td style="text-align:right;"> 8822 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 274 </td>
+   <td style="text-align:right;"> 245 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 259 </td>
+   <td style="text-align:right;"> 218 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 198 </td>
+   <td style="text-align:right;"> 221 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 160 </td>
+   <td style="text-align:right;"> 176 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 5 </td>
@@ -631,31 +630,23 @@ sim %>%
   </tr>
   <tr>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 98 </td>
+   <td style="text-align:right;"> 92 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 59 </td>
+   <td style="text-align:right;"> 55 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 31 </td>
+   <td style="text-align:right;"> 33 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 10 </td>
    <td style="text-align:right;"> 8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
 </table>
@@ -665,9 +656,9 @@ plotdist(sim$overbooked)
 ```
 
 <img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/bumped-1.png" width="672" />
-#### Overbooking Criteria
+#### Política de Overbooking
 
-Com a visão de como se comporta o overbooking real (# de passageiros remanejados) numa estratégia de 15 acentos podemos estabelecer uma política (ou estratégia) de overbooking, por exemplo, estabelecer que em 95% das situações o número de passageiros remanejados não ultrapasse 2. Então neste cenário teríamos
+Com a visão de como se comporta o _overbooking real_ (# de passageiros remanejados) podemos então estabelecer uma política de _overbooking_, por exemplo, estabelecer que em 95% das situações de embarque deste vôo, o número de **passageiros remanejados não ultrapasse 2**. Então neste cenário de 15 acentos adicionais teríamos
 
 
 ```r
@@ -683,14 +674,14 @@ bumped_more_2 <- sim %>%
 
 ```
 ##  total 
-## 0.9309
+## 0.9285
 ```
 
-Neste cenário de 15 acentos adicionais para este voo, com esse perfil de demanda e comportamento de comparecimento não seria possível atender o critério de ter até dois passageiros remanejados em 95% das vezes.
+Neste esse perfil de demanda e comportamento de comparecimento não seria possível atender este critério oferecendo 15 acentos adicionais, então quanto acentos deveríamos oferecer para atender a política estabelecida.
 
-### Cenario simultaions
+### Simulando Overbooking
 
-Vamos então analizar qual seria o número de posicionais adicionais a serem oferecidas que possibilite a empresa ficar dentro da política de overbooking definida acima.
+Vamos então analizar qual seria o número de posicionais adicionais a serem oferecidas que possibilite a empresa ficar dentro da política de overbooking definida acima, executando a simulação para várias situações de oferta de posição adicional (acima da capacidade), indo, por exemplo, de 1 à 20 posições extras.
 
 
 ```r
@@ -729,11 +720,11 @@ tibble(overbook=1:20) %>%
 
 <img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simulation-1.png" width="672" />
 
-we can see that offering 13 additional seats (over plain capacity) we have less than 5% of chance to bumped more than 2 passengers. Offering 18 additional seats (over plain capacity) we have less than 5% of chance to bump more than 5 passengers
+Podemos ver que oferecendo 13 acentos adicionais nós conseguiríamos atender a política de ter em apenas 5% dos vôos mais de 2 passageiros remanejados. Se a política fosse 95% de chance de ter 5 ou menos poderíamos oferecer 18 acentos em _overbooking_.
 
 ### Dependência entre demanda e show-up rate
 
-Nós tinhamos assumido uma taxa constante de show-up, não importa a demanda do vôo o comparecimento para embarque segue uma taxa constante, mas podemos comprovar essa hipótese
+Nós tinhamos assumido uma taxa constante de show-up, não importa a demanda para vôo em determinado dia, o comparecimento para embarque segue uma taxa constante. Mas será que essa hipótese é verdadeira?
 
 
 ```r
@@ -755,7 +746,7 @@ cor.test(flight_dt$demand, flight_dt$rate)
 ## 0.6965629
 ```
 
-Esta é uma taxa de correlação muita alta para ser ignorada, vamos refazer o modelo considerando essa dependência.
+Esta é uma taxa de correlação muita alta para ser ignorada, vamos refazer o modelo de embarque considerando essa dependência, incorporando um modelo linear de dependência entre a taxa de comparecimento e a demanda.
 
 
 ```r
@@ -797,7 +788,8 @@ plot(rate_model)
 ```r
 par(mfrow=c(1,1))
 ```
-Vamos considerar um simples modelo linear entre a demanda e o show-up rate e vamos incorporar esse modelo dentro da nossa simulação
+
+Vamos alterar a função que faz a simulação incorporando a dependência.
 
 
 ```r
@@ -851,104 +843,104 @@ sim %>%
  </thead>
 <tbody>
   <tr>
+   <td style="text-align:right;"> 122 </td>
+   <td style="text-align:right;"> 0.8777300 </td>
+   <td style="text-align:right;"> 122 </td>
+   <td style="text-align:right;"> 108 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0.8852459 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 42 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 0.8968213 </td>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.9259259 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 25 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 0.9203184 </td>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.9403974 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 130 </td>
+   <td style="text-align:right;"> 0.8894785 </td>
+   <td style="text-align:right;"> 130 </td>
+   <td style="text-align:right;"> 112 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 0.8615385 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 38 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 176 </td>
+   <td style="text-align:right;"> 0.9570326 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.9575758 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 149 </td>
    <td style="text-align:right;"> 0.9173813 </td>
    <td style="text-align:right;"> 149 </td>
-   <td style="text-align:right;"> 136 </td>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0.9194631 </td>
+   <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9127517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 0.9188499 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:right;"> 136 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0.9066667 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 14 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 0.9408784 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.9636364 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 131 </td>
    <td style="text-align:right;"> 0.8909471 </td>
    <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 113 </td>
-   <td style="text-align:right;"> 18 </td>
-   <td style="text-align:right;"> 0.8625954 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 37 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 149 </td>
-   <td style="text-align:right;"> 0.9173813 </td>
-   <td style="text-align:right;"> 149 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0.9261745 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 144 </td>
-   <td style="text-align:right;"> 0.9100385 </td>
-   <td style="text-align:right;"> 144 </td>
    <td style="text-align:right;"> 123 </td>
-   <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 0.8541667 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.9389313 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 27 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 0.9291298 </td>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 140 </td>
-   <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 0.8917197 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 147 </td>
-   <td style="text-align:right;"> 0.9144442 </td>
-   <td style="text-align:right;"> 147 </td>
-   <td style="text-align:right;"> 132 </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 0.8979592 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 173 </td>
-   <td style="text-align:right;"> 0.9526269 </td>
-   <td style="text-align:right;"> 165 </td>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 0.9515152 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 162 </td>
-   <td style="text-align:right;"> 0.9364727 </td>
-   <td style="text-align:right;"> 162 </td>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0.9382716 </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 153 </td>
    <td style="text-align:right;"> 0.9232556 </td>
    <td style="text-align:right;"> 153 </td>
-   <td style="text-align:right;"> 140 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9150327 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.9738562 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 0.9217870 </td>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0.9342105 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
 </table>
@@ -972,19 +964,19 @@ sim %>%
 <tbody>
   <tr>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8039 </td>
+   <td style="text-align:right;"> 8019 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 186 </td>
+   <td style="text-align:right;"> 200 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 203 </td>
+   <td style="text-align:right;"> 201 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 193 </td>
+   <td style="text-align:right;"> 214 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 4 </td>
@@ -992,23 +984,23 @@ sim %>%
   </tr>
   <tr>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 206 </td>
+   <td style="text-align:right;"> 221 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 195 </td>
+   <td style="text-align:right;"> 186 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 183 </td>
+   <td style="text-align:right;"> 164 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 184 </td>
+   <td style="text-align:right;"> 166 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 155 </td>
   </tr>
 </tbody>
 </table>
@@ -1020,7 +1012,6 @@ plotdist(sim$overbooked)
 <img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simModelShowUpDependency-1.png" width="672" />
 
 Podemos observar que a distribuição (para esse caso de 15 acentos adicionais) se espalha um pouco, agora há mais chances de remanejamento por ovebooking, aparentemente.
-
 
 
 ```r
@@ -1036,10 +1027,10 @@ bumped_more_2_dep
 
 ```
 ## total 
-##  1572
+##  1580
 ```
 
-E comprovadamente, apenas 84% de ter dois ou menos passageiros remanejados neste cenário, comparado à 93% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o overbooking, como fizemos no modelo anterior.
+E comprovadamente, apenas 84% de ter dois ou menos passageiros remanejados neste cenário, comparado à 93% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o _overbooking_, como fizemos no modelo anterior.
 
 
 ```r
@@ -1069,3 +1060,7 @@ Obtemos resultados significativamente diferentes quando consideramos que a taxa 
 Resultados finais para a implatanção de política do _overbooking_:
 * Para ter 2 ou menos passageiros remanejados em 95% dos vöos: 8 acentos adicionais
 * Para ter 5 ou menos passageiros remanejados em 95% dos vöos: 12 acentos adicionais
+
+### Referências
+
+Este é um exercício extraído do curso [Advanced Business Analytics for Desicion Making](https://www.coursera.org/learn/business-analytics-decision-making) oferecida pela universidade de [Boulder Colorado](https://www.colorado.edu/) via [Coursera](https://www.coursera.org/).

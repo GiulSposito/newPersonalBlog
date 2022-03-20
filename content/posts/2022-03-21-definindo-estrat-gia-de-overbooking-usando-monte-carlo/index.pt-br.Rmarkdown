@@ -26,23 +26,23 @@ lightgallery: no
 license: ''
 ---
 
-Nem todos os passageiros que compram uma passagem de avião parecem no momento embarque. Os _no shows_ fazem os vôos ocorrerem com apacidade ociosa e incorrem num custo de oportunidade para a operadora que fazem uso do _overbooking_ (venda da acentos acima da capacidade do vôo) para tentar compensar esse gap. Mas quantos acentos adicionais devemos oferecer sem que isso não vire um problema de crônico de remanejamento de passageiros?
+Nem todos os passageiros que compram uma passagem de avião aparecem no momento do embarque. Os _no shows_ fazem os vôos ocorrerem com capacidade ociosa e incorrem num custo de oportunidade para a operadora. Para compensar, as companhias aérias fazem uso do _overbooking_ (venda da acentos acima da capacidade do vôo). Mas quantos acentos adicionais devemos oferecer sem que isso não vire um problema de crônico de remanejamento de passageiros?
 
 <!--more-->
 
-O risco que se corre é no momento do embarque ter mais passageiros do que o avião comporta, levando a custos maiores para remanejar os passageiros em outros vôos causando desgaste da marca e satisfação dos usuários. Neste post vamos analisar a distribuição da demanda e o comportamento dos "no shows" a fim de encontrar a melhor estratégia de overbooking através da [simulação por Monte Carlo](https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Monte_Carlo).
+Fazendo _overbooking_ o risco que se corre é, no momento do embarque, ter mais passageiros do que o avião comporta, levando a custos maiores para remanejar os passageiros em outros vôos e causando desgaste da marca através da insatisfação dos usuários. Neste _post_ vamos analisar a distribuição da demanda e o comportamento dos _no shows_ a fim de encontrar a melhor estratégia de overbooking através da [simulação por Monte Carlo](https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Monte_Carlo) para estabelecer uma política de _overbooking_ estatísticamente segura.
 
 ### Abordagem
 
 A abordagem que usaremos para tentar encontrar a melhor estratégia de overbooking seguirá os seguintes passos:
 
-1. Entender o comportamento (distribuição) da demanda
-1. Com base na distribuição da demanda, simular usando Monte Carlo 10 mil vôos
-1. Definir o critério que gostaríamos de atender e então encontrar a melhor estratégia de overbooking
+1. Entender e modelar o comportamento (distribuição) da demanda
+1. Simular situações de embarque usando Monte Carlo
+1. Definir uma estratégia de _overbooking_ com base na probabilidade de remanejamento de passageiros 
 
 ### Os Dados e a Demanda
 
-Como ponto de partida vamos carregar os dados de demanda e comparecimento de um determinado vôo comercial, disponível [nesta planilha de excel](./assets/Flight-Overbooking-Data.xlsx) e fazer uma breve exploração dos dados e tentar entender o comportamento da demanda para que ela possa ser simulada.
+Como ponto de partida vamos carregar os dados de demanda e comparecimento de um determinado vôo comercial disponível [nesta planilha de excel](./assets/Flight-Overbooking-Data.xlsx) e fazer uma breve exploração dos dados e tentar entender o comportamento da demanda para que ela possa ser modelada.
 
 ```{r setup, message=FALSE, warning=FALSE}
 
@@ -65,7 +65,7 @@ flight_dt %>%
 
 ```
 
-É um dataset bem direto e simples, com as colunas de demanda, quantos passageiros foram registrados, quantos apareceram e qual a taxa de presença (apareceram/registrados).  
+É um dataset bem direto e simples contendo informações de data, demanda, quantos passageiros foram registrados, quantos apareceram e qual a taxa de presença (apareceram/registrados).  
 
 #### Data Overview
 
@@ -77,7 +77,7 @@ flight_dt %>%
 
 Como vc pode ver, há um limite superior de 150 na coluna de registrados, indicando que essa é a capacidade do vôo, ou seja, 150 acentos.
 
-#### Demand Distribuition
+#### Comportamento da Demanda
 
 Vamos tentar modelar a demanda, fazendo o fit da sua distribuição, para tal usaremos o pacote `{fitdistrplus}`
 
@@ -92,7 +92,7 @@ descdist(flight_dt$demand, boot=1000, discrete = T)
 ```
 O pacote `{fitdistrplus}` indicou três candidatos como melhor fit para a distribuição da demanda: [normal](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_normal), [poisson](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_de_Poisson) ou [negative binomial](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_binomial_negativa). Vamos testar quais das duas mais comuns tem o melhor fit.
 
-##### Normal
+##### Distribuição Normal
 
 ```{r fitNorm}
 # lets fit a normal and see what we get
@@ -101,7 +101,7 @@ fitdist(flight_dt$demand, "norm", discrete = T) %T>%
   summary()
 ```
 
-##### Poisson
+##### Distribuição de Poisson
 
 ```{r fitPois}
 # lets fit a poisson and see what we get
@@ -110,19 +110,18 @@ fitdist(flight_dt$demand, "pois", discrete = T) %T>%
   summary()
 ```
 
-##### Best Fit
+##### Melhor modelo
 
-Observamos que a distribuição de Poisson tem, marginalmente, p melhor fit observando os indicadores [loglikehood](
-Likelihood vs. Probability: What's the Difference? - Statologyhttps://www.statology.org › likelihood-vs-probability), [IAC](https://pt.wikipedia.org/wiki/Crit%C3%A9rio_de_informa%C3%A7%C3%A3o_de_Akaike) e [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). Vamos então usar poisson como nosso modelo de distribuição para a demanda.
+Observamos que a distribuição de Poisson tem, marginalmente, o melhor fit observando os indicadores [loglikehood](https://www.statology.org › likelihood-vs-probability), [IAC](https://pt.wikipedia.org/wiki/Crit%C3%A9rio_de_informa%C3%A7%C3%A3o_de_Akaike) e [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). Vamos então usar _poisson_ como nosso modelo de distribuição para a demanda.
 
 ```{r demandModel}
 # Emp CDF fit for Poisson is a little better and IAC also is marginally better
 demand.pois <- fitdist(flight_dt$demand, "pois", discrete = T)
 ```
 
-#### Show Up
+#### Comparecimento
 
-O show up pode ser modelado como um sorteio binomial em cima do número de passageiros registrados para o vôo com uma taxa de sucesso determinado pela média histórica.
+O _show up_ pode ser modelado como um sorteio [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) em cima do número de passageiros registrados para o vôo com uma taxa de sucesso determinado pela média histórica.
 
 ```{r showuprate}
 mean(flight_dt$rate)
@@ -139,9 +138,9 @@ show_ups
 ```
 
 
-### Modeling
+### Modelo da Simulação
 
-Vamos fazer um modelo para simular n vezes uma situação de voo, neste primeiro modelo vamos estabelecer um número fixo para o overbooking de 15 posições, isto é, 
+Vamos fazer um modelo para simular uma situação de embarque, neste primeiro modelo vamos estabelecer um número fixo para o overbooking de 15 posições, isto é, serão oferecidos para a venda 15 acentos adicionais além da capacidade do vôo (150 posições).
 
 ```{r simpleModel}
 # demand simulation
@@ -178,7 +177,7 @@ sim %>%
   kableExtra::kable_styling(font_size = 11)
 ```
 
-Com as situações de embarque simuladas, podemos fazer a análise do comportamento do overbooking real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos) de fato aparecerram no portão de embarque e que precisariam ser remanejados:
+Com um modelo para simular uma situação de embarque, podemos fazer a análise do comportamento da frequencia do _overbooking_ real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos), comparecem no portão de embarque e que precisariam ser remanejados para outros vôos (ou compensados financeiramente).
 
 ```{r bumped}
 # lets visualize the overbooked passengers distribution
@@ -189,9 +188,9 @@ sim %>%
 
 plotdist(sim$overbooked)
 ```
-#### Overbooking Criteria
+#### Política de Overbooking
 
-Com a visão de como se comporta o overbooking real (# de passageiros remanejados) numa estratégia de 15 acentos podemos estabelecer uma política (ou estratégia) de overbooking, por exemplo, estabelecer que em 95% das situações o número de passageiros remanejados não ultrapasse 2. Então neste cenário teríamos
+Com a visão de como se comporta o _overbooking real_ (# de passageiros remanejados) podemos então estabelecer uma política de _overbooking_, por exemplo, estabelecer que em 95% das situações de embarque deste vôo, o número de **passageiros remanejados não ultrapasse 2**. Então neste cenário de 15 acentos adicionais teríamos
 
 ```{r bumped2in15}
 # chance to have 2 or less bumped pass
@@ -204,11 +203,11 @@ bumped_more_2 <- sim %>%
 1-(bumped_more_2/10000)
 ```
 
-Neste cenário de 15 acentos adicionais para este voo, com esse perfil de demanda e comportamento de comparecimento não seria possível atender o critério de ter até dois passageiros remanejados em 95% das vezes.
+Neste esse perfil de demanda e comportamento de comparecimento não seria possível atender este critério oferecendo 15 acentos adicionais, então quanto acentos deveríamos oferecer para atender a política estabelecida.
 
-### Cenario simultaions
+### Simulando Overbooking
 
-Vamos então analizar qual seria o número de posicionais adicionais a serem oferecidas que possibilite a empresa ficar dentro da política de overbooking definida acima.
+Vamos então analizar qual seria o número de posicionais adicionais a serem oferecidas que possibilite a empresa ficar dentro da política de overbooking definida acima, executando a simulação para várias situações de oferta de posição adicional (acima da capacidade), indo, por exemplo, de 1 à 20 posições extras.
 
 ```{r simulation, warning=FALSE, message=FALSE}
 
@@ -246,18 +245,18 @@ tibble(overbook=1:20) %>%
 
 ```
 
-we can see that offering 13 additional seats (over plain capacity) we have less than 5% of chance to bumped more than 2 passengers. Offering 18 additional seats (over plain capacity) we have less than 5% of chance to bump more than 5 passengers
+Podemos ver que oferecendo 13 acentos adicionais nós conseguiríamos atender a política de ter em apenas 5% dos vôos mais de 2 passageiros remanejados. Se a política fosse 95% de chance de ter 5 ou menos poderíamos oferecer 18 acentos em _overbooking_.
 
 ### Dependência entre demanda e show-up rate
 
-Nós tinhamos assumido uma taxa constante de show-up, não importa a demanda do vôo o comparecimento para embarque segue uma taxa constante, mas podemos comprovar essa hipótese
+Nós tinhamos assumido uma taxa constante de show-up, não importa a demanda para vôo em determinado dia, o comparecimento para embarque segue uma taxa constante. Mas será que essa hipótese é verdadeira?
 
 ```{r corrDemandShowup, warning=FALSE, message=FALSE}
 # we assume that the showup rate is fixed, is it?
 cor.test(flight_dt$demand, flight_dt$rate)
 ```
 
-Esta é uma taxa de correlação muita alta para ser ignorada, vamos refazer o modelo considerando essa dependência.
+Esta é uma taxa de correlação muita alta para ser ignorada, vamos refazer o modelo de embarque considerando essa dependência, incorporando um modelo linear de dependência entre a taxa de comparecimento e a demanda.
 
 ```{r showUpModel}
 # lets make a simple linear model
@@ -269,7 +268,8 @@ par(mfrow=c(2,2))
 plot(rate_model)
 par(mfrow=c(1,1))
 ```
-Vamos considerar um simples modelo linear entre a demanda e o show-up rate e vamos incorporar esse modelo dentro da nossa simulação
+
+Vamos alterar a função que faz a simulação incorporando a dependência.
 
 ```{r simModelShowUpDependency, warning=FALSE, message=FALSE}
 # another simulation model considering the dependency between showup rate and demand
@@ -318,7 +318,6 @@ plotdist(sim$overbooked)
 
 Podemos observar que a distribuição (para esse caso de 15 acentos adicionais) se espalha um pouco, agora há mais chances de remanejamento por ovebooking, aparentemente.
 
-
 ```{r bumped95dependency}
 # chance to have 2 or less bumped pass
 bumped_more_2_dep <- sim %>% 
@@ -330,7 +329,7 @@ bumped_more_2_dep <- sim %>%
 bumped_more_2_dep
 ```
 
-E comprovadamente, apenas `r round(100*(1-(bumped_more_2_dep/10000)))`% de ter dois ou menos passageiros remanejados neste cenário, comparado à `r round(100*(1-(bumped_more_2/10000)))`% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o overbooking, como fizemos no modelo anterior.
+E comprovadamente, apenas `r round(100*(1-(bumped_more_2_dep/10000)))`% de ter dois ou menos passageiros remanejados neste cenário, comparado à `r round(100*(1-(bumped_more_2/10000)))`% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o _overbooking_, como fizemos no modelo anterior.
 
 ```{r simNewModel, message=FALSE, warning=FALSE}
 # looking the behavior of the probability to get 2 (or 5) less passengers bumped
@@ -357,3 +356,7 @@ Obtemos resultados significativamente diferentes quando consideramos que a taxa 
 Resultados finais para a implatanção de política do _overbooking_:
 * Para ter 2 ou menos passageiros remanejados em 95% dos vöos: 8 acentos adicionais
 * Para ter 5 ou menos passageiros remanejados em 95% dos vöos: 12 acentos adicionais
+
+### Referências
+
+Este é um exercício extraído do curso [Advanced Business Analytics for Desicion Making](https://www.coursera.org/learn/business-analytics-decision-making) oferecida pela universidade de [Boulder Colorado](https://www.colorado.edu/) via [Coursera](https://www.coursera.org/).
