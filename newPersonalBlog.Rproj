@@ -14,4 +14,4 @@ LaTeX: pdfLaTeX
 
 BuildType: Website
 
-SpellingDictionary: pt_BR
+SpellingDictionary: en_US

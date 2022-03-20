@@ -1,5 +1,5 @@
 ---
-title: Definindo estratégia de overbooking usando Monte Carlo
+title: Defining overbooking strategy using Monte Carlo
 author: Giuliano Sposito
 date: '2022-03-20'
 slug: monte-carlo-simulation-overbooking
@@ -25,34 +25,34 @@ math:
 lightgallery: no
 license: ''
 ---
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/lightable/lightable.css" rel="stylesheet" />
 
-Nem todos os passageiros que compram uma passagem de avião aparecem no momento do embarque. Os _no shows_ fazem os vôos ocorrerem com capacidade ociosa e incorrem num custo de oportunidade para a operadora. Para compensar, as companhias aérias fazem uso do _overbooking_ (venda da acentos acima da capacidade do vôo). Mas quantos acentos adicionais devemos oferecer sem que isso não vire um problema de crônico de remanejamento de passageiros?
+Not all passengers who buy a plane ticket show up at boarding. The _no shows_ make flights occur with idle capacity and incur an opportunity cost for the operator. To compensate, airlines use _overbooking_ (sale of seats above the flight capacity). But how many additional seats should we offer without it becoming a chronic passenger relocation problem?
 
 <!--more-->
 
-Fazendo _overbooking_ o risco que se corre é, no momento do embarque, ter mais passageiros do que o avião comporta, levando a custos maiores para remanejar os passageiros em outros vôos e causando desgaste da marca através da insatisfação dos usuários. Neste _post_ vamos analisar a distribuição da demanda e o comportamento dos _no shows_ a fim de encontrar a melhor estratégia de overbooking através da [simulação por Monte Carlo](https://pt.wikipedia.org/wiki/M%C3%A9todo_de_Monte_Carlo) para estabelecer uma política de _overbooking_ estatísticamente segura.
+By _overbooking_, the risk has more passengers than the plane can handle at the time of boarding, leading to higher costs to relocate passengers on other flights and causing wear on the brand through user dissatisfaction. In this post, we will analyze the demand distribution and the behavior of the _no shows_ to find the best overbooking strategy through [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method) to establish a statistically secure _overbooking_ policy.
 
-### Abordagem
+### Approach
 
-A abordagem que usaremos para tentar encontrar a melhor estratégia de overbooking seguirá os seguintes passos:
+The approach we will use to try to find the best overbooking strategy will follow these steps:
 
-1. Entender e modelar o comportamento (distribuição) da demanda
-1. Simular situações de embarque usando Monte Carlo
-1. Definir uma estratégia de _overbooking_ com base na probabilidade de remanejamento de passageiros 
+1. Understand and model the behavior (distribution) of demand
+1. Simulate boarding situations using Monte Carlo
+1. Define an _overbooking_ strategy based on the probability of passenger relocation
 
-### Os Dados e a Demanda
+### Flight Demand Data
 
-Como ponto de partida vamos carregar os dados de demanda e comparecimento de um determinado vôo comercial disponível [nesta planilha de excel](./assets/Flight-Overbooking-Data.xlsx) e fazer uma breve exploração dos dados e tentar entender o comportamento da demanda para que ela possa ser modelada.
+As a starting point, we will load the demand and attendance data of a particular commercial flight available [in this excel sheet](./assets/Flight-Overbooking-Data.xlsx) and briefly explore the data and try to understand the behavior of the demand so that it can be modeled.
 
 
 ```r
@@ -158,7 +158,7 @@ flight_dt %>%
 </tbody>
 </table>
 
-É um dataset bem direto e simples contendo informações de data, demanda, quantos passageiros foram registrados, quantos apareceram e qual a taxa de presença (apareceram/registrados).  
+It is a very simple and straightforward dataset containing information on the date, the demand, how many passengers were registered, how many showed up, and the attendance rate (appeared/registered).
 
 #### Data Overview
 
@@ -322,11 +322,11 @@ flight_dt %>%
 </tbody>
 </table>
 
-Como vc pode ver, há um limite superior de 150 na coluna de registrados, indicando que essa é a capacidade do vôo, ou seja, 150 acentos.
+As you can see, there is an upper limit of 150 in the registered column, indicating that this is the capacity of the flight, that is, 150 seats.
 
-#### Comportamento da Demanda
+#### Demand Behavior
 
-Vamos tentar modelar a demanda, fazendo o fit da sua distribuição, para tal usaremos o pacote `{fitdistrplus}`
+Let's try to model the demand, making the fit of your distribution, for we will use the package `{fitdistrplus}`.
 
 
 ```r
@@ -336,14 +336,14 @@ library(fitdistrplus)
 plotdist(flight_dt$demand, discrete = T)
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/demandDistr-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/demandDistr-1.png" width="672" />
 
 ```r
 # what are the distribution candidates?
 descdist(flight_dt$demand, boot=1000, discrete = T)
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/demandDistr-2.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/demandDistr-2.png" width="672" />
 
 ```
 ## summary statistics
@@ -355,9 +355,10 @@ descdist(flight_dt$demand, boot=1000, discrete = T)
 ## estimated skewness:  0.149088 
 ## estimated kurtosis:  2.943392
 ```
-O pacote `{fitdistrplus}` indicou três candidatos como melhor fit para a distribuição da demanda: [normal](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_normal), [poisson](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_de_Poisson) ou [negative binomial](https://pt.wikipedia.org/wiki/Distribui%C3%A7%C3%A3o_binomial_negativa). Vamos testar quais das duas mais comuns tem o melhor fit.
 
-##### Distribuição Normal
+The `{fitdistrplus}` package indicated three candidates as the best fit for the demand distribution: [normal](https://en.wikipedia.org/wiki/Normal_distribution), [poisson](https://en.wikipedia.org/wiki/Poisson_distribution) or [negative binomial](https://en.wikipedia.org/wiki/Negative_binomial_distribution). Let's test which of the two most common ones has the best fit.
+
+##### Normal Distribution
 
 
 ```r
@@ -367,7 +368,7 @@ fitdist(flight_dt$demand, "norm", discrete = T) %T>%
   summary()
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/fitNorm-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/fitNorm-1.png" width="672" />
 
 ```
 ## Fitting of the distribution ' norm ' by maximum likelihood 
@@ -382,7 +383,7 @@ fitdist(flight_dt$demand, "norm", discrete = T) %T>%
 ## sd      0  1
 ```
 
-##### Distribuição de Poisson
+##### Poisson Distribution
 
 
 ```r
@@ -392,7 +393,7 @@ fitdist(flight_dt$demand, "pois", discrete = T) %T>%
   summary()
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/fitPois-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/fitPois-1.png" width="672" />
 
 ```
 ## Fitting of the distribution ' pois ' by maximum likelihood 
@@ -404,7 +405,7 @@ fitdist(flight_dt$demand, "pois", discrete = T) %T>%
 
 ##### Melhor modelo
 
-Observamos que a distribuição de Poisson tem, marginalmente, o melhor fit observando os indicadores [loglikehood](https://www.statology.org › likelihood-vs-probability), [IAC](https://pt.wikipedia.org/wiki/Crit%C3%A9rio_de_informa%C3%A7%C3%A3o_de_Akaike) e [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion). Vamos então usar _poisson_ como nosso modelo de distribuição para a demanda.
+We observed that the Poisson distribution has, marginally, the best fit monitoring the indicators [loglikehood](https://www.statology.org › likelihood-vs-probability), [IAC](https://en.wikipedia.org/wiki/Akaike_information_criterion) and [BIC](https:/ /en.wikipedia.org/wiki/Bayesian_information_criterion). So let's use _poisson_ as our distribution model for demand.
 
 
 ```r
@@ -412,9 +413,9 @@ Observamos que a distribuição de Poisson tem, marginalmente, o melhor fit obse
 demand.pois <- fitdist(flight_dt$demand, "pois", discrete = T)
 ```
 
-#### Comparecimento
+#### Attendance
 
-O _show up_ pode ser modelado como um sorteio [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) em cima do número de passageiros registrados para o vôo com uma taxa de sucesso determinado pela média histórica.
+The _show up_ can be modeled as a [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) lottery over the number of registered passengers for the flight with a success rate determined by the historical average.
 
 
 ```r
@@ -425,7 +426,7 @@ mean(flight_dt$rate)
 ## [1] 0.9194333
 ```
 
-Constatamos que a taxa média histórica de presença para o vôo é de 92%, podemos usar essa informação para simular o processo de presença fazendo:
+We found that the historical average presence rate for the flight is 92%, we can use this information to simulate the presence process by doing:
 
 
 ```r
@@ -435,13 +436,13 @@ show_ups
 ```
 
 ```
-## [1] 130
+## [1] 127
 ```
 
 
-### Modelo da Simulação
+### Simulation Model
 
-Vamos fazer um modelo para simular uma situação de embarque, neste primeiro modelo vamos estabelecer um número fixo para o overbooking de 15 posições, isto é, serão oferecidos para a venda 15 acentos adicionais além da capacidade do vôo (150 posições).
+We are going to make a model to simulate a boarding situation, in this first model, we will establish a fixed number for the overbooking of 15 positions, i. e., we will offer 15 additional seats for sale in addition to the flight capacity (150 positions).
 
 
 ```r
@@ -493,69 +494,6 @@ sim %>%
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 146 </td>
-   <td style="text-align:right;"> 146 </td>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0.9246575 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 139 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0.9266667 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 147 </td>
-   <td style="text-align:right;"> 147 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 0.9387755 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 176 </td>
-   <td style="text-align:right;"> 165 </td>
-   <td style="text-align:right;"> 148 </td>
-   <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 0.8969697 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 135 </td>
-   <td style="text-align:right;"> 125 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0.9259259 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 25 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 144 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9171975 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 160 </td>
-   <td style="text-align:right;"> 160 </td>
-   <td style="text-align:right;"> 148 </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 0.9250000 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 2 </td>
-  </tr>
-  <tr>
    <td style="text-align:right;"> 138 </td>
    <td style="text-align:right;"> 138 </td>
    <td style="text-align:right;"> 129 </td>
@@ -565,27 +503,90 @@ sim %>%
    <td style="text-align:right;"> 21 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 163 </td>
-   <td style="text-align:right;"> 163 </td>
+   <td style="text-align:right;"> 156 </td>
+   <td style="text-align:right;"> 156 </td>
+   <td style="text-align:right;"> 140 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.8974359 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 130 </td>
+   <td style="text-align:right;"> 130 </td>
+   <td style="text-align:right;"> 121 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.9307692 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 29 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 157 </td>
    <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 0.8711656 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 0.9044586 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 8 </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 148 </td>
+   <td style="text-align:right;"> 148 </td>
    <td style="text-align:right;"> 132 </td>
-   <td style="text-align:right;"> 132 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.8918919 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 18 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 131 </td>
    <td style="text-align:right;"> 117 </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 0.8863636 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0.8931298 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 33 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 154 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0.9220779 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 163 </td>
+   <td style="text-align:right;"> 163 </td>
+   <td style="text-align:right;"> 147 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.9018405 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 142 </td>
+   <td style="text-align:right;"> 23 </td>
+   <td style="text-align:right;"> 0.8606061 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 137 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0.9124088 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 25 </td>
   </tr>
 </tbody>
 </table>
 
-Com um modelo para simular uma situação de embarque, podemos fazer a análise do comportamento da frequencia do _overbooking_ real (ou seja) quantos passageiros, acima da capacidade real do avião (150 acentos), comparecem no portão de embarque e que precisariam ser remanejados para outros vôos (ou compensados financeiramente).
+With a model to simulate a boarding situation, we can analyze the behavior of the frequency of the real _overbooking_ (that is) how many passengers, above the actual capacity of the plane (150 seats), appear at the boarding gate and who would need to be relocated to other flights (or financially compensated).
 
 
 ```r
@@ -606,55 +607,55 @@ sim %>%
 <tbody>
   <tr>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8749 </td>
+   <td style="text-align:right;"> 8848 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 281 </td>
+   <td style="text-align:right;"> 245 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 234 </td>
+   <td style="text-align:right;"> 210 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 208 </td>
+   <td style="text-align:right;"> 206 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 203 </td>
+   <td style="text-align:right;"> 170 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 107 </td>
+   <td style="text-align:right;"> 108 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 103 </td>
+   <td style="text-align:right;"> 96 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 55 </td>
+   <td style="text-align:right;"> 60 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 24 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 8 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
 </table>
@@ -663,10 +664,11 @@ sim %>%
 plotdist(sim$overbooked)
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/bumped-1.png" width="672" />
-#### Política de Overbooking
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/bumped-1.png" width="672" />
 
-Com a visão de como se comporta o _overbooking real_ (# de passageiros remanejados) podemos então estabelecer uma política de _overbooking_, por exemplo, estabelecer que em 95% das situações de embarque deste vôo, o número de **passageiros remanejados não ultrapasse 2**. Então neste cenário de 15 acentos adicionais teríamos
+#### Overbooking Policy
+
+With the view of how _real overbooking_ behaves (# of reassigned passengers), we can then establish an _overbooking_ policy, for example, establishing that in 95% of the boarding situations of this flight, the number of **relocated passengers does not exceed 2**. So in this scenario of 15 additional accents, we would have
 
 
 ```r
@@ -682,14 +684,14 @@ bumped_more_2 <- sim %>%
 
 ```
 ##  total 
-## 0.9264
+## 0.9303
 ```
 
-Neste esse perfil de demanda e comportamento de comparecimento não seria possível atender este critério oferecendo 15 acentos adicionais, então quanto acentos deveríamos oferecer para atender a política estabelecida.
+It would not be possible to meet this criterion with 15 additional seats in this demand profile and attendance behavior, so how many seats should we offer to meet the established policy?
 
-### Simulando Overbooking
+### Simulating Overbooking
 
-Vamos então analizar qual seria o número de posicionais adicionais a serem oferecidas que possibilite a empresa ficar dentro da política de overbooking definida acima, executando a simulação para várias situações de oferta de posição adicional (acima da capacidade), indo, por exemplo, de 1 à 20 posições extras.
+Let's then analyze what would be the number of additional positions to be offered that allow the company to stay within the overbooking policy defined above. To do that, we simulate various boarding situations providing different additional seats (above the flight capacity), going, for example, from 1 to 20 extra positions.
 
 
 ```r
@@ -726,13 +728,13 @@ tibble(overbook=1:20) %>%
   theme_light()
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simulation-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/simulation-1.png" width="672" />
 
-Podemos ver que oferecendo 13 acentos adicionais nós conseguiríamos atender a política de ter em apenas 5% dos vôos mais de 2 passageiros remanejados. Se a política fosse 95% de chance de ter 5 ou menos poderíamos oferecer 18 acentos em _overbooking_.
+We can see that by offering 13 additional seats, we would be able to meet the policy of having more than two reassigned passengers on only 5% of flights. If the policy were a 95% chance of having five or less, we could offer 18 seats in _overbooking_.
 
-### Dependência entre demanda e show-up rate
+### Dependency between demand and show-up rate
 
-Nós tinhamos assumido uma taxa constante de show-up, não importa a demanda para vôo em determinado dia, o comparecimento para embarque segue uma taxa constante. Mas será que essa hipótese é verdadeira?
+We had assumed a constant show-up rate, no matter the demand for a flight on a given day, i.e., boarding attendance follows a constant rate. But is this hypothesis true?
 
 
 ```r
@@ -754,7 +756,7 @@ cor.test(flight_dt$demand, flight_dt$rate)
 ## 0.6965629
 ```
 
-Esta é uma taxa de correlação muita alta para ser ignorada, vamos refazer o modelo de embarque considerando essa dependência, incorporando um modelo linear de dependência entre a taxa de comparecimento e a demanda.
+This correlation rate is too high to ignore. Let's redo the boarding model considering this dependence, incorporating a linear dependence model between attendance rate and demand.
 
 
 ```r
@@ -791,13 +793,13 @@ par(mfrow=c(2,2))
 plot(rate_model)
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/showUpModel-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/showUpModel-1.png" width="672" />
 
 ```r
 par(mfrow=c(1,1))
 ```
 
-Vamos alterar a função que faz a simulação incorporando a dependência.
+Let's change the function that does the simulation by incorporating the dependency model.
 
 
 ```r
@@ -851,104 +853,104 @@ sim %>%
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 0.9188499 </td>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 0.9200000 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 136 </td>
-   <td style="text-align:right;"> 0.8982899 </td>
-   <td style="text-align:right;"> 136 </td>
-   <td style="text-align:right;"> 123 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9044118 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 27 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 0.9217870 </td>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 141 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0.9276316 </td>
-   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 166 </td>
+   <td style="text-align:right;"> 0.9423470 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 156 </td>
    <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 141 </td>
-   <td style="text-align:right;"> 0.9056328 </td>
-   <td style="text-align:right;"> 141 </td>
-   <td style="text-align:right;"> 128 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.9078014 </td>
+   <td style="text-align:right;"> 0.9454545 </td>
+   <td style="text-align:right;"> 6 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 22 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 134 </td>
-   <td style="text-align:right;"> 0.8953528 </td>
-   <td style="text-align:right;"> 134 </td>
-   <td style="text-align:right;"> 126 </td>
-   <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 0.9402985 </td>
+   <td style="text-align:right;"> 167 </td>
+   <td style="text-align:right;"> 0.9438155 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 0.9151515 </td>
+   <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 24 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 0.9071013 </td>
-   <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 132 </td>
+   <td style="text-align:right;"> 175 </td>
+   <td style="text-align:right;"> 0.9555641 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 162 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.9818182 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 145 </td>
+   <td style="text-align:right;"> 0.9115070 </td>
+   <td style="text-align:right;"> 145 </td>
+   <td style="text-align:right;"> 135 </td>
    <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0.9295775 </td>
+   <td style="text-align:right;"> 0.9310345 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 156 </td>
+   <td style="text-align:right;"> 0.9276613 </td>
+   <td style="text-align:right;"> 156 </td>
+   <td style="text-align:right;"> 147 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.9423077 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 154 </td>
    <td style="text-align:right;"> 0.9247241 </td>
    <td style="text-align:right;"> 154 </td>
-   <td style="text-align:right;"> 139 </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 0.9025974 </td>
+   <td style="text-align:right;"> 144 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.9350649 </td>
    <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 166 </td>
+   <td style="text-align:right;"> 0.9423470 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 154 </td>
    <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 153 </td>
-   <td style="text-align:right;"> 0.9232556 </td>
-   <td style="text-align:right;"> 153 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 0.9019608 </td>
+   <td style="text-align:right;"> 0.9333333 </td>
+   <td style="text-align:right;"> 4 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 0.9217870 </td>
-   <td style="text-align:right;"> 152 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 0.9078947 </td>
+   <td style="text-align:right;"> 171 </td>
+   <td style="text-align:right;"> 0.9496898 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.9636364 </td>
+   <td style="text-align:right;"> 9 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 147 </td>
-   <td style="text-align:right;"> 0.9144442 </td>
-   <td style="text-align:right;"> 147 </td>
+   <td style="text-align:right;"> 173 </td>
+   <td style="text-align:right;"> 0.9526269 </td>
+   <td style="text-align:right;"> 165 </td>
+   <td style="text-align:right;"> 157 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.9515152 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 131 </td>
-   <td style="text-align:right;"> 16 </td>
-   <td style="text-align:right;"> 0.8911565 </td>
+   <td style="text-align:right;"> 0.8909471 </td>
+   <td style="text-align:right;"> 131 </td>
+   <td style="text-align:right;"> 123 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.9389313 </td>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 27 </td>
   </tr>
 </tbody>
 </table>
@@ -972,43 +974,43 @@ sim %>%
 <tbody>
   <tr>
    <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 8051 </td>
+   <td style="text-align:right;"> 8040 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 164 </td>
+   <td style="text-align:right;"> 208 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 219 </td>
+   <td style="text-align:right;"> 197 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 225 </td>
+   <td style="text-align:right;"> 196 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 210 </td>
+   <td style="text-align:right;"> 214 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 207 </td>
+   <td style="text-align:right;"> 209 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 192 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 7 </td>
    <td style="text-align:right;"> 199 </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 189 </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 173 </td>
+   <td style="text-align:right;"> 172 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 140 </td>
+   <td style="text-align:right;"> 121 </td>
   </tr>
 </tbody>
 </table>
@@ -1017,9 +1019,9 @@ sim %>%
 plotdist(sim$overbooked)
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simModelShowUpDependency-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/simModelShowUpDependency-1.png" width="672" />
 
-Podemos observar que a distribuição (para esse caso de 15 acentos adicionais) se espalha um pouco, agora há mais chances de remanejamento por ovebooking, aparentemente.
+We can see that the distribution (for this case of 15 additional accents) spreads out a bit. Now, there are more chances of rearrangement by overbooking, apparently.
 
 
 ```r
@@ -1035,10 +1037,10 @@ bumped_more_2_dep
 
 ```
 ## total 
-##  1566
+##  1555
 ```
 
-E comprovadamente, apenas 84% de ter dois ou menos passageiros remanejados neste cenário, comparado à 93% do cenário anterior. Vamos refazer a simulação considerando várias estratégias para o _overbooking_, como fizemos no modelo anterior.
+And arguably, only 84% of having two or fewer passengers relocated in this scenario, compared to 93% of the previous scenario. Let's redo the simulation considering various strategies for _overbooking_, as we did in the previous model.
 
 
 ```r
@@ -1061,14 +1063,14 @@ tibble(overbook=1:20) %>%
   theme_light()
 ```
 
-<img src="/posts/2022-03-21-definindo-estrat-gia-de-overbooking-usando-monte-carlo/index.pt-br_files/figure-html/simNewModel-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/simNewModel-1.png" width="672" />
 
-Obtemos resultados significativamente diferentes quando consideramos que a taxa de show-up é dependente da demanda, de maneira que precisamos oferecer bem menos acentos adicionais a fim da manter uma eventual política de 95% dos vôos com 2 ou menos passageiros remanejados.
+We get significantly different results when considering that the show-up rate is demand-dependent, so we need to offer far fewer additional seats to maintain an eventual policy of 95% of flights with two or fewer reassigned passengers.
 
-Resultados finais para a implatanção de política do _overbooking_:
-* Para ter 2 ou menos passageiros remanejados em 95% dos vöos: 8 acentos adicionais
-* Para ter 5 ou menos passageiros remanejados em 95% dos vöos: 12 acentos adicionais
+Results for deploying the _overbooking_ policy:
+* To have two or fewer passengers relocated on 95% of flights: 8 additional seats
+* To have five or fewer passengers relocated on 95% of flights: 12 additional seats
 
-### Referências
+### References
 
-Este é um exercício extraído do curso [Advanced Business Analytics for Decision Making](https://www.coursera.org/learn/business-analytics-decision-making) oferecida pela universidade de [Boulder Colorado](https://www.colorado.edu/) via [Coursera](https://www.coursera.org/).
+This post is an exercise taken from the [Advanced Business Analytics for Decision Making](https://www.coursera.org/learn/business-analytics-decision-making) course offered by the University of [Boulder Colorado](https://www .colorado.edu/) via [Coursera](https://www.coursera.org/).
