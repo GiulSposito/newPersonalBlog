@@ -1,0 +1,209 @@
+---
+title: GGPlot2 Exercises
+author: R package build
+date: '2022-10-26'
+slug: [221026-ggplot2-exercises]
+categories:
+  - R
+tags:
+  - ggplot2
+  - data visualization
+subtitle: ''
+lastmod: '2022-10-30T10:25:30-03:00'
+authorLink: ''
+description: ''
+hiddenFromHomePage: no
+hiddenFromSearch: no
+featuredImage: 'images/cover.png'
+featuredImagePreview: 'images/cover.png'
+toc:
+  enable: yes
+math:
+  enable: no
+lightgallery: no
+license: ''
+---
+
+Alguns exercícios de visualiação de dados usando {ggplot2} e dados do Bakeoff UK.
+
+<!--more-->
+
+Este é um simples post com algumas exercícios de visualização usando [{ggplot2}](https://ggplot2.tidyverse.org/) e dados do programa de tv [Great British Bakeoff](https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-10-25) providos por Alison Hill, Chester Ismay, and Richard Iannone.
+
+## Carregando dados
+
+```{r warning=FALSE, message=FALSE}
+library(bakeoff)
+library(tidyverse)
+```
+
+### Visão Geral dos Dados
+
+```{r}
+bakeoff::bakers %>% 
+  head(10)
+
+bakeoff::challenges %>% 
+  head(10) 
+
+bakeoff::episodes %>% 
+  head(10)
+
+bakeoff::ratings %>% 
+  head(10)
+
+```
+
+### Características dos dados 
+
+```{r}
+skimr::skim(bakeoff::ratings)
+```
+
+## Explorando algumas visualizações
+
+### Audiência dos episódios e temporadas
+
+```{r}
+ep_df <- bakeoff::ratings %>% 
+  arrange(series, episode) %>% 
+  mutate(ep_id = row_number(),
+         series = factor(series, ordered = T)) %>% 
+  select(ep_id, viewers_7day, series, episode)
+
+series_label <- ep_df %>% 
+  group_by(series) %>% 
+  summarise(label_pos_x = mean(ep_id),
+         label_pos_y = median(viewers_7day) + 1)
+
+ep_df %>% 
+  ggplot(aes(x=ep_id, y=viewers_7day, fill=series)) +
+  geom_col(color="white",alpha=.8, show.legend = F, size=.1) +
+  geom_text(data=series_label, mapping=aes(x=label_pos_x, y=label_pos_y, label=series)) +
+  theme_minimal() +
+  labs(x="episodes", y="weekly viewers (millions)",
+       title = "TV Show Audience")
+  
+```
+
+```{r}
+ep_df %>% 
+  group_by(series) %>% 
+  mutate( season_avg = mean(viewers_7day) ) %>% 
+  ungroup() %>% 
+  filter( series > 2) %>% 
+  ggplot(aes(x=episode, viewers_7day, color=viewers_7day)) +
+  geom_point(alpha=.8)+
+  geom_hline(aes(yintercept=season_avg)) +
+  geom_segment(aes(xend=episode, yend=season_avg)) +
+  # scale_color_gradient(low = "darkblue", high = "orange") +
+  scale_color_viridis_c(option="plasma", begin = 0, end = .8, guide = FALSE) +
+  scale_x_continuous(breaks = 1:10) +
+  facet_wrap(~series, nrow = 2) +
+  lims(y=c(0,NA)) +
+  theme_light() +
+  theme(legend.position = "none",panel.grid.minor = element_blank())  +
+  labs(x="episodes", y="weekly viewers (millions)",
+       title = "TV Show Audience Along the Seasons",
+       subtitle = "Episodes vs Season Meen")
+```
+
+```{r}
+series_label <- ep_df %>% 
+  group_by(series) %>% 
+  filter(episode==max(episode)) %>% 
+  mutate(
+    position_x = episode+.1,
+    position_y = viewers_7day
+  )
+
+ep_df %>% 
+  ggplot(aes(x=episode, y=viewers_7day, color=series, group=series)) +
+  geom_line(alpha=.8, show.legend = F) +
+  geom_text(data=series_label, aes(
+    label=series,
+    x=position_x,
+    y=position_y
+  ), show.legend = F) +
+  scale_color_discrete() +
+  theme_light()  +
+  labs(x="episodes", y="weekly viewers (millions)",
+       title = "Audience Progression along each season")
+```
+
+### Comparando audiência entre primeiro e último episódios 
+
+```{r}
+ep_df %>% 
+  group_by(series) %>% 
+  mutate( ep_pos = case_when(
+    episode == max(episode) ~ "last",
+    episode == min(episode) ~ "first",
+    T ~ "other"
+  )) %>% 
+  ungroup() %>% 
+  filter(ep_pos!="other") %>% 
+  select(ep_pos, series, viewers_7day) %>% 
+  ggplot(aes(x=series, y=viewers_7day, color=ep_pos, group=ep_pos)) +
+  geom_point() +
+  geom_line() +
+  scale_color_bakeoff() +
+  theme_light() +
+  labs(x="seasons", y="weekly viewers (millions)",
+       title = "Comparing the audience between first and last episodes")
+```
+
+```{r}
+ep_df %>% 
+  group_by(series) %>% 
+  mutate( ep_pos = case_when(
+    episode == max(episode) ~ "last",
+    episode == min(episode) ~ "first",
+    T ~ "other"
+  )) %>% 
+  ungroup() %>% 
+  filter(ep_pos!="other") %>% 
+  select(ep_pos, series, viewers_7day) %>% 
+  ggplot(aes(x=viewers_7day, y=fct_rev(series), color=ep_pos, group=series))+
+  geom_point() +
+  geom_line() +
+  theme_minimal()+
+  labs(y="seasons", x="weekly viewers (millions)",
+       title = "Comparing the audience between first and last episodes")
+```
+
+```{r}
+
+ep_frst_lst <- ep_df %>%
+  group_by(series) %>%
+  mutate(ep_pos = case_when(
+    episode == max(episode) ~ "last",
+    episode == min(episode) ~ "first",
+    T ~ "other"
+  )) %>%
+  ungroup() %>%
+  filter(ep_pos != "other") %>%
+  select(ep_pos, season=series, viewers_7day)
+
+series_label <- ep_frst_lst %>%
+  filter(ep_pos == "last")
+
+p1 <- ep_frst_lst %>%  ggplot(
+  aes(
+    x = ep_pos,
+    y = viewers_7day,
+    color = season,
+    group = season
+  )
+) +
+  geom_point() +
+  geom_line() +
+  theme_minimal() +
+  theme(legend.position = "none")+
+  labs(x="episodes", y="weekly viewers (millions)",
+       title = "Comparing the audience between first and last episodes")
+
+p1 + geom_text(data=series_label,mapping= aes(x = ep_pos, y = viewers_7day, label = season),nudge_x = .1)
+```
+
+
